@@ -1,9 +1,16 @@
 import Link from "next/link"
 
 import { siteConfig } from "@/config/site"
+import { supabase } from "@/lib/supabase"
 import { buttonVariants } from "@/components/ui/button"
 
-export default function IndexPage() {
+export default async function IndexPage() {
+  const { data: patients } = await supabase.from("patients").select("*")
+
+  if (!patients) {
+    return <p>No patients found.</p>
+  }
+
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
       <div className="flex max-w-[980px] flex-col items-start gap-2">
@@ -33,6 +40,13 @@ export default function IndexPage() {
         >
           GitHub
         </Link>
+      </div>
+      <div>
+        {patients.map((patient) => (
+          <div key={patient.id}>
+            <h2>{patient.name}</h2>
+          </div>
+        ))}
       </div>
     </section>
   )
