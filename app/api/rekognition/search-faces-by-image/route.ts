@@ -4,6 +4,8 @@ import {
   SearchFacesByImageCommand,
 } from "@aws-sdk/client-rekognition"
 
+import { supabase } from "@/lib/supabase"
+
 const credentials = {
   accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
@@ -28,8 +30,32 @@ export async function POST(request: NextRequest) {
         FaceMatchThreshold: 95, // 顔の一致スコアのしきい値
       })
     )
+    const faceId = response.FaceMatches?.[0]?.Face?.FaceId
 
-    return NextResponse.json({ response }, { status: 200 })
+    if (!faceId) {
+      return NextResponse.json(
+        { error: "No face matches found" },
+        { status: 404 }
+      )
+    }
+
+    const { data, error } = await supabase
+      .from("patients")
+      .select("id, name, face_ids")
+      .filter("face_ids", "cs", `{${faceId}}`)
+
+    if (error) {
+      throw error
+    }
+
+    if (data.length === 0) {
+      return NextResponse.json(
+        { error: "No matching patients found" },
+        { status: 404 }
+      )
+    }
+
+    return NextResponse.json({ patients: data }, { status: 200 })
   } catch (error) {
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 })
