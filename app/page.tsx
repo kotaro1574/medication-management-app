@@ -4,6 +4,8 @@ import { siteConfig } from "@/config/site"
 import { supabase } from "@/lib/supabase"
 import { buttonVariants } from "@/components/ui/button"
 
+import { FaceRecognition } from "./face-recognition"
+
 export default async function IndexPage() {
   const { data: patients } = await supabase.from("patients").select("*")
 
@@ -42,6 +44,7 @@ export default async function IndexPage() {
         </Link>
       </div>
       <div>
+        <FaceRecognition />
         {patients.map((patient) => (
           <div key={patient.id}>
             <h2>{patient.name}</h2>
