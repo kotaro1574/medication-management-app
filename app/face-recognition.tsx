@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useRef, useState } from "react"
+import { useRouter } from "next/navigation"
 import Webcam from "react-webcam"
 
 import { Button } from "@/components/ui/button"
@@ -8,6 +9,7 @@ import { Button } from "@/components/ui/button"
 export function FaceRecognition() {
   const [loading, setLoading] = useState(false)
   const webcamRef = useRef<Webcam>(null)
+  const router = useRouter()
 
   const onRecognition = useCallback(async () => {
     try {
@@ -25,13 +27,18 @@ export function FaceRecognition() {
       })
 
       const data = await res.json()
-      console.log(data)
+
+      if (res.ok) {
+        router.push(`/patients/${data.patients.id}`)
+      } else {
+        console.error(data.error)
+      }
     } catch (error) {
       console.error(error)
     } finally {
       setLoading(false)
     }
-  }, [webcamRef])
+  }, [router, webcamRef])
 
   return (
     <div>

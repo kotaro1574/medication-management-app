@@ -43,12 +43,13 @@ export async function POST(request: NextRequest) {
       .from("patients")
       .select("id, name, face_ids")
       .filter("face_ids", "cs", `{${faceId}}`)
+      .single()
 
     if (error) {
       throw error
     }
 
-    if (data.length === 0) {
+    if (!data) {
       return NextResponse.json(
         { error: "No matching patients found" },
         { status: 404 }
