@@ -49,7 +49,7 @@ export function FaceRecognition() {
         screenshotFormat="image/jpeg"
       />
       <Button disabled={loading} className="mt-4" onClick={onRecognition}>
-        {loading ? "Loading..." : "Recognize"}
+        {loading ? "Loading..." : "顔認証を開始する"}
       </Button>
     </div>
   )
