@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 import { FaceRecognition } from "./face-recognition"
 
 export default async function IndexPage() {
@@ -15,6 +17,9 @@ export default async function IndexPage() {
 
       <div>
         <FaceRecognition />
+      </div>
+      <div>
+        <Link href="/ocr">OCR</Link>
       </div>
     </section>
   )
