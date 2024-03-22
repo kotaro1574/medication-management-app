@@ -1,18 +1,16 @@
 "use client"
 
 import { useCallback, useRef, useState } from "react"
-import { useRouter } from "next/navigation"
 import Webcam from "react-webcam"
 
 import { Button } from "@/components/ui/button"
 
 export default function OCRPage() {
   const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState<string>("")
+  const [message, setMessage] = useState("")
   const webcamRef = useRef<Webcam>(null)
-  const router = useRouter()
 
-  const onRecognition = useCallback(async () => {
+  const onOCR = useCallback(async () => {
     try {
       const base64_image =
         webcamRef.current?.getScreenshot()?.split(",")[1] ?? ""
@@ -40,7 +38,7 @@ export default function OCRPage() {
     } finally {
       setLoading(false)
     }
-  }, [router, webcamRef])
+  }, [webcamRef])
 
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
@@ -62,7 +60,7 @@ export default function OCRPage() {
               ref={webcamRef}
               screenshotFormat="image/jpeg"
             />
-            <Button disabled={loading} className="mt-4" onClick={onRecognition}>
+            <Button disabled={loading} className="mt-4" onClick={onOCR}>
               {loading ? "Loading..." : "テキストを抽出"}
             </Button>
           </>
