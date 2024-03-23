@@ -1,5 +1,3 @@
-import Link from "next/link"
-
 import { FaceRecognition } from "./face-recognition"
 
 export default async function RecognitionPage() {
