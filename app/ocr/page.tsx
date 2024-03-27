@@ -9,8 +9,13 @@ export default function OCRPage() {
         </h1>
       </div>
 
-      <div>
-        <Link href={"/ocr/chat-gtp-ocr"}>ChatGTP</Link>
+      <div className="grid gap-6">
+        <div>
+          <Link href={"/ocr/chat-gtp-ocr"}>ChatGTP</Link>
+        </div>
+        <div>
+          <Link href={"/ocr/tesseract-js"}>Tesseract-js</Link>
+        </div>
       </div>
     </section>
   )
