@@ -18,6 +18,7 @@
     "@aws-sdk/client-s3": "^3.537.0",
     "@aws-sdk/s3-presigned-post": "^3.537.0",
     "@aws-sdk/s3-request-presigner": "^3.537.0",
+    "@google-cloud/vision": "^4.1.0",
     "@hookform/resolvers": "^3.3.4",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
     "@radix-ui/react-label": "^2.0.2",
