@@ -16,6 +16,9 @@ export default function OCRPage() {
         <div>
           <Link href={"/ocr/tesseract-js"}>Tesseract-js</Link>
         </div>
+        <div>
+          <Link href={"/ocr/google-cloud-vision"}>Google Cloud Vision</Link>
+        </div>
       </div>
     </section>
   )
