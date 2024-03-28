@@ -54,6 +54,7 @@ export default function GoogleCloudVisionPage() {
               audio={false}
               ref={webcamRef}
               screenshotFormat="image/jpeg"
+              videoConstraints={{ facingMode: "environment" }}
             />
             <Button disabled={loading} className="mt-4" onClick={onOCR}>
               {loading ? "Loading..." : "テキストを抽出"}
