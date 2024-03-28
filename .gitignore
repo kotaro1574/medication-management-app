@@ -34,3 +34,5 @@ yarn-error.log*
 
 .contentlayer
 .env
+
+medication-management-app-ocr-fb10ebef750c.json
