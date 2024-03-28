@@ -19,6 +19,9 @@ export default function OCRPage() {
         <div>
           <Link href={"/ocr/google-cloud-vision"}>Google Cloud Vision</Link>
         </div>
+        <div>
+          <Link href={"/ocr/azure-computer-vision"}>Azure Computer Vision</Link>
+        </div>
       </div>
     </section>
   )
