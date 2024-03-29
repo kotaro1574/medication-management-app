@@ -1,24 +1,39 @@
 "use client"
 
-import { useCallback, useRef, useState } from "react"
-import Webcam from "react-webcam"
+import { useState } from "react"
+import Image from "next/image"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Controller, useForm } from "react-hook-form"
+import { z } from "zod"
 
-import { Button } from "@/components/ui/button"
+import { toBase64 } from "@/lib/utils"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { Form, FormItem, FormLabel } from "@/components/ui/form"
+
+const formSchema = z.object({
+  imageFile: z.custom<File>().nullable(),
+})
 
 export default function ChatGTPOCRPage() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState("")
-  const webcamRef = useRef<Webcam>(null)
 
-  const onOCR = useCallback(async () => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    defaultValues: {
+      imageFile: null,
+    },
+    resolver: zodResolver(formSchema),
+  })
+
+  const onSubmit = async ({ imageFile }: z.infer<typeof formSchema>) => {
     try {
-      const base64_image =
-        webcamRef.current?.getScreenshot()?.split(",")[1] ?? ""
-      if (!base64_image) return
-
       setLoading(true)
 
-      const res = await fetch("/api/chat-with-vision", {
+      if (!imageFile) return
+
+      const base64_image = await toBase64(imageFile)
+
+      const response = await fetch("/api/chat-with-vision", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -26,9 +41,9 @@ export default function ChatGTPOCRPage() {
         body: JSON.stringify({ base64_image: base64_image }),
       })
 
-      const data = await res.json()
+      const data = await response.json()
 
-      if (res.ok) {
+      if (response.ok) {
         setMessage(data.response.message.content)
       } else {
         console.error(data.error)
@@ -38,9 +53,7 @@ export default function ChatGTPOCRPage() {
     } finally {
       setLoading(false)
     }
-  }, [webcamRef])
-
-  console.log("OCRPage")
+  }
 
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
@@ -53,27 +66,63 @@ export default function ChatGTPOCRPage() {
         </p>
       </div>
 
-      <div>
-        {!message ? (
-          <>
-            <Webcam
-              className="rounded-md"
-              audio={false}
-              ref={webcamRef}
-              screenshotFormat="image/jpeg"
-              videoConstraints={{ facingMode: "environment" }}
-            />
-            <Button disabled={loading} className="mt-4" onClick={onOCR}>
-              {loading ? "Loading..." : "テキストを抽出"}
-            </Button>
-          </>
-        ) : (
-          <>
-            <p className="text-xl font-bold">抽出されたテキスト👇</p>
-            <p className="mt-4 max-w-[700px] text-2xl">{message}</p>
-          </>
-        )}
-      </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <Controller
+            render={({ field: { onChange, value } }) => (
+              <FormItem>
+                <FormLabel htmlFor="imageFile">Image</FormLabel>
+                {value && (
+                  <Image
+                    src={URL.createObjectURL(value)}
+                    width={300}
+                    alt="selected_image"
+                    height={300}
+                  />
+                )}
+                <div className="relative">
+                  <label
+                    className={`${buttonVariants({
+                      variant: "default",
+                      size: "default",
+                    })} mt-2`}
+                    htmlFor="single"
+                  >
+                    {form.getValues("imageFile") ? "画像を変更" : "画像を選ぶ"}
+                  </label>
+
+                  <input
+                    style={{
+                      visibility: "hidden",
+                      position: "absolute",
+                      width: 0,
+                    }}
+                    type="file"
+                    id="single"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (!e.target.files?.[0]) return
+                      onChange(e.target.files?.[0] as File)
+                    }}
+                    disabled={loading}
+                  />
+                </div>
+              </FormItem>
+            )}
+            name="imageFile"
+            control={form.control}
+          />
+          <Button disabled={loading} type="submit">
+            {loading ? "loading..." : "OCRする"}
+          </Button>
+        </form>
+      </Form>
+      {message && (
+        <>
+          <p className="text-xl font-bold">抽出されたテキスト👇</p>
+          <p className="mt-4 max-w-[700px] text-2xl">{message}</p>
+        </>
+      )}
     </section>
   )
 }
