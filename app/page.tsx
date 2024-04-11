@@ -7,6 +7,9 @@ export default async function IndexPage() {
         <Link href="/sign-up">Sign Up</Link>
       </div>
       <div>
+        <Link href="/login">Login</Link>
+      </div>
+      <div>
         <Link href="/recognition">Recognition</Link>
       </div>
       <div>

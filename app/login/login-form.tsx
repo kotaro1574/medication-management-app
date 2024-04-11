@@ -40,13 +40,17 @@ export function LoginForm() {
   const onSubmit = async ({ email, password }: z.infer<typeof formSchema>) => {
     try {
       setLoading(true)
-      await fetch("/api/auth/login", {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       })
+
+      const data = await res.json()
+
+      console.log(data)
 
       await toast({ description: "ログイン完了" })
     } catch (error) {

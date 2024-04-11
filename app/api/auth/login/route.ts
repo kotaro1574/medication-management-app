@@ -3,16 +3,18 @@ import { NextResponse } from "next/server"
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs"
 
 export async function POST(request: Request) {
-  const requestUrl = new URL(request.url)
   const { email, password } = await request.json()
+  console.log({ email, password })
   const supabase = createRouteHandlerClient({ cookies })
 
-  await supabase.auth.signInWithPassword({
+  const { data } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
 
-  return NextResponse.redirect(requestUrl.origin + "/profile", {
+  console.log(data)
+
+  return NextResponse.redirect(new URL("/profile", request.url), {
     status: 301,
   })
 }
