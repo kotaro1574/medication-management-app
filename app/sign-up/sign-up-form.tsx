@@ -45,19 +45,14 @@ export function SignUpForm() {
   const onSubmit = async ({ email, password }: z.infer<typeof formSchema>) => {
     try {
       setLoading(true)
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          emailRedirectTo: `${location.origin}/api/auth/callback`,
-        },
       })
 
       if (error) {
-        console.log("signUpError", error)
+        throw error
       }
-
-      console.log("signUpData", data)
 
       toast({ description: "登録完了メールを確認してください 📩" })
     } catch (error) {
