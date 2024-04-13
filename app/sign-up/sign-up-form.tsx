@@ -19,11 +19,18 @@ import {
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 
-const formSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
-  passwordConf: z.string(),
-})
+const formSchema = z
+  .object({
+    email: z
+      .string()
+      .email({ message: "有効なメールアドレスを入力してください" }),
+    password: z.string(),
+    passwordConf: z.string(),
+  })
+  .refine((data) => data.password === data.passwordConf, {
+    message: "パスワードが一致しません",
+    path: ["passwordConf"],
+  })
 
 const errorSchema = z.object({
   message: z.string(),
