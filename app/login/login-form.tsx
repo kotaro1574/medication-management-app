@@ -19,7 +19,9 @@ import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 
 const formSchema = z.object({
-  email: z.string().email(),
+  email: z
+    .string()
+    .email({ message: "有効なメールアドレスを入力してください" }),
   password: z.string(),
 })
 
