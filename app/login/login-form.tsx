@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -29,6 +30,7 @@ const errorSchema = z.object({
 export function LoginForm() {
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
+  const router = useRouter()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -48,11 +50,12 @@ export function LoginForm() {
         body: JSON.stringify({ email, password }),
       })
 
-      const data = await res.json()
+      if (!res.ok) {
+        throw new Error("ログインに失敗しました")
+      }
 
-      console.log(data)
-
-      await toast({ description: "ログイン完了" })
+      router.push("/profile")
+      toast({ description: "ログイン完了" })
     } catch (error) {
       const parseError = errorSchema.parse(error)
       toast({
