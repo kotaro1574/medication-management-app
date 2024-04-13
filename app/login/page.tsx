@@ -11,6 +11,9 @@ export default function LoginPage() {
       <div>
         <Link href="/sign-up">新規登録</Link>
       </div>
+      <div>
+        <Link href="/reset-password">パスワードを忘れた方はこちら</Link>
+      </div>
     </section>
   )
 }
