@@ -19,11 +19,18 @@ import {
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 
-const formSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
-  passwordConf: z.string(),
-})
+const formSchema = z
+  .object({
+    email: z
+      .string()
+      .email({ message: "有効なメールアドレスを入力してください" }),
+    password: z.string(),
+    passwordConf: z.string(),
+  })
+  .refine((data) => data.password === data.passwordConf, {
+    message: "パスワードが一致しません",
+    path: ["passwordConf"],
+  })
 
 const errorSchema = z.object({
   message: z.string(),
@@ -45,19 +52,14 @@ export function SignUpForm() {
   const onSubmit = async ({ email, password }: z.infer<typeof formSchema>) => {
     try {
       setLoading(true)
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          emailRedirectTo: `${location.origin}/api/auth/callback`,
-        },
       })
 
       if (error) {
-        console.log("signUpError", error)
+        throw error
       }
-
-      console.log("signUpData", data)
 
       toast({ description: "登録完了メールを確認してください 📩" })
     } catch (error) {

@@ -1,0 +1,13 @@
+<html>
+  <body>
+    <h2>サインアップの確認</h2>
+    <p>以下のリンクからユーザー登録を確認してください：</p>
+    <p>
+      <a
+        href="{{ .SiteURL }}/api/auth/confirm?token_hash={{ .TokenHash }}&type=email&next=/profile"
+      >
+        メールを確認する
+      </a>
+    </p>
+  </body>
+</html>

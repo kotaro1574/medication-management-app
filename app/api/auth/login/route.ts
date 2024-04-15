@@ -1,20 +1,38 @@
-import { cookies } from "next/headers"
-import { NextResponse } from "next/server"
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs"
+import { type NextRequest } from "next/server"
 
-export async function POST(request: Request) {
-  const { email, password } = await request.json()
-  console.log({ email, password })
-  const supabase = createRouteHandlerClient({ cookies })
+import { createClient } from "@/lib/supabase/server"
 
-  const { data } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  })
+export async function POST(request: NextRequest) {
+  try {
+    const { email, password } = await request.json()
+    const supabase = createClient()
 
-  console.log(data)
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
 
-  return NextResponse.redirect(new URL("/profile", request.url), {
-    status: 301,
-  })
+    if (error) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+    }
+
+    return new Response(JSON.stringify({ message: "Login successful" }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+  } catch (error) {
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+  }
 }
