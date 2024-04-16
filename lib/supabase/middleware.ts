@@ -57,5 +57,23 @@ export async function updateSession(request: NextRequest) {
   // refreshing the auth token
   await supabase.auth.getUser()
 
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
+  if (
+    !session &&
+    !request.url.includes("/login") &&
+    !request.url.includes("/sign-up") &&
+    !request.url.includes("/api/auth/confirm")
+  ) {
+    return NextResponse.redirect(new URL("/login", request.url))
+  }
+  if (
+    (session && request.url.includes("/login")) ||
+    request.url.includes("/signup")
+  ) {
+    return NextResponse.redirect(new URL("/", request.url))
+  }
+
   return response
 }
