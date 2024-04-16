@@ -1,14 +1,25 @@
-import { cookies } from "next/headers"
-import { NextResponse } from "next/server"
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs"
+import { revalidatePath } from "next/cache"
+import { NextResponse, type NextRequest } from "next/server"
 
-export async function POST(request: Request) {
-  const requestUrl = new URL(request.url)
-  const supabase = createRouteHandlerClient({ cookies })
+import { createClient } from "@/lib/supabase/server"
 
-  await supabase.auth.signOut()
+export async function POST(request: NextRequest) {
+  const supabase = createClient()
 
-  return NextResponse.redirect(requestUrl.origin + "/", {
-    status: 301,
+  // Check if a user's logged in
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (user) {
+    await supabase.auth.signOut()
+  }
+
+  const redirectTo = request.nextUrl.clone()
+  redirectTo.pathname = "/login"
+
+  revalidatePath("/", "layout")
+  return NextResponse.redirect(redirectTo, {
+    status: 302,
   })
 }

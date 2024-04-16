@@ -1,15 +1,17 @@
 "use client"
 
 import { useEffect } from "react"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
+import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
+import { useToast } from "@/components/ui/use-toast"
 
-export default async function ProfilePage() {
-  const supabase = createClientComponentClient()
+export default function ProfilePage() {
+  const supabase = createClient()
+  const { toast } = useToast()
   useEffect(() => {
     async function getData() {
-      const { data } = await supabase.auth.getSession()
+      const { data } = await supabase.auth.getUser()
       console.log(data)
       // ...
     }
@@ -20,8 +22,13 @@ export default async function ProfilePage() {
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
       <h1 className="text-2xl font-bold">ログインに成功しました</h1>
       <div className="pt-10">
-        <form action="/auth/logout" method="post">
-          <Button type="submit">ログアウト</Button>
+        <form action="/api/auth/logout" method="post">
+          <Button
+            type="submit"
+            onClick={() => toast({ description: "ログアウトしました" })}
+          >
+            ログアウト
+          </Button>
         </form>
       </div>
     </section>
