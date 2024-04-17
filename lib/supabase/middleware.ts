@@ -64,7 +64,9 @@ export async function updateSession(request: NextRequest) {
     !session &&
     !request.url.includes("/login") &&
     !request.url.includes("/sign-up") &&
-    !request.url.includes("/api/auth/confirm")
+    !request.url.includes("/api/auth/confirm") &&
+    !request.url.includes("/reset-password") &&
+    !request.url.includes("/reset-password/input-password")
   ) {
     return NextResponse.redirect(new URL("/login", request.url))
   }
