@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 import { createClient } from "@/lib/supabase/server"
 
 export default async function PatientsPage() {
@@ -14,6 +16,7 @@ export default async function PatientsPage() {
           </li>
         ))}
       </ul>
+      <Link href="/patients/create">Create Patient</Link>
     </section>
   )
 }
