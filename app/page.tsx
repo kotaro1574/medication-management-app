@@ -10,6 +10,9 @@ export default async function IndexPage() {
         <Link href="/login">Login</Link>
       </div>
       <div>
+        <Link href="/patients">Patients</Link>
+      </div>
+      <div>
         <Link href="/recognition">Recognition</Link>
       </div>
       <div>
