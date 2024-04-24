@@ -1,32 +1,50 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
 import {
-  DetectFacesCommand,
+  DeleteFacesCommand,
   IndexFacesCommand,
 } from "@aws-sdk/client-rekognition"
+import { DeleteObjectCommand } from "@aws-sdk/client-s3"
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post"
 import { v4 as uuidv4 } from "uuid"
 
 import { rekognitionClient, s3Client } from "@/lib/aws/aws-clients"
 import { createClient } from "@/lib/supabase/server"
 
-// 画像から単一の顔を検出する関数
-async function detectSingleFace(base64Data: string) {
-  const { FaceDetails } = await rekognitionClient.send(
-    new DetectFacesCommand({
-      Image: { Bytes: Buffer.from(base64Data, "base64") },
-      Attributes: ["ALL"],
-    })
-  )
+type Result =
+  | {
+      success: true
+      message: string
+    }
+  | {
+      success: false
+      error: string
+    }
 
-  if (!FaceDetails || FaceDetails.length !== 1) {
-    throw new Error(
-      `画像に含まれる顔の数が1ではありません: 現在の顔の数 = ${
-        FaceDetails?.length || 0
-      }`
+// Rekognitionコレクションから顔データを削除する関数
+async function deleteFace(collectionId: string, faceIds: string[]) {
+  try {
+    await rekognitionClient.send(
+      new DeleteFacesCommand({
+        CollectionId: collectionId,
+        FaceIds: faceIds,
+      })
     )
+  } catch (error) {
+    console.error("Failed to delete face from collection", error)
+  }
+}
+
+// S3から画像を削除する関数
+async function deleteImage(key: string) {
+  try {
+    const deleteParams = {
+      Bucket: process.env.AMPLIFY_BUCKET,
+      Key: key,
+    }
+    await s3Client.send(new DeleteObjectCommand(deleteParams))
+  } catch (error) {
+    console.error("Failed to delete image from S3", error)
   }
 }
 
@@ -37,7 +55,7 @@ async function getPresignedUrl(fileType: string) {
     Bucket: process.env.AMPLIFY_BUCKET ?? "",
     Key: key,
     Conditions: [
-      ["content-length-range", 0, 10485760], // 最大10MB
+      ["content-length-range", 0, 104857600], // 最大10MB
       ["starts-with", "$Content-Type", fileType],
     ],
     Fields: {
@@ -49,18 +67,13 @@ async function getPresignedUrl(fileType: string) {
 
 export async function createPatient({
   formData,
-  base64Data,
   name,
 }: {
   formData: FormData
-  base64Data: string
   name: string
-}) {
+}): Promise<Result> {
+  const imageFile = formData.get("imageFile") as File
   try {
-    const imageFile = formData.get("imageFile") as File
-
-    await detectSingleFace(base64Data)
-
     const { url, fields, key } = await getPresignedUrl(imageFile.type)
 
     const newFormData = new FormData()
@@ -93,10 +106,18 @@ export async function createPatient({
       })
     )
 
-    const faceId = response.FaceRecords?.[0]?.Face?.FaceId
+    const faceIds =
+      response.FaceRecords?.map((record) => record?.Face?.FaceId ?? "") ?? []
 
-    if (!faceId) {
+    if (!response.FaceRecords || response.FaceRecords.length === 0) {
+      await deleteImage(key)
       throw new Error("画像内に顔が見つかりませんでした")
+    }
+
+    if (response.FaceRecords.length > 1) {
+      await deleteImage(key)
+      await deleteFace(process.env.AMPLIFY_BUCKET ?? "", faceIds)
+      throw new Error("画像内に顔が1つではありません")
     }
 
     const supabase = createClient()
@@ -104,19 +125,20 @@ export async function createPatient({
     const { error } = await supabase.from("patients").insert({
       name,
       image_id: key,
-      face_ids: [faceId],
+      face_ids: faceIds,
     })
 
     if (error) {
+      await deleteImage(key)
+      await deleteFace(process.env.AMPLIFY_BUCKET ?? "", faceIds)
       throw new Error(
         `患者データの挿入時にエラーが発生しました: ${error.message}`
       )
     }
-  } catch (err) {
-    console.error("患者の作成に失敗しましたerror:", err)
-    redirect("/error")
+  } catch (error) {
+    if (error instanceof Error) {
+      return { success: false, error: error.message }
+    }
   }
-
-  revalidatePath("/patients")
-  redirect("/patients")
+  return { success: true, message: "患者が作成されました" }
 }

@@ -1,12 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { toBase64 } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Form,
@@ -17,6 +17,7 @@ import {
   FormLabel,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { useToast } from "@/components/ui/use-toast"
 import { createPatient } from "@/app/actions/patients/create-patient"
 
 const formSchema = z.object({
@@ -25,7 +26,10 @@ const formSchema = z.object({
 })
 
 export default function CreatePatientPage() {
-  const [loading, setLoading] = useState(false)
+  const [loading, startTransaction] = useTransition()
+  const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
+  const { toast } = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       imageFile: null,
@@ -34,19 +38,28 @@ export default function CreatePatientPage() {
     resolver: zodResolver(formSchema),
   })
 
-  const onSubmit = async ({ imageFile, name }: z.infer<typeof formSchema>) => {
-    setLoading(true)
+  const onSubmit = ({ imageFile, name }: z.infer<typeof formSchema>) => {
     if (!imageFile) {
-      setLoading(false)
       return
     }
     const formData = new FormData()
     formData.append("imageFile", imageFile)
 
-    const base64Data = await toBase64(imageFile)
-
-    await createPatient({ formData, name, base64Data })
-    setLoading(false)
+    startTransaction(() => {
+      ;(async () => {
+        const response = await createPatient({ formData, name })
+        if (response.success) {
+          setError(null)
+          router.push("/patients")
+          router.refresh()
+          toast({
+            title: response.message,
+          })
+        } else {
+          setError(response.error)
+        }
+      })()
+    })
   }
 
   return (
@@ -56,6 +69,7 @@ export default function CreatePatientPage() {
           Create Patient
         </h1>
 
+        <div>{error}</div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <Controller
