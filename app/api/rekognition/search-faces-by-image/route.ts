@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
         FaceMatchThreshold: 95, // 顔の一致スコアのしきい値
       })
     )
-    console.log(response)
+
     const faceId = response.FaceMatches?.[0]?.Face?.FaceId
 
     if (!faceId) {
