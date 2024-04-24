@@ -6,7 +6,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { Database } from "@/types/supabase"
+import { Database } from "@/types/schema.gen"
 import { Button } from "@/components/ui/button"
 import {
   Form,
