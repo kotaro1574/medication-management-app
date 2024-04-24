@@ -1,24 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
-import {
-  RekognitionClient,
-  SearchFacesByImageCommand,
-} from "@aws-sdk/client-rekognition"
+import { SearchFacesByImageCommand } from "@aws-sdk/client-rekognition"
 
-import { supabase } from "@/lib/supabase"
-
-const credentials = {
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
-}
+import { rekognitionClient } from "@/lib/aws/aws-clients"
+import { createClient } from "@/lib/supabase/server"
 
 export async function POST(request: NextRequest) {
   try {
     const { image } = await request.json()
-
-    const rekognitionClient = new RekognitionClient({
-      region: process.env.AWS_REGION,
-      credentials,
-    })
 
     const response = await rekognitionClient.send(
       new SearchFacesByImageCommand({
@@ -30,6 +18,7 @@ export async function POST(request: NextRequest) {
         FaceMatchThreshold: 95, // 顔の一致スコアのしきい値
       })
     )
+
     const faceId = response.FaceMatches?.[0]?.Face?.FaceId
 
     if (!faceId) {
@@ -38,6 +27,8 @@ export async function POST(request: NextRequest) {
         { status: 404 }
       )
     }
+
+    const supabase = createClient()
 
     const { data, error } = await supabase
       .from("patients")
