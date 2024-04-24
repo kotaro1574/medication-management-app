@@ -2,11 +2,10 @@
 
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { Database } from "@/types/schema.gen"
+import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -37,7 +36,7 @@ const errorSchema = z.object({
 })
 
 export function SignUpForm() {
-  const supabase = createClientComponentClient<Database>()
+  const supabase = createClient()
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
