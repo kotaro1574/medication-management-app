@@ -1,20 +1,20 @@
 import { headers } from "next/headers"
 import Image from "next/image"
 
-import { supabase } from "@/lib/supabase"
-import { AspectRatio } from "@/components/ui/aspect-ratio"
+import { createClient } from "@/lib/supabase/server"
 
 export default async function PatientPage({
   params,
 }: {
   params: { id: string }
 }) {
+  const supabase = createClient()
   const { data } = await supabase
     .from("patients")
     .select("*")
     .eq("id", params.id)
     .single()
-
+  console.log(data)
   if (!data) {
     return { status: 404 }
   }
@@ -22,7 +22,9 @@ export default async function PatientPage({
   const host = headers().get("host")
   const protocal = process?.env.NODE_ENV === "development" ? "http" : "https"
 
-  const fetchUrl = `${protocal}://${host}/api/s3/${data.image_id ?? ""}`
+  const fetchUrl = `
+    ${protocal}://${host}/api/s3/${data.image_id ?? ""}
+  `
 
   const imageUrlResponse = await fetch(fetchUrl)
   const imageUrl = await imageUrlResponse.json()
