@@ -1,7 +1,7 @@
-import { headers } from "next/headers"
 import Image from "next/image"
 
 import { createClient } from "@/lib/supabase/server"
+import { getS3Data } from "@/app/actions/s3/get-s3-data"
 
 export default async function PatientPage({
   params,
@@ -14,36 +14,24 @@ export default async function PatientPage({
     .select("*")
     .eq("id", params.id)
     .single()
-  console.log(data)
+
   if (!data) {
     return { status: 404 }
   }
 
-  const host = headers().get("host")
-  const protocal = process?.env.NODE_ENV === "development" ? "http" : "https"
-
-  const fetchUrl = `
-    ${protocal}://${host}/api/s3/${data.image_id ?? ""}
-  `
-
-  const imageUrlResponse = await fetch(fetchUrl)
-  const imageUrl = await imageUrlResponse.json()
+  const { src } = await getS3Data(data.image_id ?? "")
 
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
       <div>
-        {/* <AspectRatio
-          ratio={1 / 1}
-          className="size-40 overflow-hidden rounded-md"
-        > */}
         <Image
-          src={imageUrl.src}
+          src={src}
           alt={data.name ?? "Patient"}
           width={200}
           height={200}
           className="object-cover"
         />
-        {/* </AspectRatio> */}
+
         <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
           {data.name}
         </h1>
