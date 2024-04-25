@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
+import { updatePatient } from "@/app/actions/patients/update-patient"
 
 const formSchema = z.object({
   imageFile: z.custom<File>().nullable(),
@@ -51,11 +52,29 @@ export function UpdatePatientForm({ patient, url }: Props) {
     const formData = new FormData()
     formData.append("imageFile", imageFile)
 
-    // startTransaction(() => {
-    //   ;(async () => {
-    //     "use server"
-    //   })()
-    // })
+    startTransaction(() => {
+      ;(async () => {
+        const response = await updatePatient({
+          formData,
+          name,
+          id: patient.id,
+          faceData: {
+            faceIds: patient.face_ids ?? [],
+            imageId: patient.image_id ?? "",
+          },
+        })
+        if (response.success) {
+          setError(null)
+          router.push("/patients")
+          router.refresh()
+          toast({
+            title: response.message,
+          })
+        } else {
+          setError(response.error)
+        }
+      })()
+    })
   }
 
   return (
