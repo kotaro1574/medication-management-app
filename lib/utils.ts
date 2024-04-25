@@ -1,3 +1,4 @@
+import { PlaceholderValue } from "next/dist/shared/lib/get-img-props"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -49,5 +50,5 @@ export function placeholder({
       ? Buffer.from(str).toString("base64")
       : window.btoa(str)
 
-  return `data:image/svg+xml;base64,${toBase64(shimmer(300, 300))}`
+  return `data:image/svg+xml;base64,${toBase64(shimmer(w, h))}`
 }
