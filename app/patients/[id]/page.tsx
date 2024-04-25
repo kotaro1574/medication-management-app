@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 
 import { createClient } from "@/lib/supabase/server"
 import { placeholder } from "@/lib/utils"
@@ -24,6 +25,9 @@ export default async function PatientPage({
 
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
+      <div>
+        <Link href={`/patients/${data.id}/edit`}>Edit</Link>
+      </div>
       <Image
         src={src}
         alt="S3 Image"
