@@ -1,6 +1,7 @@
 import Image from "next/image"
 
 import { createClient } from "@/lib/supabase/server"
+import { placeholder } from "@/lib/utils"
 import { getS3Data } from "@/app/actions/s3/get-s3-data"
 
 export default async function PatientPage({
@@ -23,19 +24,22 @@ export default async function PatientPage({
 
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
-      <div>
-        <Image
-          src={src}
-          alt={data.name ?? "Patient"}
-          width={200}
-          height={200}
-          className="object-cover"
-        />
+      <Image
+        src={src}
+        alt="S3 Image"
+        placeholder={placeholder({ w: 300, h: 300 })}
+        width={300}
+        height={300}
+        className="rounded-md object-cover"
+        style={{
+          maxWidth: "100%",
+          height: "auto",
+        }}
+      />
 
-        <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-          {data.name}
-        </h1>
-      </div>
+      <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
+        {data.name}
+      </h1>
     </section>
   )
 }
