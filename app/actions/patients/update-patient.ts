@@ -105,5 +105,5 @@ export async function updatePatient({
       return { success: false, error: error.message }
     }
   }
-  return { success: true, message: "患者が作成されました" }
+  return { success: true, message: "患者を編集しました" }
 }

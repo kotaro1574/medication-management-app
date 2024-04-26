@@ -146,7 +146,7 @@ export function UpdatePatientForm({ patient, url }: Props) {
             )}
           />
           <Button disabled={loading} type="submit">
-            {loading ? "loading..." : "Create Patient"}
+            {loading ? "loading..." : "Edit"}
           </Button>
         </form>
       </Form>
