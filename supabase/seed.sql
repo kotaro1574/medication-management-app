@@ -1,5 +1,5 @@
 insert into public.patients (name, image_id, face_ids)
 values
-('ktraw1574', 'a4ef5f87-27a6-4a0b-b709-a0b743c7a3de', array['89972762-275e-41f3-91cf-c265050ca92e']),
-('Ollie.', 'd01dcf40-4762-429e-9587-ee27078f4d79', array['2fb9ede8-ad02-4801-be69-48cfbfb6ba5a']),
-('Totori', '57d1d720-3794-4894-a724-cab0e7fafda1', array['67aafbc0-f1bf-4041-b3a3-945a1ab1ea7b']);
+('ktraw1574', '5f9e89a6-180f-4343-aa9c-e66af3a4c8d1', array['6c464c39-a82d-4c8a-9610-4f0dde97e845']),
+('Ollie.', '4301dd77-f600-45b7-af6e-96a1c3188cec', array['3cc67684-3799-432b-b9a2-077e75737672']),
+('Totori', '1cdddf84-6dd2-4dc0-800f-65623f07c067', array['75c3a9fe-d3cc-466e-bb82-b449d537c9b4']);
