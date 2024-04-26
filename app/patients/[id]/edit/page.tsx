@@ -30,8 +30,10 @@ export default async function EditPatientPage({
         </h1>
 
         <UpdatePatientForm patient={data} url={src} />
+        <Button className="mt-6" variant={"destructive"}>
+          delete
+        </Button>
       </div>
-      <Button variant="destructive">delete</Button>
     </section>
   )
 }
