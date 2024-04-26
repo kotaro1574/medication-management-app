@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { Button } from "@/components/ui/button"
 import { getS3Data } from "@/app/actions/s3/get-s3-data"
 
 import { UpdatePatientForm } from "./update-patient-form"
@@ -30,6 +31,7 @@ export default async function EditPatientPage({
 
         <UpdatePatientForm patient={data} url={src} />
       </div>
+      <Button variant="destructive">delete</Button>
     </section>
   )
 }
