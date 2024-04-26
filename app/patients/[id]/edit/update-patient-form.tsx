@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
+import { ConfirmDialog } from "@/components/confirm-dialog"
 import { deletePatient } from "@/app/actions/patients/delete-patients"
 import { updatePatient } from "@/app/actions/patients/update-patient"
 
@@ -175,14 +176,16 @@ export function UpdatePatientForm({ patient, url }: Props) {
           </Button>
         </form>
       </Form>
-      <Button
-        disabled={loading}
+      <ConfirmDialog
+        title="削除"
+        description={`本当に${patient.name}を削除しますか？`}
         onClick={onDelete}
-        className="mt-6"
-        variant={"destructive"}
-      >
-        {loading ? "loading..." : "Delete"}
-      </Button>
+        trigger={
+          <Button disabled={loading} className="mt-6" variant={"destructive"}>
+            {loading ? "loading..." : "Delete"}
+          </Button>
+        }
+      />
     </div>
   )
 }
