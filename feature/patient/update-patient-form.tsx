@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { updatePatient } from "@/actions/patients/update-patient"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
@@ -20,9 +21,8 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
-import { ConfirmDialog } from "@/components/confirm-dialog"
-import { deletePatient } from "@/app/actions/patients/delete-patients"
-import { updatePatient } from "@/app/actions/patients/update-patient"
+
+import { DeletePatientDialog } from "./delete-patient-dialog"
 
 const formSchema = z.object({
   imageFile: z.custom<File>().nullable(),
@@ -59,30 +59,6 @@ export function UpdatePatientForm({ patient, url }: Props) {
         const response = await updatePatient({
           formData,
           name,
-          id: patient.id,
-          faceData: {
-            faceIds: patient.face_ids ?? [],
-            imageId: patient.image_id ?? "",
-          },
-        })
-        if (response.success) {
-          setError(null)
-          router.push("/patients")
-          router.refresh()
-          toast({
-            title: response.message,
-          })
-        } else {
-          setError(response.error)
-        }
-      })()
-    })
-  }
-
-  const onDelete = () => {
-    startTransaction(() => {
-      ;(async () => {
-        const response = await deletePatient({
           id: patient.id,
           faceData: {
             faceIds: patient.face_ids ?? [],
@@ -176,13 +152,11 @@ export function UpdatePatientForm({ patient, url }: Props) {
           </Button>
         </form>
       </Form>
-      <ConfirmDialog
-        title="削除"
-        description={`本当に${patient.name}を削除しますか？`}
-        onClick={onDelete}
+      <DeletePatientDialog
+        patient={patient}
         trigger={
           <Button disabled={loading} className="mt-6" variant={"destructive"}>
-            {loading ? "loading..." : "Delete"}
+            削除する
           </Button>
         }
       />
