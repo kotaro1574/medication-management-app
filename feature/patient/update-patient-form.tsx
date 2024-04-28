@@ -3,6 +3,8 @@
 import { useState, useTransition } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { deletePatient } from "@/actions/patients/delete-patients"
+import { updatePatient } from "@/actions/patients/update-patient"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
@@ -21,8 +23,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 import { ConfirmDialog } from "@/components/confirm-dialog"
-import { deletePatient } from "@/app/actions/patients/delete-patients"
-import { updatePatient } from "@/app/actions/patients/update-patient"
 
 const formSchema = z.object({
   imageFile: z.custom<File>().nullable(),

@@ -1,6 +1,5 @@
 import Link from "next/link"
-
-import { LoginForm } from "../../feature/auth/login-form"
+import { LoginForm } from "@/feature/auth/login-form"
 
 export default function LoginPage() {
   return (
