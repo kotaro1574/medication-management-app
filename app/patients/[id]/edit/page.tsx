@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { getS3Data } from "@/app/actions/s3/get-s3-data"
 
-import { UpdatePatientForm } from "./update-patient-form"
+import { UpdatePatientForm } from "../../../../feature/patient/update-patient-form"
 
 export default async function EditPatientPage({
   params,
