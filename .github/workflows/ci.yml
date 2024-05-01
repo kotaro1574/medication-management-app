@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 1.164.1
 
       - run: supabase db start
       - run: supabase db lint
@@ -29,8 +29,8 @@ jobs:
 
       - name: Verify generated types are checked in
         run: |
-          supabase gen types typescript --local > types.gen.ts
-          if ! git diff --ignore-space-at-eol --exit-code --quiet types.gen.ts; then
+          supabase gen types typescript --local > types/schema.gen.ts
+          if ! git diff --ignore-space-at-eol --exit-code --quiet types/schema.gen.ts; then
             echo "Detected uncommitted changes after build. See status below:"
             git diff
             exit 1
