@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -71,15 +72,15 @@ export function LoginForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>メールアドレス</FormLabel>
               <FormControl>
-                <Input placeholder={"your email address"} {...field} />
+                <Input {...field} />
               </FormControl>
               {form.formState.errors.email && (
                 <FormDescription>
@@ -93,14 +94,10 @@ export function LoginForm() {
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="mt-4 w-full">
               <FormLabel>パスワード</FormLabel>
               <FormControl>
-                <Input
-                  placeholder={"your password"}
-                  type="password"
-                  {...field}
-                />
+                <Input type="password" {...field} />
               </FormControl>
               {form.formState.errors.password && (
                 <FormDescription>
@@ -110,8 +107,19 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        <Button className="block w-full" disabled={loading} type="submit">
-          {loading ? "loading.." : "Login"}
+
+        <div className="mt-[24px] text-center text-[14px] text-neutral-400">
+          履歴選択
+        </div>
+        <div className="mt-[24px] text-center text-[14px] text-neutral-400">
+          <Link href="reset-password">パスワードをお忘れですか？</Link>
+        </div>
+        <Button
+          className="mt-[24px] block w-full"
+          disabled={loading}
+          type="submit"
+        >
+          {loading ? "loading.." : "ログイン"}
         </Button>
       </form>
     </Form>
