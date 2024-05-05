@@ -74,12 +74,12 @@ export function SignUpForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="mt-4">
               <FormLabel>メールアドレス</FormLabel>
               <FormControl>
                 <Input placeholder={"your email address"} {...field} />
@@ -96,7 +96,7 @@ export function SignUpForm() {
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="mt-4">
               <FormLabel>パスワード</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
@@ -113,7 +113,7 @@ export function SignUpForm() {
           control={form.control}
           name="passwordConf"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="mt-4">
               <FormLabel>パスワード（確認）</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
@@ -126,9 +126,11 @@ export function SignUpForm() {
             </FormItem>
           )}
         />
-        <Button className="block w-full" disabled={loading} type="submit">
-          {loading ? "loading.." : "新規登録"}
-        </Button>
+        <div className="mt-6">
+          <Button className="block w-full" disabled={loading} type="submit">
+            {loading ? "loading.." : "新規登録"}
+          </Button>
+        </div>
       </form>
     </Form>
   )

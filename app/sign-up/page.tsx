@@ -3,13 +3,18 @@ import { SignUpForm } from "@/feature/auth/sign-up-form"
 
 export default function SignUpPage() {
   return (
-    <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
-      <div className="max-w-[350px]">
+    <div className="container max-w-[450px] py-[120px]">
+      <h1 className="text-center text-[24px] font-bold text-[#c2b37f]">
+        ユーザー登録
+      </h1>
+
+      <div className="mt-[24px]">
         <SignUpForm />
       </div>
-      <div>
+
+      {/* <div>
         <Link href="/login">アカウントをお持ちの方はこちら</Link>
-      </div>
-    </section>
+      </div> */}
+    </div>
   )
 }
