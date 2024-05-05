@@ -80,7 +80,10 @@ export function LoginForm() {
             <FormItem className="w-full">
               <FormLabel>メールアドレス</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input
+                  isError={form.formState.errors.email ? true : false}
+                  {...field}
+                />
               </FormControl>
               {form.formState.errors.email && (
                 <FormDescription>
@@ -97,7 +100,11 @@ export function LoginForm() {
             <FormItem className="mt-4 w-full">
               <FormLabel>パスワード</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input
+                  type="password"
+                  isError={form.formState.errors.password ? true : false}
+                  {...field}
+                />
               </FormControl>
               {form.formState.errors.password && (
                 <FormDescription>
@@ -108,10 +115,10 @@ export function LoginForm() {
           )}
         />
 
-        <div className="mt-[24px] text-center text-[14px] text-neutral-400">
+        <div className="mt-[24px] text-center text-sm text-neutral-400">
           履歴選択
         </div>
-        <div className="mt-[24px] text-center text-[14px] text-neutral-400">
+        <div className="mt-[24px] text-center text-sm text-neutral-400">
           <Link href="reset-password">パスワードをお忘れですか？</Link>
         </div>
         <Button
