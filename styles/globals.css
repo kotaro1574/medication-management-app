@@ -4,6 +4,10 @@
 
 @layer base {
   :root {
+    --base-color: rgba(255, 202, 14, 1);
+    --shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+
+    /* 👇 デフォルト */
     --background: 0 0% 100%;
     --foreground: 222.2 47.4% 11.2%;
 

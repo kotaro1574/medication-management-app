@@ -1,18 +1,17 @@
-import Link from "next/link"
+"use client"
+
 import { LoginForm } from "@/feature/auth/login-form"
 
 export default function LoginPage() {
   return (
-    <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
-      <div className="max-w-[350px]">
+    <div className="px-[60px] py-[120px]">
+      <h1 className="text-center text-[24px] font-bold text-[#c2b37f]">
+        ログイン
+      </h1>
+
+      <div className="mt-[24px]">
         <LoginForm />
       </div>
-      <div>
-        <Link href="/sign-up">新規登録</Link>
-      </div>
-      <div>
-        <Link href="/reset-password">パスワードを忘れた方はこちら</Link>
-      </div>
-    </section>
+    </div>
   )
 }
