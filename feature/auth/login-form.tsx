@@ -121,6 +121,9 @@ export function LoginForm() {
         <div className="mt-[24px] text-center text-sm text-neutral-400">
           <Link href="reset-password">パスワードをお忘れですか？</Link>
         </div>
+        <div className="mt-[24px] text-center text-sm text-neutral-400">
+          <Link href="/sign-up">アカウントをお持ちでない方はこちら</Link>
+        </div>
         <Button
           className="mt-[24px] block w-full"
           disabled={loading}
