@@ -25,6 +25,8 @@ const formSchema = z
       .email({ message: "有効なメールアドレスを入力してください" }),
     password: z.string(),
     passwordConf: z.string(),
+    userName: z.string(),
+    belong: z.string(),
   })
   .refine((data) => data.password === data.passwordConf, {
     message: "パスワードが一致しません",
@@ -45,6 +47,8 @@ export function SignUpForm() {
       email: "",
       password: "",
       passwordConf: "",
+      userName: "",
+      belong: "",
     },
   })
 
@@ -121,6 +125,40 @@ export function SignUpForm() {
               {form.formState.errors.passwordConf && (
                 <FormDescription>
                   {form.formState.errors.passwordConf.message}
+                </FormDescription>
+              )}
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="userName"
+          render={({ field }) => (
+            <FormItem className="mt-4">
+              <FormLabel>所有者名</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              {form.formState.errors.userName && (
+                <FormDescription>
+                  {form.formState.errors.userName.message}
+                </FormDescription>
+              )}
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="belong"
+          render={({ field }) => (
+            <FormItem className="mt-4">
+              <FormLabel>所属施設</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              {form.formState.errors.belong && (
+                <FormDescription>
+                  {form.formState.errors.belong.message}
                 </FormDescription>
               )}
             </FormItem>
