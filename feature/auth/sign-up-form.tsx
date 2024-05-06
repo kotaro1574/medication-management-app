@@ -16,6 +16,15 @@ import {
   FormLabel,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { useToast } from "@/components/ui/use-toast"
 
 const formSchema = z
@@ -86,7 +95,7 @@ export function SignUpForm() {
             <FormItem className="mt-4">
               <FormLabel>メールアドレス</FormLabel>
               <FormControl>
-                <Input placeholder={"your email address"} {...field} />
+                <Input {...field} />
               </FormControl>
               {form.formState.errors.email && (
                 <FormDescription>
@@ -153,9 +162,22 @@ export function SignUpForm() {
           render={({ field }) => (
             <FormItem className="mt-4">
               <FormLabel>所属施設</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>施設を選択</SelectLabel>
+                    <SelectItem value="apple">Apple</SelectItem>
+                    <SelectItem value="banana">Banana</SelectItem>
+                    <SelectItem value="blueberry">Blueberry</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
               {form.formState.errors.belong && (
                 <FormDescription>
                   {form.formState.errors.belong.message}
