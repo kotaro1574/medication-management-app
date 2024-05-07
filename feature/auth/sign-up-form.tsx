@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import { v4 as uuidv4 } from "uuid"
 import { z } from "zod"
 
 import { createClient } from "@/lib/supabase/client"
@@ -35,7 +36,7 @@ const formSchema = z
     password: z.string(),
     passwordConf: z.string(),
     userName: z.string(),
-    belong: z.string(),
+    facilityId: z.string(),
   })
   .refine((data) => data.password === data.passwordConf, {
     message: "パスワードが一致しません",
@@ -57,16 +58,27 @@ export function SignUpForm() {
       password: "",
       passwordConf: "",
       userName: "",
-      belong: "",
+      facilityId: "",
     },
   })
 
-  const onSubmit = async ({ email, password }: z.infer<typeof formSchema>) => {
+  const onSubmit = async ({
+    email,
+    password,
+    userName,
+  }: z.infer<typeof formSchema>) => {
     try {
       setLoading(true)
+      const facilityId = uuidv4()
       const { error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            userName,
+            facilityId,
+          },
+        },
       })
 
       if (error) {
@@ -158,7 +170,7 @@ export function SignUpForm() {
         />
         <FormField
           control={form.control}
-          name="belong"
+          name="facilityId"
           render={({ field }) => (
             <FormItem className="mt-4">
               <FormLabel>所属施設</FormLabel>
@@ -178,9 +190,9 @@ export function SignUpForm() {
                 </SelectContent>
               </Select>
 
-              {form.formState.errors.belong && (
+              {form.formState.errors.facilityId && (
                 <FormDescription>
-                  {form.formState.errors.belong.message}
+                  {form.formState.errors.facilityId.message}
                 </FormDescription>
               )}
             </FormItem>
