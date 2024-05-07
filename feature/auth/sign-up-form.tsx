@@ -188,7 +188,7 @@ export function SignUpForm() {
         />
         <div className="mt-6">
           <Button className="block w-full" disabled={loading} type="submit">
-            {loading ? "loading.." : "新規登録"}
+            {loading ? "loading.." : "登録"}
           </Button>
         </div>
       </form>
