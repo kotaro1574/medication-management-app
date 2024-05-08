@@ -60,18 +60,24 @@ export type Database = {
       }
       profiles: {
         Row: {
+          created_at: string
+          facility_id: string
           id: string
-          name: string | null
+          name: string
           updated_at: string | null
         }
         Insert: {
+          created_at?: string
+          facility_id: string
           id: string
-          name?: string | null
+          name: string
           updated_at?: string | null
         }
         Update: {
+          created_at?: string
+          facility_id?: string
           id?: string
-          name?: string | null
+          name?: string
           updated_at?: string | null
         }
         Relationships: [
