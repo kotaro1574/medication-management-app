@@ -28,12 +28,33 @@ import {
 } from "@/components/ui/select"
 import { useToast } from "@/components/ui/use-toast"
 
+const allowedSpecialCharacters = "!@#$%^&*()_+-=[]{}|;:',.<>/?"
+
 const formSchema = z
   .object({
     email: z
       .string()
       .email({ message: "有効なメールアドレスを入力してください" }),
-    password: z.string(),
+    password: z
+      .string()
+      .min(8, {
+        message: "パスワードは8文字以上である必要があります。",
+      })
+      .regex(/^(?=.*[a-z])/, {
+        message:
+          "パスワードには少なくとも1つの小文字が含まれている必要があります。",
+      })
+      .regex(/^(?=.*[A-Z])/, {
+        message:
+          "パスワードには少なくとも1つの大文字が含まれている必要があります。",
+      })
+      .regex(/^(?=.*[0-9])/, {
+        message:
+          "パスワードには少なくとも1つの数字が含まれている必要があります。",
+      })
+      .regex(/^(?=.*[!@#$%^&*()_+\-=[\]{}|;:',.<>/?])/, {
+        message: `パスワードには少なくとも1つの特殊文字が含まれている必要があります。使用できる特殊文字: ${allowedSpecialCharacters}`,
+      }),
     passwordConf: z.string(),
     userName: z.string().min(1, "所有者名を入力してください"),
     facilityId: z.string().min(1, "所属施設を選択してください"),
