@@ -184,7 +184,7 @@ export function SignUpForm() {
               <FormLabel>所属施設</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger isError={!!form.formState.errors.facilityId}>
                     <SelectValue />
                   </SelectTrigger>
                 </FormControl>
