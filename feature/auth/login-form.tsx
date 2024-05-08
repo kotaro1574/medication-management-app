@@ -80,10 +80,7 @@ export function LoginForm() {
             <FormItem className="w-full">
               <FormLabel>メールアドレス</FormLabel>
               <FormControl>
-                <Input
-                  isError={form.formState.errors.email ? true : false}
-                  {...field}
-                />
+                <Input isError={!!form.formState.errors.email} {...field} />
               </FormControl>
               {form.formState.errors.email && (
                 <FormDescription>
@@ -102,7 +99,7 @@ export function LoginForm() {
               <FormControl>
                 <Input
                   type="password"
-                  isError={form.formState.errors.password ? true : false}
+                  isError={!!form.formState.errors.password}
                   {...field}
                 />
               </FormControl>
@@ -120,6 +117,9 @@ export function LoginForm() {
         </div>
         <div className="mt-[24px] text-center text-sm text-neutral-400">
           <Link href="reset-password">パスワードをお忘れですか？</Link>
+        </div>
+        <div className="mt-[24px] text-center text-sm text-neutral-400">
+          <Link href="/sign-up">アカウントをお持ちでない方はこちら</Link>
         </div>
         <Button
           className="mt-[24px] block w-full"
