@@ -35,8 +35,8 @@ const formSchema = z
       .email({ message: "有効なメールアドレスを入力してください" }),
     password: z.string(),
     passwordConf: z.string(),
-    userName: z.string(),
-    facilityId: z.string(),
+    userName: z.string().min(1, "所有者名を入力してください"),
+    facilityId: z.string().min(1, "所属施設を選択してください"),
   })
   .refine((data) => data.password === data.passwordConf, {
     message: "パスワードが一致しません",
@@ -107,7 +107,7 @@ export function SignUpForm() {
             <FormItem className="mt-4">
               <FormLabel>メールアドレス</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input isError={!!form.formState.errors.email} {...field} />
               </FormControl>
               {form.formState.errors.email && (
                 <FormDescription>
@@ -124,7 +124,11 @@ export function SignUpForm() {
             <FormItem className="mt-4">
               <FormLabel>パスワード</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input
+                  type="password"
+                  isError={!!form.formState.errors.password}
+                  {...field}
+                />
               </FormControl>
               {form.formState.errors.password && (
                 <FormDescription>
@@ -141,7 +145,11 @@ export function SignUpForm() {
             <FormItem className="mt-4">
               <FormLabel>パスワード（確認）</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input
+                  type="password"
+                  isError={!!form.formState.errors.passwordConf}
+                  {...field}
+                />
               </FormControl>
               {form.formState.errors.passwordConf && (
                 <FormDescription>
@@ -158,7 +166,7 @@ export function SignUpForm() {
             <FormItem className="mt-4">
               <FormLabel>所有者名</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input isError={!!form.formState.errors.userName} {...field} />
               </FormControl>
               {form.formState.errors.userName && (
                 <FormDescription>
