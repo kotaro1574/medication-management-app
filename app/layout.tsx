@@ -3,6 +3,7 @@ import { Metadata } from "next"
 
 import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
+import { createClient } from "@/lib/supabase/server"
 import { cn } from "@/lib/utils"
 import { TailwindIndicator } from "@/components/ui/tailwind-indicator"
 import { SiteHeader } from "@/components/layout/site-header"
@@ -26,7 +27,12 @@ interface RootLayoutProps {
   children: React.ReactNode
 }
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default async function RootLayout({ children }: RootLayoutProps) {
+  const supabase = createClient()
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
+
   return (
     <>
       <html lang="en" suppressHydrationWarning>
@@ -40,7 +46,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <ToasterProvider>
               <div className="relative flex min-h-screen flex-col">
-                <SiteHeader />
+                <SiteHeader session={session} />
                 <div className="flex-1">{children}</div>
               </div>
               <TailwindIndicator />
