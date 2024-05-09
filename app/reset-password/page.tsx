@@ -61,39 +61,44 @@ export default function ResetPasswordPage() {
 
   if (isSend) {
     return (
-      <div className="mx-auto max-w-7xl px-4 pb-16 pt-20 text-center sm:px-6 lg:px-8 lg:pt-32">
-        <p>メールを送信しました</p>
+      <div className="container max-w-[450px] py-[120px]">
+        <p className="text-center">メールを送信しました</p>
       </div>
     )
   }
   return (
-    <div className="mx-auto max-w-7xl px-4 pb-16 pt-20 text-center sm:px-6 lg:px-8 lg:pt-32">
-      <p>アカウントに結びついているメールアドレスを入力してください</p>
-      <Form {...form}>
-        <form
-          className="space-y-6 pt-10"
-          onSubmit={form.handleSubmit(onSubmit)}
-        >
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>メールアドレス</FormLabel>
-                <FormControl>
-                  <Input placeholder={"your email address"} {...field} />
-                </FormControl>
-                {form.formState.errors.email && (
-                  <FormDescription>
-                    {form.formState.errors.email.message}
-                  </FormDescription>
-                )}
-              </FormItem>
-            )}
-          />
-          <Button type="submit">送信</Button>
-        </form>
-      </Form>
+    <div className="container max-w-[450px] py-[120px]">
+      <p className="text-center">
+        アカウントに結びついている
+        <br />
+        メールアドレスを入力してください
+      </p>
+      <div className="mt-[24px]">
+        <Form {...form}>
+          <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>メールアドレス</FormLabel>
+                  <FormControl>
+                    <Input placeholder={"your email address"} {...field} />
+                  </FormControl>
+                  {form.formState.errors.email && (
+                    <FormDescription>
+                      {form.formState.errors.email.message}
+                    </FormDescription>
+                  )}
+                </FormItem>
+              )}
+            />
+            <Button className="mt-[24px] block w-full" type="submit">
+              送信
+            </Button>
+          </form>
+        </Form>
+      </div>
     </div>
   )
 }
