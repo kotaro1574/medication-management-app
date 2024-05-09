@@ -61,15 +61,15 @@ export default function InputPasswordForReset() {
 
   if (error) {
     return (
-      <div className="mx-auto max-w-7xl px-4 pb-16 pt-20 text-center sm:px-6 lg:px-8 lg:pt-32">
-        <p>エラーが発生しました</p>
+      <div className="container max-w-[450px] py-[120px]">
+        <p className="text-center">エラーが発生しました</p>
       </div>
     )
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 pb-16 pt-20 text-center sm:px-6 md:w-1/2 lg:w-1/4 lg:px-8 lg:pt-32">
-      <p>新しいパスワードを入力してください</p>
+    <div className="container max-w-[450px] py-[120px]">
+      <p className="text-center">新しいパスワードを入力してください</p>
       <Form {...form}>
         <form
           className="space-y-6 pt-10"
@@ -109,7 +109,7 @@ export default function InputPasswordForReset() {
               </FormItem>
             )}
           />
-          <Button className="block w-full" type="submit">
+          <Button className="mt-[24px] block w-full" type="submit">
             更新
           </Button>
         </form>
