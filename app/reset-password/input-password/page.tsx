@@ -31,6 +31,7 @@ const formSchema = z
   })
 
 export default function InputPasswordForReset() {
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<AuthError | null>(null)
   const router = useRouter()
   const { toast } = useToast()
@@ -45,6 +46,7 @@ export default function InputPasswordForReset() {
 
   const onSubmit = async ({ password }: z.infer<typeof formSchema>) => {
     try {
+      setLoading(true)
       const supabase = createClient()
       const { error } = await supabase.auth.updateUser({ password: password })
       if (error) {
@@ -114,8 +116,12 @@ export default function InputPasswordForReset() {
               </FormItem>
             )}
           />
-          <Button className="mt-[24px] block w-full" type="submit">
-            更新
+          <Button
+            className="mt-[24px] block w-full"
+            disabled={loading}
+            type="submit"
+          >
+            {loading ? "loading.." : "更新"}
           </Button>
         </form>
       </Form>

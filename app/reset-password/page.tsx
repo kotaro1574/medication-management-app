@@ -25,6 +25,7 @@ const formSchema = z.object({
 })
 
 export default function ResetPasswordPage() {
+  const [loading, setLoading] = useState(false)
   const [isSend, setIsSend] = useState(false)
   const [error, setError] = useState<AuthError | null>(null)
 
@@ -37,6 +38,7 @@ export default function ResetPasswordPage() {
 
   const onSubmit = async ({ email }: z.infer<typeof formSchema>) => {
     try {
+      setLoading(true)
       const supabase = createClient()
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${location.origin}/reset-password/input-password`,
@@ -96,8 +98,12 @@ export default function ResetPasswordPage() {
                 </FormItem>
               )}
             />
-            <Button className="mt-[24px] block w-full" type="submit">
-              送信
+            <Button
+              className="mt-[24px] block w-full"
+              disabled={loading}
+              type="submit"
+            >
+              {loading ? "loading.." : "送信"}
             </Button>
           </form>
         </Form>
