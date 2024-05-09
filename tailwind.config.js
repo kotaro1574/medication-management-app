@@ -3,7 +3,11 @@ const { fontFamily } = require("tailwindcss/defaultTheme")
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
-  content: ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}"],
+  content: [
+    "app/**/*.{ts,tsx}",
+    "components/**/*.{ts,tsx}",
+    "feature/**/*.{ts,tsx}",
+  ],
   theme: {
     container: {
       center: true,
@@ -14,6 +18,8 @@ module.exports = {
     },
     extend: {
       colors: {
+        "base-color": "var(--base-color)",
+        // 👇デフォルト
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -69,6 +75,10 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      // 追加
+      boxShadow: {
+        shadow: "var(--shadow)",
       },
     },
   },

@@ -1,4 +1,4 @@
-import { FaceRecognition } from "./face-recognition"
+import { FaceRecognition } from "@/feature/recognition/face-recognition"
 
 export default async function RecognitionPage() {
   return (

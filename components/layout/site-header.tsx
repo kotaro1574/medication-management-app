@@ -1,12 +1,18 @@
-import Link from "next/link"
+import { Session } from "@supabase/supabase-js"
 
 import { siteConfig } from "@/config/site"
-import { buttonVariants } from "@/components/ui/button"
-import { Icons } from "@/components/icons"
-import { MainNav } from "@/components/main-nav"
-import { ThemeToggle } from "@/components/theme-toggle"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
+import { MainNav } from "@/components/layout/main-nav"
 
-export function SiteHeader() {
+type Props = {
+  session: Session | null
+}
+
+export function SiteHeader({ session }: Props) {
+  if (!session) {
+    return null
+  }
+
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">

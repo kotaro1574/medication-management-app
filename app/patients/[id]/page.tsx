@@ -1,9 +1,9 @@
 import Image from "next/image"
 import Link from "next/link"
+import { getS3Data } from "@/actions/s3/get-s3-data"
 
 import { createClient } from "@/lib/supabase/server"
 import { placeholder } from "@/lib/utils"
-import { getS3Data } from "@/app/actions/s3/get-s3-data"
 
 export default async function PatientPage({
   params,

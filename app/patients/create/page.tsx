@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { createPatient } from "@/actions/patients/create-patient"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
@@ -18,7 +19,6 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
-import { createPatient } from "@/app/actions/patients/create-patient"
 
 const formSchema = z.object({
   imageFile: z.custom<File>().nullable(),
