@@ -81,6 +81,16 @@ export function LoginForm({
     }
   }
 
+  const onDropdownMenuItemClick = (value: string) => {
+    const loginInfo: {
+      email: string
+      password: string
+    } = JSON.parse(value)
+
+    form.setValue("email", loginInfo.email)
+    form.setValue("password", loginInfo.password)
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
@@ -130,7 +140,10 @@ export function LoginForm({
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               {loginInfoWithCookies.map((cookie) => (
-                <DropdownMenuItem key={cookie.name}>
+                <DropdownMenuItem
+                  key={cookie.name}
+                  onClick={() => onDropdownMenuItemClick(cookie.value)}
+                >
                   {JSON.parse(cookie.value).email}
                 </DropdownMenuItem>
               ))}
