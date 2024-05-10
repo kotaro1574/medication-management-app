@@ -11,7 +11,7 @@ export default function LoginPage() {
       </h1>
 
       <div className="mt-[24px]">
-        <LoginForm />
+        <LoginForm loginInfoWithCookies={loginInfoWithCookies} />
       </div>
     </div>
   )
