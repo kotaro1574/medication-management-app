@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     const { email, password } = await request.json()
     const supabase = createClient()
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
@@ -21,8 +21,16 @@ export async function POST(request: NextRequest) {
         },
       })
     }
+    
 
-    cookies().set("login-info", JSON.stringify({ email, password }))
+    cookies().set(
+      `login-info-${data.user.id}`,
+      JSON.stringify({ email, password }),
+      {
+        httpOnly: true,
+        secure: true,
+      }
+    )
 
     return new Response(JSON.stringify({ message: "Login successful" }), {
       status: 200,
