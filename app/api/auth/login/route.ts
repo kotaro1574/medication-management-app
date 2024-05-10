@@ -1,3 +1,4 @@
+import { cookies } from "next/headers"
 import { type NextRequest } from "next/server"
 
 import { createClient } from "@/lib/supabase/server"
@@ -20,6 +21,8 @@ export async function POST(request: NextRequest) {
         },
       })
     }
+
+    cookies().set("login-info", JSON.stringify({ email, password }))
 
     return new Response(JSON.stringify({ message: "Login successful" }), {
       status: 200,
