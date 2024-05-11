@@ -2,7 +2,10 @@ import { cookies } from "next/headers"
 import { LoginForm } from "@/feature/auth/login-form"
 
 export default function LoginPage() {
-  const loginInfoWithCookies = cookies().getAll("login-info")
+  const loginInfoWithCookies =
+    cookies()
+      .getAll()
+      .filter((cookie) => cookie.name.includes("login-info-")) ?? []
 
   return (
     <div className="container max-w-[450px] py-[120px]">

@@ -144,7 +144,7 @@ export function LoginForm({
                   key={cookie.name}
                   onClick={() => onDropdownMenuItemClick(cookie.value)}
                 >
-                  {JSON.parse(cookie.value).email}
+                  {JSON.parse(cookie.value).name}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
