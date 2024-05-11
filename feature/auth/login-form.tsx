@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -8,6 +9,12 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {
   Form,
   FormControl,
@@ -30,7 +37,11 @@ const errorSchema = z.object({
   message: z.string(),
 })
 
-export function LoginForm() {
+export function LoginForm({
+  loginInfoWithCookies,
+}: {
+  loginInfoWithCookies: RequestCookie[]
+}) {
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
   const router = useRouter()
@@ -68,6 +79,16 @@ export function LoginForm() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const onDropdownMenuItemClick = (value: string) => {
+    const loginInfo: {
+      email: string
+      password: string
+    } = JSON.parse(value)
+
+    form.setValue("email", loginInfo.email)
+    form.setValue("password", loginInfo.password)
   }
 
   return (
@@ -112,14 +133,28 @@ export function LoginForm() {
           )}
         />
 
-        <div className="mt-[24px] text-center text-sm text-neutral-400">
-          履歴選択
-        </div>
-        <div className="mt-[24px] text-center text-sm text-neutral-400">
-          <Link href="reset-password">パスワードをお忘れですか？</Link>
-        </div>
-        <div className="mt-[24px] text-center text-sm text-neutral-400">
-          <Link href="/sign-up">アカウントをお持ちでない方はこちら</Link>
+        <div className="mt-[24px] flex flex-col items-center gap-6  text-sm text-neutral-400">
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <div>履歴選択</div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {loginInfoWithCookies.map((cookie) => (
+                <DropdownMenuItem
+                  key={cookie.name}
+                  onClick={() => onDropdownMenuItemClick(cookie.value)}
+                >
+                  {JSON.parse(cookie.value).name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <div>
+            <Link href="reset-password">パスワードをお忘れですか？</Link>
+          </div>
+          <div>
+            <Link href="/sign-up">アカウントをお持ちでない方はこちら</Link>
+          </div>
         </div>
         <Button
           className="mt-[24px] block w-full"

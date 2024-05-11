@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { setLoginInfo } from "@/actions/cookie/set-login-info"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { v4 as uuidv4 } from "uuid"
@@ -91,7 +92,7 @@ export function SignUpForm() {
     try {
       setLoading(true)
       const facilityId = uuidv4()
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -104,6 +105,15 @@ export function SignUpForm() {
 
       if (error) {
         throw error
+      }
+
+      if (data.user) {
+        await setLoginInfo({
+          id: data.user.id,
+          name: userName,
+          email,
+          password,
+        })
       }
 
       toast({ description: "登録完了メールを確認してください 📩" })
