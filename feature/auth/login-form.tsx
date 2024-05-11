@@ -68,7 +68,7 @@ export function LoginForm({
         throw new Error("ログインに失敗しました")
       }
 
-      router.push("/profile")
+      router.push("/")
       toast({ description: "ログイン完了" })
     } catch (error) {
       const parseError = errorSchema.parse(error)
