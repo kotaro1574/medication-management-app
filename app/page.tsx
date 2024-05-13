@@ -1,23 +1,55 @@
-import Link from "next/link"
+"use client"
 
-export default async function IndexPage() {
+import { useCallback, useRef, useState } from "react"
+import Webcam from "react-webcam"
+
+import { Button } from "@/components/ui/button"
+
+const FACING_MODE_USER = "user"
+const FACING_MODE_ENVIRONMENT = "environment"
+
+export default function TopPage() {
+  const webcamRef = useRef<Webcam>(null)
+
+  const [facingMode, setFacingMode] = useState(FACING_MODE_USER)
+
+  let videoConstraints: MediaTrackConstraints = {
+    facingMode: facingMode,
+    width: 270,
+    height: 480,
+  }
+
+  const handleClick = useCallback(() => {
+    setFacingMode((prevState) =>
+      prevState === FACING_MODE_USER
+        ? FACING_MODE_ENVIRONMENT
+        : FACING_MODE_USER
+    )
+  }, [])
+
+  const onRecognition = useCallback(() => {
+    const imageSrc = webcamRef.current?.getScreenshot()?.split(",")[1] ?? ""
+    if (!imageSrc) return
+    console.log(imageSrc)
+  }, [webcamRef])
+
   return (
-    <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
-      <div>
-        <Link href="/sign-up">Sign Up</Link>
-      </div>
-      <div>
-        <Link href="/login">Login</Link>
-      </div>
-      <div>
-        <Link href="/patients">Patients</Link>
-      </div>
-      <div>
-        <Link href="/recognition">Recognition</Link>
-      </div>
-      <div>
-        <Link href="/ocr">OCR</Link>
-      </div>
-    </section>
+    <div>
+      <Webcam
+        className="webcam"
+        audio={false}
+        ref={webcamRef}
+        screenshotFormat="image/jpeg"
+        videoConstraints={videoConstraints}
+        screenshotQuality={1}
+      />
+      <Button variant={"outline"} onClick={handleClick}>
+        Switch camera
+      </Button>
+
+      <Button className="mt-4" onClick={onRecognition}>
+        顔認証
+      </Button>
+    </div>
   )
 }
