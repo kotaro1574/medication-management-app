@@ -46,7 +46,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <ToasterProvider>
               <div className="relative flex min-h-screen flex-col">
-                <SiteHeader session={session} />
+                {/* <SiteHeader session={session} /> */}
                 <div className="flex-1">{children}</div>
               </div>
               <TailwindIndicator />
