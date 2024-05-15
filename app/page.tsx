@@ -11,7 +11,7 @@ const DynamicPatientFaceAndDrugRecognitionWebcam = dynamic(
   () => import("@/feature/patient/patient-face-and-drug-recognition-webcam"),
   {
     loading: () => (
-      <Skeleton className="h-[600px] w-[343px] rounded-[24px] sm:w-[500px] md:w-[600px]" />
+      <Skeleton className="h-[calc(100vh_-_120px)]  w-full rounded-[24px] sm:max-w-[500px] md:max-w-[600px]" />
     ),
     ssr: false,
   }
@@ -44,7 +44,7 @@ export default function TopPage() {
 
   return (
     <div className="p-4">
-      <div className="mx-auto max-w-[343px] sm:max-w-[500px] md:max-w-[600px]">
+      <div className="mx-auto w-full sm:max-w-[500px] md:max-w-[600px]">
         <DynamicPatientFaceAndDrugRecognitionWebcam
           videoConstraints={videoConstraints}
           webcamRef={webcamRef}
