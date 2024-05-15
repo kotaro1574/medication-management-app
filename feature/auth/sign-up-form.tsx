@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { setLoginInfo } from "@/actions/cookie/set-login-info"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { v4 as uuidv4 } from "uuid"
@@ -30,39 +31,33 @@ import { useToast } from "@/components/ui/use-toast"
 
 const allowedSpecialCharacters = "!@#$%^&*()_+-=[]{}|;:',.<>/?"
 
-const formSchema = z
-  .object({
-    email: z
-      .string()
-      .email({ message: "有効なメールアドレスを入力してください" }),
-    password: z
-      .string()
-      .min(8, {
-        message: "パスワードは8文字以上である必要があります。",
-      })
-      .regex(/^(?=.*[a-z])/, {
-        message:
-          "パスワードには少なくとも1つの小文字が含まれている必要があります。",
-      })
-      .regex(/^(?=.*[A-Z])/, {
-        message:
-          "パスワードには少なくとも1つの大文字が含まれている必要があります。",
-      })
-      .regex(/^(?=.*[0-9])/, {
-        message:
-          "パスワードには少なくとも1つの数字が含まれている必要があります。",
-      })
-      .regex(/^(?=.*[!@#$%^&*()_+\-=[\]{}|;:',.<>/?])/, {
-        message: `パスワードには少なくとも1つの特殊文字が含まれている必要があります。使用できる特殊文字: ${allowedSpecialCharacters}`,
-      }),
-    passwordConf: z.string(),
-    userName: z.string().min(1, "所有者名を入力してください"),
-    facilityId: z.string().min(1, "所属施設を選択してください"),
-  })
-  .refine((data) => data.password === data.passwordConf, {
-    message: "パスワードが一致しません",
-    path: ["passwordConf"],
-  })
+const formSchema = z.object({
+  email: z
+    .string()
+    .email({ message: "有効なメールアドレスを入力してください" }),
+  password: z
+    .string()
+    .min(8, {
+      message: "パスワードは8文字以上である必要があります。",
+    })
+    .regex(/^(?=.*[a-z])/, {
+      message:
+        "パスワードには少なくとも1つの小文字が含まれている必要があります。",
+    })
+    .regex(/^(?=.*[A-Z])/, {
+      message:
+        "パスワードには少なくとも1つの大文字が含まれている必要があります。",
+    })
+    .regex(/^(?=.*[0-9])/, {
+      message:
+        "パスワードには少なくとも1つの数字が含まれている必要があります。",
+    })
+    .regex(/^(?=.*[!@#$%^&*()_+\-=[\]{}|;:',.<>/?])/, {
+      message: `パスワードには少なくとも1つの特殊文字が含まれている必要があります。使用できる特殊文字: ${allowedSpecialCharacters}`,
+    }),
+  userName: z.string().min(1, "所有者名を入力してください"),
+  facilityId: z.string().min(1, "所属施設を選択してください"),
+})
 
 const errorSchema = z.object({
   message: z.string(),
@@ -77,7 +72,6 @@ export function SignUpForm() {
     defaultValues: {
       email: "",
       password: "",
-      passwordConf: "",
       userName: "",
       facilityId: "",
     },
@@ -91,7 +85,7 @@ export function SignUpForm() {
     try {
       setLoading(true)
       const facilityId = uuidv4()
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -104,6 +98,15 @@ export function SignUpForm() {
 
       if (error) {
         throw error
+      }
+
+      if (data.user) {
+        await setLoginInfo({
+          id: data.user.id,
+          name: userName,
+          email,
+          password,
+        })
       }
 
       toast({ description: "登録完了メールを確認してください 📩" })
@@ -154,27 +157,6 @@ export function SignUpForm() {
               {form.formState.errors.password && (
                 <FormDescription>
                   {form.formState.errors.password.message}
-                </FormDescription>
-              )}
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="passwordConf"
-          render={({ field }) => (
-            <FormItem className="mt-4">
-              <FormLabel>パスワード（確認）</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  isError={!!form.formState.errors.passwordConf}
-                  {...field}
-                />
-              </FormControl>
-              {form.formState.errors.passwordConf && (
-                <FormDescription>
-                  {form.formState.errors.passwordConf.message}
                 </FormDescription>
               )}
             </FormItem>

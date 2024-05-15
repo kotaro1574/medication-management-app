@@ -25,6 +25,7 @@ const formSchema = z.object({
 })
 
 export default function ResetPasswordPage() {
+  const [loading, setLoading] = useState(false)
   const [isSend, setIsSend] = useState(false)
   const [error, setError] = useState<AuthError | null>(null)
 
@@ -37,6 +38,7 @@ export default function ResetPasswordPage() {
 
   const onSubmit = async ({ email }: z.infer<typeof formSchema>) => {
     try {
+      setLoading(true)
       const supabase = createClient()
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${location.origin}/reset-password/input-password`,
@@ -61,39 +63,51 @@ export default function ResetPasswordPage() {
 
   if (isSend) {
     return (
-      <div className="mx-auto max-w-7xl px-4 pb-16 pt-20 text-center sm:px-6 lg:px-8 lg:pt-32">
-        <p>メールを送信しました</p>
+      <div className="container max-w-[450px] py-[120px]">
+        <p className="text-center">メールを送信しました</p>
       </div>
     )
   }
   return (
-    <div className="mx-auto max-w-7xl px-4 pb-16 pt-20 text-center sm:px-6 lg:px-8 lg:pt-32">
-      <p>アカウントに結びついているメールアドレスを入力してください</p>
-      <Form {...form}>
-        <form
-          className="space-y-6 pt-10"
-          onSubmit={form.handleSubmit(onSubmit)}
-        >
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>メールアドレス</FormLabel>
-                <FormControl>
-                  <Input placeholder={"your email address"} {...field} />
-                </FormControl>
-                {form.formState.errors.email && (
-                  <FormDescription>
-                    {form.formState.errors.email.message}
-                  </FormDescription>
-                )}
-              </FormItem>
-            )}
-          />
-          <Button type="submit">送信</Button>
-        </form>
-      </Form>
+    <div className="container max-w-[450px] py-[120px]">
+      <h1 className="text-center text-[24px] font-bold text-[#c2b37f]">
+        パスワードを忘れた場合
+      </h1>
+      <p className="mt-[24px] text-center text-sm text-neutral-400">
+        アカウントに結びついている
+        <br />
+        メールアドレスを入力してください
+      </p>
+      <div className="mt-[24px]">
+        <Form {...form}>
+          <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>メールアドレス</FormLabel>
+                  <FormControl>
+                    <Input placeholder={"your email address"} {...field} />
+                  </FormControl>
+                  {form.formState.errors.email && (
+                    <FormDescription>
+                      {form.formState.errors.email.message}
+                    </FormDescription>
+                  )}
+                </FormItem>
+              )}
+            />
+            <Button
+              className="mt-[24px] block w-full"
+              disabled={loading}
+              type="submit"
+            >
+              {loading ? "loading.." : "送信"}
+            </Button>
+          </form>
+        </Form>
+      </div>
     </div>
   )
 }
