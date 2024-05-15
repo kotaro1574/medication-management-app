@@ -2,10 +2,8 @@
 
 import { useCallback, useRef, useState } from "react"
 import { AspectRatio } from "@radix-ui/react-aspect-ratio"
-import { Icon } from "@radix-ui/react-select"
 import Webcam from "react-webcam"
 
-import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/ui/icons"
 
 const FACING_MODE_USER = "user"
