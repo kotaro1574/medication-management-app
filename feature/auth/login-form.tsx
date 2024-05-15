@@ -152,9 +152,6 @@ export function LoginForm({
           <div>
             <Link href="reset-password">パスワードをお忘れですか？</Link>
           </div>
-          <div>
-            <Link href="/sign-up">アカウントをお持ちでない方はこちら</Link>
-          </div>
         </div>
         <Button
           className="mt-[24px] block w-full"

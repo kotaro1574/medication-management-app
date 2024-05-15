@@ -44,6 +44,7 @@ export async function POST(request: NextRequest) {
       {
         httpOnly: true,
         secure: true,
+        maxAge: 20 * 60 * 60, // 20 hours in seconds
       }
     )
 
