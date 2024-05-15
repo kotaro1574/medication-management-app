@@ -1,22 +1,31 @@
 "use client"
 
 import { useCallback, useRef, useState } from "react"
+import dynamic from "next/dynamic"
 import Webcam from "react-webcam"
 
-import { Button } from "@/components/ui/button"
+import { Icons } from "@/components/ui/icons"
+import { Skeleton } from "@/components/ui/skeleton"
+
+const DynamicPatientFaceAndDrugRecognitionWebcam = dynamic(
+  () => import("@/feature/patient/patient-face-and-drug-recognition-webcam"),
+  {
+    loading: () => (
+      <Skeleton className="h-[600px] w-[343px] rounded-[24px] sm:w-[500px] md:w-[600px]" />
+    ),
+    ssr: false,
+  }
+)
 
 const FACING_MODE_USER = "user"
 const FACING_MODE_ENVIRONMENT = "environment"
 
 export default function TopPage() {
   const webcamRef = useRef<Webcam>(null)
-
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER)
 
   let videoConstraints: MediaTrackConstraints = {
     facingMode: facingMode,
-    width: 270,
-    height: 480,
   }
 
   const handleClick = useCallback(() => {
@@ -34,22 +43,28 @@ export default function TopPage() {
   }, [webcamRef])
 
   return (
-    <div>
-      <Webcam
-        className="webcam"
-        audio={false}
-        ref={webcamRef}
-        screenshotFormat="image/jpeg"
-        videoConstraints={videoConstraints}
-        screenshotQuality={1}
-      />
-      <Button variant={"outline"} onClick={handleClick}>
-        Switch camera
-      </Button>
+    <div className="p-4">
+      <div className="mx-auto max-w-[343px] sm:max-w-[500px] md:max-w-[600px]">
+        <DynamicPatientFaceAndDrugRecognitionWebcam
+          videoConstraints={videoConstraints}
+          webcamRef={webcamRef}
+        />
 
-      <Button className="mt-4" onClick={onRecognition}>
-        顔認証
-      </Button>
+        <div className="relative mt-4 flex w-full items-center justify-center">
+          <button
+            onClick={onRecognition}
+            className="text-[#D9D9D9] hover:text-red-600"
+          >
+            <Icons.shutter />
+          </button>
+          <button
+            className="absolute right-2 top-0 text-[#D9D9D9] hover:text-[#D9D9D9]/90"
+            onClick={handleClick}
+          >
+            <Icons.switch />
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
