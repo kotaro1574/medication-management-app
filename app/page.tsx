@@ -51,10 +51,16 @@ export default function TopPage() {
         />
 
         <div className="relative mt-4 flex w-full items-center justify-center">
-          <button onClick={onRecognition}>
+          <button
+            onClick={onRecognition}
+            className="text-[#D9D9D9] hover:text-red-600"
+          >
             <Icons.shutter />
           </button>
-          <button className="absolute right-2 top-0" onClick={handleClick}>
+          <button
+            className="absolute right-2 top-0 text-[#D9D9D9] hover:text-[#D9D9D9]/90"
+            onClick={handleClick}
+          >
             <Icons.switch />
           </button>
         </div>
