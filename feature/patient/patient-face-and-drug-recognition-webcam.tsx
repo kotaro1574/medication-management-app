@@ -1,7 +1,6 @@
 "use client"
 
-import { RefObject, useEffect, useRef, useState } from "react"
-import { AspectRatio } from "@radix-ui/react-aspect-ratio"
+import { RefObject } from "react"
 import Webcam from "react-webcam"
 
 import { Icons } from "@/components/ui/icons"
@@ -15,33 +14,12 @@ export default function PatientFaceAndDrugRecognitionWebcam({
   videoConstraints,
   webcamRef,
 }: Props) {
-  const [ratio, setRatio] = useState(343 / 600)
-
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth
-      if (width < 640) {
-        setRatio(343 / 600)
-      } else if (width < 768) {
-        setRatio(500 / 600)
-      } else {
-        setRatio(600 / 600)
-      }
-    }
-
-    window.addEventListener("resize", handleResize)
-    handleResize() // Set the initial ratio
-
-    return () => {
-      window.removeEventListener("resize", handleResize)
-    }
-  }, [])
   return (
-    <AspectRatio ratio={ratio} className="relative">
+    <div className="relative">
       <Webcam
         className="rounded-[24px]"
         style={{
-          height: "100%",
+          height: "calc(100vh - 120px)",
           width: "100%",
           objectFit: "cover",
         }}
@@ -69,6 +47,6 @@ export default function PatientFaceAndDrugRecognitionWebcam({
           <p className="text-xl">薬の名前が入ります</p>
         </div>
       </div>
-    </AspectRatio>
+    </div>
   )
 }
