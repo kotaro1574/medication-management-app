@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { AspectRatio } from "@radix-ui/react-aspect-ratio"
 import Webcam from "react-webcam"
 
@@ -13,6 +13,7 @@ export default function TopPage() {
   const webcamRef = useRef<Webcam>(null)
 
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER)
+  const [ratio, setRatio] = useState(343 / 600)
 
   let videoConstraints: MediaTrackConstraints = {
     facingMode: facingMode,
@@ -32,49 +33,71 @@ export default function TopPage() {
     console.log(imageSrc)
   }, [webcamRef])
 
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth
+      if (width < 640) {
+        setRatio(343 / 600)
+      } else if (width < 768) {
+        setRatio(500 / 600)
+      } else {
+        setRatio(600 / 600)
+      }
+    }
+
+    window.addEventListener("resize", handleResize)
+    handleResize() // Set the initial ratio
+
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [])
+
   return (
-    <div className="flex flex-col items-center p-4">
-      <AspectRatio ratio={343 / 600} className="relative">
-        <Webcam
-          className="rounded-[24px]"
-          style={{
-            height: "100%",
-            width: "100%",
-            objectFit: "cover",
-          }}
-          audio={false}
-          ref={webcamRef}
-          screenshotFormat="image/jpeg"
-          videoConstraints={videoConstraints}
-          screenshotQuality={1}
-        />
+    <div className="p-4">
+      <div className="mx-auto max-w-[343px] sm:max-w-[500px] md:max-w-[600px]">
+        <AspectRatio ratio={ratio} className="relative">
+          <Webcam
+            className="rounded-[24px]"
+            style={{
+              height: "100%",
+              width: "100%",
+              objectFit: "cover",
+            }}
+            audio={false}
+            ref={webcamRef}
+            screenshotFormat="image/jpeg"
+            videoConstraints={videoConstraints}
+            screenshotQuality={1}
+          />
 
-        <p className="text-md absolute top-[24px] w-full text-center font-semibold">
-          服薬者の撮影をしてください。
-        </p>
-        <div className="absolute inset-x-2 bottom-2 space-y-2">
-          <div className="flex items-center gap-4 rounded-2xl bg-[#A4A4A4]/40 px-2 py-2.5">
-            <div className="flex size-10 items-center justify-center rounded-full bg-white">
-              <Icons.user />
+          <p className="text-md absolute top-[24px] w-full text-center font-semibold">
+            服薬者の撮影をしてください。
+          </p>
+          <div className="absolute inset-x-2 bottom-2 space-y-2">
+            <div className="flex items-center gap-4 rounded-2xl bg-[#A4A4A4]/40 px-2 py-2.5">
+              <div className="flex size-10 items-center justify-center rounded-full bg-white">
+                <Icons.user />
+              </div>
+              <p className="text-xl">服薬者の名前が入ります</p>
             </div>
-            <p className="text-xl">服薬者の名前が入ります</p>
-          </div>
-          <div className="flex items-center gap-4 rounded-2xl bg-[#A4A4A4]/40 px-2 py-2.5">
-            <div className="flex size-10 items-center justify-center rounded-full bg-white">
-              <Icons.drug />
+            <div className="flex items-center gap-4 rounded-2xl bg-[#A4A4A4]/40 px-2 py-2.5">
+              <div className="flex size-10 items-center justify-center rounded-full bg-white">
+                <Icons.drug />
+              </div>
+              <p className="text-xl">薬の名前が入ります</p>
             </div>
-            <p className="text-xl">薬の名前が入ります</p>
           </div>
+        </AspectRatio>
+
+        <div className="relative mt-4 flex w-full items-center justify-center">
+          <button onClick={onRecognition}>
+            <Icons.shutter />
+          </button>
+          <button className="absolute right-2 top-0" onClick={handleClick}>
+            <Icons.switch />
+          </button>
         </div>
-      </AspectRatio>
-
-      <div className="relative mt-4 flex w-full items-center justify-center">
-        <button onClick={onRecognition}>
-          <Icons.shutter />
-        </button>
-        <button className="absolute right-2 top-0" onClick={handleClick}>
-          <Icons.switch />
-        </button>
       </div>
     </div>
   )
