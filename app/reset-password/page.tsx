@@ -88,7 +88,7 @@ export default function ResetPasswordPage() {
                 <FormItem>
                   <FormLabel>メールアドレス</FormLabel>
                   <FormControl>
-                    <Input placeholder={"your email address"} {...field} />
+                    <Input isError={!!form.formState.errors.email} {...field} />
                   </FormControl>
                   {form.formState.errors.email && (
                     <FormDescription>
