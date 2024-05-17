@@ -33,6 +33,12 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     data: { session },
   } = await supabase.auth.getSession()
 
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("name")
+    .eq("id", session?.user.id ?? "")
+    .single()
+
   return (
     <>
       <html lang="en" suppressHydrationWarning>
@@ -46,7 +52,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <ToasterProvider>
               <div className="relative flex min-h-screen flex-col">
-                {/* <SiteHeader session={session} /> */}
+                {session && <SiteHeader profileName={profile?.name ?? ""} />}
                 <div className="flex-1">{children}</div>
               </div>
               <TailwindIndicator />

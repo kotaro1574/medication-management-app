@@ -19,7 +19,7 @@ export default function PatientFaceAndDrugRecognitionWebcam({
       <Webcam
         className="rounded-[24px]"
         style={{
-          height: "calc(100vh - 120px)",
+          height: "calc(100vh - 120px - 44px)",
           width: "100%",
           objectFit: "cover",
         }}
