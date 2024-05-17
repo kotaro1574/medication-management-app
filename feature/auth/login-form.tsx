@@ -134,21 +134,23 @@ export function LoginForm({
         />
 
         <div className="mt-[24px] flex flex-col items-center gap-6  text-sm text-neutral-400">
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <div>履歴選択</div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              {loginInfoWithCookies.map((cookie) => (
-                <DropdownMenuItem
-                  key={cookie.name}
-                  onClick={() => onDropdownMenuItemClick(cookie.value)}
-                >
-                  {JSON.parse(cookie.value).name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {loginInfoWithCookies.length > 0 && (
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <div>履歴選択</div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {loginInfoWithCookies.map((cookie) => (
+                  <DropdownMenuItem
+                    key={cookie.name}
+                    onClick={() => onDropdownMenuItemClick(cookie.value)}
+                  >
+                    {JSON.parse(cookie.value).name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
           <div>
             <Link href="reset-password">パスワードをお忘れですか？</Link>
           </div>
