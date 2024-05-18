@@ -1,4 +1,5 @@
 import { Icons } from "../ui/icons"
+import { SiteDrawer } from "./site-drawer"
 
 type Props = {
   profileName: string
@@ -12,9 +13,7 @@ export function SiteHeader({ profileName }: Props) {
           <Icons.fillUser />
           <div>{profileName}</div>
         </div>
-        <div>
-          <Icons.hamburger />
-        </div>
+        <SiteDrawer trigger={<Icons.hamburger />} />
       </div>
     </header>
   )
