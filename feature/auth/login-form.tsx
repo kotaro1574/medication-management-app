@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { startTransition, useState } from "react"
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -69,6 +69,9 @@ export function LoginForm({
       }
 
       router.push("/")
+      startTransition(() => {
+        router.refresh()
+      })
       toast({ description: "ログイン完了" })
     } catch (error) {
       const parseError = errorSchema.parse(error)
