@@ -7,7 +7,6 @@ import { createClient } from "@/lib/supabase/server"
 import { cn } from "@/lib/utils"
 import { TailwindIndicator } from "@/components/ui/tailwind-indicator"
 import { SiteHeader } from "@/components/layout/site-header"
-import { ThemeProvider } from "@/components/provider/theme-provider"
 import { ToasterProvider } from "@/components/provider/toaster-provider"
 
 export const metadata: Metadata = {
