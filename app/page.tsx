@@ -1,7 +1,8 @@
 "use client"
 
-import { useCallback, useRef, useState } from "react"
+import { startTransition, useCallback, useRef, useState } from "react"
 import dynamic from "next/dynamic"
+import { patentsFaceRecognition } from "@/actions/patients/patents-face-recognition"
 import Webcam from "react-webcam"
 
 import { Icons } from "@/components/ui/icons"
@@ -39,7 +40,17 @@ export default function TopPage() {
   const onRecognition = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot()?.split(",")[1] ?? ""
     if (!imageSrc) return
-    console.log(imageSrc)
+
+    startTransition(() => {
+      ;(async () => {
+        const response = await patentsFaceRecognition({ imageSrc })
+        if (response.success) {
+          console.log(response.name)
+        } else {
+          console.error(response.error)
+        }
+      })()
+    })
   }, [webcamRef])
 
   return (
