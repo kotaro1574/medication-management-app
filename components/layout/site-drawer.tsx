@@ -1,6 +1,6 @@
 "use client"
 
-import { ReactNode, useEffect, useState } from "react"
+import { ReactNode, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
@@ -12,8 +12,12 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 
+import { Button } from "../ui/button"
+import { useToast } from "../ui/use-toast"
+
 export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false)
+  const { toast } = useToast()
   const router = useRouter()
 
   const handleOpenChange = (open: boolean) => {
@@ -54,6 +58,15 @@ export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
                 利用者登録
               </Link>
             </div>
+
+            <form action="/api/auth/logout" method="post">
+              <Button
+                type="submit"
+                onClick={() => toast({ description: "ログアウトしました" })}
+              >
+                ログアウト
+              </Button>
+            </form>
           </div>
         </div>
       </DrawerContent>
