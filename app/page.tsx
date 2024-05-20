@@ -1,6 +1,6 @@
 "use client"
 
-import { startTransition, useCallback, useRef, useState } from "react"
+import { useCallback, useRef, useState, useTransition } from "react"
 import dynamic from "next/dynamic"
 import { patentsFaceRecognition } from "@/actions/patients/patents-face-recognition"
 import Webcam from "react-webcam"
@@ -22,6 +22,8 @@ const FACING_MODE_USER = "user"
 const FACING_MODE_ENVIRONMENT = "environment"
 
 export default function TopPage() {
+  const [loading, startTransaction] = useTransition()
+  const [patentName, setPatentName] = useState<string>("服薬者の名前が入ります")
   const webcamRef = useRef<Webcam>(null)
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER)
 
@@ -41,11 +43,11 @@ export default function TopPage() {
     const imageSrc = webcamRef.current?.getScreenshot()?.split(",")[1] ?? ""
     if (!imageSrc) return
 
-    startTransition(() => {
+    startTransaction(() => {
       ;(async () => {
         const response = await patentsFaceRecognition({ imageSrc })
         if (response.success) {
-          console.log(response.name)
+          setPatentName(response.name)
         } else {
           console.error(response.error)
         }
@@ -59,6 +61,8 @@ export default function TopPage() {
         <DynamicPatientFaceAndDrugRecognitionWebcam
           videoConstraints={videoConstraints}
           webcamRef={webcamRef}
+          patientName={patentName}
+          loading={loading}
         />
 
         <div className="relative mt-4 flex w-full items-center justify-center">
