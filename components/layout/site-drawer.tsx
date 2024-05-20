@@ -12,8 +12,13 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 
+import { Button } from "../ui/button"
+import { ThemeToggle } from "../ui/theme-toggle"
+import { useToast } from "../ui/use-toast"
+
 export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false)
+  const { toast } = useToast()
   const router = useRouter()
 
   const handleOpenChange = (open: boolean) => {
@@ -53,6 +58,17 @@ export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
               <Link href="/patients/create" passHref onClick={handleLinkClick}>
                 利用者登録
               </Link>
+            </div>
+            <div className="flex items-center gap-4">
+              <form action="/api/auth/logout" method="post">
+                <Button
+                  type="submit"
+                  onClick={() => toast({ description: "ログアウトしました" })}
+                >
+                  ログアウト
+                </Button>
+              </form>
+              <ThemeToggle />
             </div>
           </div>
         </div>
