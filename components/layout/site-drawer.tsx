@@ -59,17 +59,15 @@ export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
                 利用者登録
               </Link>
             </div>
-            <div className="flex items-center gap-4">
-              <form action="/api/auth/logout" method="post">
-                <Button
-                  type="submit"
-                  onClick={() => toast({ description: "ログアウトしました" })}
-                >
-                  ログアウト
-                </Button>
-              </form>
-              <ThemeToggle />
-            </div>
+
+            <form action="/api/auth/logout" method="post">
+              <Button
+                type="submit"
+                onClick={() => toast({ description: "ログアウトしました" })}
+              >
+                ログアウト
+              </Button>
+            </form>
           </div>
         </div>
       </DrawerContent>

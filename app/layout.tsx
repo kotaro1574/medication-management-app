@@ -45,19 +45,17 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <head />
         <body
           className={cn(
-            "min-h-screen bg-white font-sans antialiased",
+            "min-h-screen font-sans antialiased",
             fontSans.variable
           )}
         >
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <ToasterProvider>
-              <div className="relative flex min-h-screen flex-col">
-                {session && <SiteHeader profileName={profile?.name ?? ""} />}
-                <div className="flex-1">{children}</div>
-              </div>
-              <TailwindIndicator />
-            </ToasterProvider>
-          </ThemeProvider>
+          <ToasterProvider>
+            <div className="relative flex min-h-screen flex-col">
+              {session && <SiteHeader profileName={profile?.name ?? ""} />}
+              <div className="flex-1">{children}</div>
+            </div>
+            <TailwindIndicator />
+          </ToasterProvider>
         </body>
       </html>
     </>
