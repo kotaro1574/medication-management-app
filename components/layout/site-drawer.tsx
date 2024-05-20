@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/drawer"
 
 import { Button } from "../ui/button"
-import { ThemeToggle } from "../ui/theme-toggle"
 import { useToast } from "../ui/use-toast"
 
 export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
