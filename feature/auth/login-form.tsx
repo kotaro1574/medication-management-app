@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { startTransition, useState } from "react"
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -69,6 +69,9 @@ export function LoginForm({
       }
 
       router.push("/")
+      startTransition(() => {
+        router.refresh()
+      })
       toast({ description: "ログイン完了" })
     } catch (error) {
       const parseError = errorSchema.parse(error)
@@ -134,21 +137,23 @@ export function LoginForm({
         />
 
         <div className="mt-[24px] flex flex-col items-center gap-6  text-sm text-neutral-400">
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <div>履歴選択</div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              {loginInfoWithCookies.map((cookie) => (
-                <DropdownMenuItem
-                  key={cookie.name}
-                  onClick={() => onDropdownMenuItemClick(cookie.value)}
-                >
-                  {JSON.parse(cookie.value).name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {loginInfoWithCookies.length > 0 && (
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <div>履歴選択</div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {loginInfoWithCookies.map((cookie) => (
+                  <DropdownMenuItem
+                    key={cookie.name}
+                    onClick={() => onDropdownMenuItemClick(cookie.value)}
+                  >
+                    {JSON.parse(cookie.value).name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
           <div>
             <Link href="reset-password">パスワードをお忘れですか？</Link>
           </div>

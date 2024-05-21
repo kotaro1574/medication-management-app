@@ -7,7 +7,6 @@ import { createClient } from "@/lib/supabase/server"
 import { cn } from "@/lib/utils"
 import { TailwindIndicator } from "@/components/ui/tailwind-indicator"
 import { SiteHeader } from "@/components/layout/site-header"
-import { ThemeProvider } from "@/components/provider/theme-provider"
 import { ToasterProvider } from "@/components/provider/toaster-provider"
 
 export const metadata: Metadata = {
@@ -33,25 +32,29 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     data: { session },
   } = await supabase.auth.getSession()
 
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("name")
+    .eq("id", session?.user.id ?? "")
+    .single()
+
   return (
     <>
       <html lang="en" suppressHydrationWarning>
         <head />
         <body
           className={cn(
-            "min-h-screen bg-white font-sans antialiased",
+            "min-h-screen font-sans antialiased",
             fontSans.variable
           )}
         >
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <ToasterProvider>
-              <div className="relative flex min-h-screen flex-col">
-                {/* <SiteHeader session={session} /> */}
-                <div className="flex-1">{children}</div>
-              </div>
-              <TailwindIndicator />
-            </ToasterProvider>
-          </ThemeProvider>
+          <ToasterProvider>
+            <div className="relative flex min-h-screen flex-col">
+              {session && <SiteHeader profileName={profile?.name ?? ""} />}
+              <div className="flex-1">{children}</div>
+            </div>
+            <TailwindIndicator />
+          </ToasterProvider>
         </body>
       </html>
     </>
