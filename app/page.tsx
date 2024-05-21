@@ -1,7 +1,8 @@
 "use client"
 
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useRef, useState, useTransition } from "react"
 import dynamic from "next/dynamic"
+import { patentsFaceRecognition } from "@/actions/patients/patents-face-recognition"
 import Webcam from "react-webcam"
 
 import { Icons } from "@/components/ui/icons"
@@ -21,6 +22,9 @@ const FACING_MODE_USER = "user"
 const FACING_MODE_ENVIRONMENT = "environment"
 
 export default function TopPage() {
+  const [loading, startTransaction] = useTransition()
+  const [faceError, setFaceError] = useState<string | null>(null)
+  const [patentName, setPatentName] = useState<string | null>(null)
   const webcamRef = useRef<Webcam>(null)
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER)
 
@@ -39,7 +43,18 @@ export default function TopPage() {
   const onRecognition = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot()?.split(",")[1] ?? ""
     if (!imageSrc) return
-    console.log(imageSrc)
+
+    startTransaction(() => {
+      ;(async () => {
+        const response = await patentsFaceRecognition({ imageSrc })
+        if (response.success) {
+          setPatentName(response.name)
+          setFaceError(null)
+        } else {
+          setFaceError(response.error)
+        }
+      })()
+    })
   }, [webcamRef])
 
   return (
@@ -48,6 +63,9 @@ export default function TopPage() {
         <DynamicPatientFaceAndDrugRecognitionWebcam
           videoConstraints={videoConstraints}
           webcamRef={webcamRef}
+          patientName={patentName}
+          loading={loading}
+          faceError={faceError}
         />
 
         <div className="relative mt-4 flex w-full items-center justify-center">
