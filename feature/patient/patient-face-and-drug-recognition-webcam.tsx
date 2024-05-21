@@ -10,17 +10,28 @@ type Props = {
   webcamRef: RefObject<Webcam>
   patientName: string | null
   loading: boolean
+  faceError: string | null
 }
 
 export default function PatientFaceAndDrugRecognitionWebcam({
   videoConstraints,
   webcamRef,
   patientName,
+  faceError,
   loading,
 }: Props) {
   const recongitionDescription = !patientName
     ? "服薬者の撮影をしてください。"
     : "薬の撮影をしてください"
+
+  const getBackgroundColor = (
+    value: string | null,
+    error: string | null
+  ): string => {
+    if (error) return "rgba(181, 15, 15, 0.6)"
+    if (value && !error) return "rgba(88, 105, 193, 0.6)"
+    return "rgba(163, 163, 163, 0.4)"
+  }
 
   return (
     <div className="relative">
@@ -41,14 +52,17 @@ export default function PatientFaceAndDrugRecognitionWebcam({
       <p className="text-md absolute top-[24px] w-full text-center font-semibold">
         {loading ? "認証中..." : recongitionDescription}
       </p>
+      {faceError && (
+        <p className="text-md absolute top-[56px] w-full text-center font-semibold text-[#FF0000]">
+          {faceError}
+        </p>
+      )}
       <div className="absolute inset-x-2 bottom-2 space-y-2">
         <div
           style={{
-            backgroundColor: !patientName
-              ? "rgba(163, 163, 163, 0.4)"
-              : "rgba(88, 105, 193, 0.6)",
+            backgroundColor: getBackgroundColor(patientName, faceError),
           }}
-          className="flex items-center gap-4 rounded-2xl px-2 py-2.5"
+          className="flex items-center gap-4 rounded-2xl px-2 py-2.5 backdrop-blur-sm"
         >
           <div className="flex size-10 items-center justify-center rounded-full bg-white">
             <Icons.user />

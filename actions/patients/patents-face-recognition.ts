@@ -36,7 +36,7 @@ export async function patentsFaceRecognition({
     const faceId = response.FaceMatches?.[0]?.Face?.FaceId
 
     if (!faceId) {
-      throw new Error("No face matches found")
+      throw new Error("一致する顔が見つかりません")
     }
 
     const supabase = createClient()
@@ -52,14 +52,22 @@ export async function patentsFaceRecognition({
     }
 
     if (!data) {
-      throw new Error("No matching patients found")
+      throw new Error("一致する患者が見つかりません")
     }
 
-    return { success: true, message: "Face Recognition", name: data.name ?? "" }
+    return {
+      success: true,
+      message: "服薬者の顔認証完了",
+      name: data.name ?? "",
+    }
   } catch (error) {
     if (error instanceof Error) {
-      return { success: false, error: error.message }
+      if (error.message.includes("There are no faces in the image")) {
+        return { success: false, error: "画像内に顔が見つかりません" }
+      } else {
+        return { success: false, error: error.message }
+      }
     }
   }
-  return { success: false, error: "An unknown error occurred" }
+  return { success: false, error: "エラーが発生しました" }
 }

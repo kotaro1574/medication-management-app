@@ -23,6 +23,7 @@ const FACING_MODE_ENVIRONMENT = "environment"
 
 export default function TopPage() {
   const [loading, startTransaction] = useTransition()
+  const [faceError, setFaceError] = useState<string | null>(null)
   const [patentName, setPatentName] = useState<string | null>(null)
   const webcamRef = useRef<Webcam>(null)
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER)
@@ -48,8 +49,9 @@ export default function TopPage() {
         const response = await patentsFaceRecognition({ imageSrc })
         if (response.success) {
           setPatentName(response.name)
+          setFaceError(null)
         } else {
-          console.error(response.error)
+          setFaceError(response.error)
         }
       })()
     })
@@ -63,6 +65,7 @@ export default function TopPage() {
           webcamRef={webcamRef}
           patientName={patentName}
           loading={loading}
+          faceError={faceError}
         />
 
         <div className="relative mt-4 flex w-full items-center justify-center">
