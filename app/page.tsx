@@ -23,7 +23,7 @@ const FACING_MODE_ENVIRONMENT = "environment"
 
 export default function TopPage() {
   const [loading, startTransaction] = useTransition()
-  const [patentName, setPatentName] = useState<string>("服薬者の名前が入ります")
+  const [patentName, setPatentName] = useState<string | null>(null)
   const webcamRef = useRef<Webcam>(null)
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER)
 
