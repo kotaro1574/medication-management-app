@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { SignUpForm } from "@/feature/auth/sign-up-form"
 
 export default function SignUpPage() {
@@ -11,10 +10,6 @@ export default function SignUpPage() {
       <div className="mt-[24px]">
         <SignUpForm />
       </div>
-
-      {/* <div>
-        <Link href="/login">アカウントをお持ちの方はこちら</Link>
-      </div> */}
     </div>
   )
 }
