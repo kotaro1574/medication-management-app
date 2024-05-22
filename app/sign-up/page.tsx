@@ -1,7 +1,6 @@
-import Link from "next/link"
 import { SignUpForm } from "@/feature/auth/sign-up-form"
 
-export default function SignUpPage() {
+export default async function SignUpPage() {
   return (
     <div className="container max-w-[450px] py-[120px]">
       <h1 className="text-center text-[24px] font-bold text-[#c2b37f]">
@@ -11,10 +10,6 @@ export default function SignUpPage() {
       <div className="mt-[24px]">
         <SignUpForm />
       </div>
-
-      {/* <div>
-        <Link href="/login">アカウントをお持ちの方はこちら</Link>
-      </div> */}
     </div>
   )
 }
