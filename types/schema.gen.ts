@@ -55,6 +55,30 @@ export type Database = {
         }
         Relationships: []
       }
+      groups: {
+        Row: {
+          created_at: string
+          facility_id: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          facility_id: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          facility_id?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       patients: {
         Row: {
           created_at: string | null
@@ -85,21 +109,21 @@ export type Database = {
           facility_id: string
           id: string
           name: string
-          updated_at: string | null
+          updated_at: string
         }
         Insert: {
           created_at?: string
           facility_id: string
           id: string
           name: string
-          updated_at?: string | null
+          updated_at?: string
         }
         Update: {
           created_at?: string
           facility_id?: string
           id?: string
           name?: string
-          updated_at?: string | null
+          updated_at?: string
         }
         Relationships: [
           {

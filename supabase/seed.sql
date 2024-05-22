@@ -4,8 +4,16 @@ values
 ('Ollie.', '4301dd77-f600-45b7-af6e-96a1c3188cec', array['3cc67684-3799-432b-b9a2-077e75737672']),
 ('Totori', '1cdddf84-6dd2-4dc0-800f-65623f07c067', array['75c3a9fe-d3cc-466e-bb82-b449d537c9b4']);
 
+-- facilitiesテーブルにデータを挿入
 INSERT INTO facilities (name) VALUES
 ('健康センターA'),
 ('リハビリテーション施設B'),
 ('メディカルプラザ'),
 ('フィットネスクリニック');
+
+-- groupsテーブルにデータを挿入
+INSERT INTO groups (id, name, facility_id, created_at, updated_at) VALUES
+(uuid_generate_v4(), 'グループA', (SELECT id FROM facilities WHERE name = '健康センターA'), NOW(), NOW()),
+(uuid_generate_v4(), 'グループB', (SELECT id FROM facilities WHERE name = 'リハビリテーション施設B'), NOW(), NOW()),
+(uuid_generate_v4(), 'グループC', (SELECT id FROM facilities WHERE name = 'メディカルプラザ'), NOW(), NOW()),
+(uuid_generate_v4(), 'グループD', (SELECT id FROM facilities WHERE name = 'フィットネスクリニック'), NOW(), NOW());
