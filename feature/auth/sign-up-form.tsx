@@ -83,10 +83,11 @@ export function SignUpForm() {
     email,
     password,
     userName,
+    facilityId,
   }: z.infer<typeof formSchema>) => {
     try {
       setLoading(true)
-      const facilityId = uuidv4()
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
