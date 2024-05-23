@@ -43,8 +43,8 @@ export async function patentsFaceRecognition({
 
     const { data, error } = await supabase
       .from("patients")
-      .select("id, name, face_ids")
-      .filter("face_ids", "cs", `{${faceId}}`)
+      .select("name")
+      .eq("face_id", faceId)
       .single()
 
     if (error) {
