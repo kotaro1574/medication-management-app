@@ -72,15 +72,15 @@ export async function createPatient({
   formData: FormData
   name: string
 }): Promise<Result> {
-  const imageFile = formData.get("imageFile") as File
+  const faceImage = formData.get("faceImage") as File
   try {
-    const { url, fields, key } = await getPresignedUrl(imageFile.type)
+    const { url, fields, key } = await getPresignedUrl(faceImage.type)
 
     const newFormData = new FormData()
     Object.entries(fields).forEach(([key, value]) => {
       newFormData.append(key, value as string)
     })
-    newFormData.append("file", imageFile)
+    newFormData.append("file", faceImage)
 
     // S3に画像をアップロード
     const uploadResponse = await fetch(url, {

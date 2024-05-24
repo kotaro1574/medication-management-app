@@ -1,5 +1,6 @@
 "use client"
 
+import { group } from "console"
 import { useState, useTransition } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
@@ -21,8 +22,22 @@ import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 
 const formSchema = z.object({
-  imageFile: z.custom<File>().nullable(),
+  faceImage: z.custom<File>().nullable(),
   name: z.string(),
+  birthday: z.string(),
+  careLevel: z.enum([
+    "independence",
+    "needs_support_1",
+    "needs_support_2",
+    "needs_nursing_care_1",
+    "needs_nursing_care_2",
+    "needs_nursing_care_3",
+    "needs_nursing_care_4",
+    "needs_nursing_care_5",
+  ]),
+  groupId: z.string(),
+  gender: z.enum(["male", "female"]),
+  drugImages: z.array(z.custom<File>().nullable()),
 })
 
 export function CreatePatientForm() {
@@ -32,18 +47,18 @@ export function CreatePatientForm() {
   const { toast } = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
-      imageFile: null,
+      faceImage: null,
       name: "",
     },
     resolver: zodResolver(formSchema),
   })
 
-  const onSubmit = ({ imageFile, name }: z.infer<typeof formSchema>) => {
-    if (!imageFile) {
+  const onSubmit = ({ faceImage, name }: z.infer<typeof formSchema>) => {
+    if (!faceImage) {
       return
     }
     const formData = new FormData()
-    formData.append("imageFile", imageFile)
+    formData.append("imageFile", faceImage)
 
     startTransaction(() => {
       ;(async () => {
@@ -70,7 +85,7 @@ export function CreatePatientForm() {
           <Controller
             render={({ field: { onChange, value } }) => (
               <FormItem>
-                <FormLabel htmlFor="imageFile">Image</FormLabel>
+                <FormLabel htmlFor="faceImage">認証用人物画像</FormLabel>
                 {value && (
                   <Image
                     src={URL.createObjectURL(value)}
@@ -87,7 +102,7 @@ export function CreatePatientForm() {
                     })} mt-2`}
                     htmlFor="single"
                   >
-                    {form.getValues("imageFile") ? "画像を変更" : "画像を選ぶ"}
+                    {form.getValues("faceImage") ? "画像を変更" : "画像を選ぶ"}
                   </label>
 
                   <input
@@ -108,7 +123,7 @@ export function CreatePatientForm() {
                 </div>
               </FormItem>
             )}
-            name="imageFile"
+            name="faceImage"
             control={form.control}
           />
           <FormField
@@ -118,11 +133,79 @@ export function CreatePatientForm() {
               <FormItem>
                 <FormLabel>名前</FormLabel>
                 <FormControl>
-                  <Input placeholder={"your email address"} {...field} />
+                  <Input {...field} />
                 </FormControl>
                 {form.formState.errors.name && (
                   <FormDescription>
                     {form.formState.errors.name.message}
+                  </FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="birthday"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>生年月日</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                {form.formState.errors.birthday && (
+                  <FormDescription>
+                    {form.formState.errors.birthday.message}
+                  </FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="careLevel"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>介護度</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                {form.formState.errors.careLevel && (
+                  <FormDescription>
+                    {form.formState.errors.careLevel.message}
+                  </FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="groupId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>グループ</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                {form.formState.errors.groupId && (
+                  <FormDescription>
+                    {form.formState.errors.groupId.message}
+                  </FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="gender"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>性別</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                {form.formState.errors.groupId && (
+                  <FormDescription>
+                    {form.formState.errors.groupId.message}
                   </FormDescription>
                 )}
               </FormItem>
