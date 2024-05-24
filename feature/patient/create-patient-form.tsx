@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/select"
 import { useToast } from "@/components/ui/use-toast"
 
+import { GroupsSelect } from "../group/groups-select"
+
 const formSchema = z.object({
   faceImage: z.custom<File>().nullable(),
   name: z.string(),
@@ -220,9 +222,12 @@ export function CreatePatientForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>グループ</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
+                <GroupsSelect
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  isError={!!form.formState.errors.groupId}
+                />
+
                 {form.formState.errors.groupId && (
                   <FormDescription>
                     {form.formState.errors.groupId.message}
