@@ -1,6 +1,5 @@
 "use client"
 
-import { group } from "console"
 import { useState, useTransition } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
@@ -19,6 +18,13 @@ import {
   FormLabel,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { useToast } from "@/components/ui/use-toast"
 
 const formSchema = z.object({
@@ -49,6 +55,10 @@ export function CreatePatientForm() {
     defaultValues: {
       faceImage: null,
       name: "",
+      birthday: "",
+      careLevel: undefined,
+      groupId: "",
+      gender: undefined,
     },
     resolver: zodResolver(formSchema),
   })
@@ -166,9 +176,36 @@ export function CreatePatientForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>介護度</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="independence">自立</SelectItem>
+                    <SelectItem value="needs_support_1">要支援1</SelectItem>
+                    <SelectItem value="needs_support_2">要支援2</SelectItem>
+                    <SelectItem value="needs_nursing_care_1">
+                      要介護1
+                    </SelectItem>
+                    <SelectItem value="needs_nursing_care_2">
+                      要介護2
+                    </SelectItem>
+                    <SelectItem value="needs_nursing_care_3">
+                      要介護3
+                    </SelectItem>
+                    <SelectItem value="needs_nursing_care_4">
+                      要介護4
+                    </SelectItem>
+                    <SelectItem value="needs_nursing_care_5">
+                      要介護5
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
                 {form.formState.errors.careLevel && (
                   <FormDescription>
                     {form.formState.errors.careLevel.message}
