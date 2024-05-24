@@ -69,16 +69,33 @@ export function CreatePatientForm() {
 
   console.log(form.watch())
 
-  const onSubmit = ({ faceImage, name }: z.infer<typeof formSchema>) => {
-    if (!faceImage) {
-      return
-    }
+  const onSubmit = ({
+    faceImage,
+    name,
+    birthday,
+    careLevel,
+    groupId,
+    drugImages,
+    gender,
+  }: z.infer<typeof formSchema>) => {
+    if (!faceImage) return
+
     const formData = new FormData()
-    formData.append("imageFile", faceImage)
+    formData.append("faceImage", faceImage)
+    drugImages.forEach((file) => {
+      formData.append("drugImages", file)
+    })
 
     startTransaction(() => {
       ;(async () => {
-        const response = await createPatient({ formData, name })
+        const response = await createPatient({
+          formData,
+          name,
+          birthday,
+          careLevel,
+          groupId,
+          gender,
+        })
         if (response.success) {
           setError(null)
           router.push("/patients")

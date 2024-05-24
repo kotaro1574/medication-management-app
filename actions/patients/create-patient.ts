@@ -8,6 +8,7 @@ import { DeleteObjectCommand } from "@aws-sdk/client-s3"
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post"
 import { v4 as uuidv4 } from "uuid"
 
+import { Database } from "@/types/schema.gen"
 import { rekognitionClient, s3Client } from "@/lib/aws/aws-clients"
 import { createClient } from "@/lib/supabase/server"
 
@@ -68,73 +69,85 @@ async function getPresignedUrl(fileType: string) {
 export async function createPatient({
   formData,
   name,
+  birthday,
+  careLevel,
+  groupId,
+  gender,
 }: {
   formData: FormData
   name: string
+  birthday: string
+  careLevel: Database["public"]["Enums"]["care_level_enum"]
+  groupId: string
+  gender: Database["public"]["Enums"]["gender_enum"]
 }): Promise<Result> {
   const faceImage = formData.get("faceImage") as File
+  const drugImages = formData.getAll("drugImages") as File[]
+
   try {
-    const { url, fields, key } = await getPresignedUrl(faceImage.type)
+    console.log({ name, birthday, careLevel, groupId, gender })
+    console.log({ faceImage, drugImages })
+    // const { url, fields, key } = await getPresignedUrl(faceImage.type)
 
-    const newFormData = new FormData()
-    Object.entries(fields).forEach(([key, value]) => {
-      newFormData.append(key, value as string)
-    })
-    newFormData.append("file", faceImage)
+    // const newFormData = new FormData()
+    // Object.entries(fields).forEach(([key, value]) => {
+    //   newFormData.append(key, value as string)
+    // })
+    // newFormData.append("file", faceImage)
 
-    // S3に画像をアップロード
-    const uploadResponse = await fetch(url, {
-      method: "POST",
-      body: newFormData,
-    })
+    // // S3に画像をアップロード
+    // const uploadResponse = await fetch(url, {
+    //   method: "POST",
+    //   body: newFormData,
+    // })
 
-    if (!uploadResponse.ok) {
-      throw new Error("S3への画像アップロードに失敗しました。")
-    }
+    // if (!uploadResponse.ok) {
+    //   throw new Error("S3への画像アップロードに失敗しました。")
+    // }
 
-    // AWS Rekognition を呼び出して画像内の顔をインデックスに登録
-    const response = await rekognitionClient.send(
-      new IndexFacesCommand({
-        CollectionId: process.env.AMPLIFY_BUCKET,
-        ExternalImageId: key,
-        Image: {
-          S3Object: {
-            Bucket: process.env.AMPLIFY_BUCKET,
-            Name: key,
-          },
-        },
-      })
-    )
+    // // AWS Rekognition を呼び出して画像内の顔をインデックスに登録
+    // const response = await rekognitionClient.send(
+    //   new IndexFacesCommand({
+    //     CollectionId: process.env.AMPLIFY_BUCKET,
+    //     ExternalImageId: key,
+    //     Image: {
+    //       S3Object: {
+    //         Bucket: process.env.AMPLIFY_BUCKET,
+    //         Name: key,
+    //       },
+    //     },
+    //   })
+    // )
 
-    const faceIds =
-      response.FaceRecords?.map((record) => record?.Face?.FaceId ?? "") ?? []
+    // const faceIds =
+    //   response.FaceRecords?.map((record) => record?.Face?.FaceId ?? "") ?? []
 
-    if (!response.FaceRecords || response.FaceRecords.length === 0) {
-      await deleteImage(key)
-      throw new Error("画像内に顔が見つかりませんでした")
-    }
+    // if (!response.FaceRecords || response.FaceRecords.length === 0) {
+    //   await deleteImage(key)
+    //   throw new Error("画像内に顔が見つかりませんでした")
+    // }
 
-    if (response.FaceRecords.length > 1) {
-      await deleteImage(key)
-      await deleteFace(process.env.AMPLIFY_BUCKET ?? "", faceIds)
-      throw new Error("画像内に顔が1つではありません")
-    }
+    // if (response.FaceRecords.length > 1) {
+    //   await deleteImage(key)
+    //   await deleteFace(process.env.AMPLIFY_BUCKET ?? "", faceIds)
+    //   throw new Error("画像内に顔が1つではありません")
+    // }
 
-    const supabase = createClient()
+    // const supabase = createClient()
 
-    const { error } = await supabase.from("patients").insert({
-      name,
-      image_id: key,
-      face_ids: faceIds,
-    })
+    // const { error } = await supabase.from("patients").insert({
+    //   name,
+    //   image_id: key,
+    //   face_ids: faceIds,
+    // })
 
-    if (error) {
-      await deleteImage(key)
-      await deleteFace(process.env.AMPLIFY_BUCKET ?? "", faceIds)
-      throw new Error(
-        `患者データの挿入時にエラーが発生しました: ${error.message}`
-      )
-    }
+    // if (error) {
+    //   await deleteImage(key)
+    //   await deleteFace(process.env.AMPLIFY_BUCKET ?? "", faceIds)
+    //   throw new Error(
+    //     `患者データの挿入時にエラーが発生しました: ${error.message}`
+    //   )
+    // }
   } catch (error) {
     if (error instanceof Error) {
       return { success: false, error: error.message }
