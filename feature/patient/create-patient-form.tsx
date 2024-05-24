@@ -18,6 +18,7 @@ import {
   FormLabel,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Select,
   SelectContent,
@@ -45,7 +46,7 @@ const formSchema = z.object({
   ]),
   groupId: z.string(),
   gender: z.enum(["male", "female"]),
-  drugImages: z.array(z.custom<File>().nullable()),
+  drugImages: z.array(z.custom<File>()),
 })
 
 export function CreatePatientForm() {
@@ -61,9 +62,12 @@ export function CreatePatientForm() {
       careLevel: undefined,
       groupId: "",
       gender: undefined,
+      drugImages: [],
     },
     resolver: zodResolver(formSchema),
   })
+
+  console.log(form.watch())
 
   const onSubmit = ({ faceImage, name }: z.infer<typeof formSchema>) => {
     if (!faceImage) {
@@ -243,7 +247,24 @@ export function CreatePatientForm() {
               <FormItem>
                 <FormLabel>性別</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-1"
+                  >
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="male" />
+                      </FormControl>
+                      <FormLabel className="font-normal">男性</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="female" />
+                      </FormControl>
+                      <FormLabel className="font-normal">女性</FormLabel>
+                    </FormItem>
+                  </RadioGroup>
                 </FormControl>
                 {form.formState.errors.groupId && (
                   <FormDescription>
@@ -252,6 +273,52 @@ export function CreatePatientForm() {
                 )}
               </FormItem>
             )}
+          />
+          <Controller
+            render={({ field: { onChange, value } }) => (
+              <FormItem>
+                <FormLabel>お薬情報</FormLabel>
+                {value.length > 0 &&
+                  value.map((file) => (
+                    <Image
+                      key={file.name}
+                      src={URL.createObjectURL(file)}
+                      width={300}
+                      alt="selected_image"
+                      height={300}
+                    />
+                  ))}
+                <div className="relative">
+                  <label
+                    className={`${buttonVariants({
+                      variant: "default",
+                      size: "default",
+                    })} mt-2`}
+                    htmlFor="multi"
+                  >
+                    {value.length > 0 ? "画像を変更" : "画像を選ぶ"}
+                  </label>
+
+                  <input
+                    style={{
+                      visibility: "hidden",
+                      position: "absolute",
+                      width: 0,
+                    }}
+                    type="file"
+                    id="multi"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => {
+                      if (!e.target.files) return
+                      onChange(Array.from(e.target.files))
+                    }}
+                  />
+                </div>
+              </FormItem>
+            )}
+            name="drugImages"
+            control={form.control}
           />
           <Button disabled={loading} type="submit">
             {loading ? "loading..." : "Create Patient"}
