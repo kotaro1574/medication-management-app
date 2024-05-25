@@ -34,6 +34,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      drugs: {
+        Row: {
+          created_at: string
+          id: string
+          image_id: string
+          patient_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_id: string
+          patient_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_id?: string
+          patient_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       facilities: {
         Row: {
           created_at: string
