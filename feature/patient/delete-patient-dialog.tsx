@@ -31,8 +31,8 @@ export function DeletePatientDialog({ trigger, patient }: Props) {
         const response = await deletePatient({
           id: patient.id,
           faceData: {
-            faceIds: patient.face_ids ?? [],
-            imageId: patient.image_id ?? "",
+            faceId: patient.face_id,
+            imageId: patient.image_id,
           },
         })
         if (response.success) {
