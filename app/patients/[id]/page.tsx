@@ -21,7 +21,7 @@ export default async function PatientPage({
     return { status: 404 }
   }
 
-  const { url } = await getS3Data(data.image_id ?? "")
+  const { url } = await getS3Data(data.image_id, process.env.FACES_BUCKET ?? "")
 
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">

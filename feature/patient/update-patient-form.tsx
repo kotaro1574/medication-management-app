@@ -59,6 +59,7 @@ type Props = {
 }
 
 export function UpdatePatientForm({ patient, faceUrl, drugUrls }: Props) {
+  console.log(drugUrls)
   const [loading, startTransaction] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()

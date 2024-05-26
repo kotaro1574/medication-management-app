@@ -31,19 +31,25 @@ export default async function EditPatientPage({
   }
 
   // 患者の顔画像のURLを取得
-  const { url: faceUrl } = await getS3Data(patient.image_id)
+  const { url: faceUrl } = await getS3Data(
+    patient.image_id,
+    process.env.FACES_BUCKET ?? ""
+  )
 
   // 薬の画像のURLを取得
   const drugUrls = await Promise.all(
     drugs.map(async (drug) => {
-      const { url } = await getS3Data(drug.image_id)
+      const { url } = await getS3Data(
+        drug.image_id,
+        process.env.DRUGS_BUCKET ?? ""
+      )
       return url
     })
   )
 
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
-      <div className="flex max-w-[980px] flex-col items-start gap-2">
+      <div className="mzax-w-[980px] flex flex-col items-start gap-2">
         <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
           Edit Patient
         </h1>
