@@ -9,17 +9,37 @@ export default async function EditPatientPage({
   params: { id: string }
 }) {
   const supabase = createClient()
-  const { data } = await supabase
+  const { data: patient, error: patientError } = await supabase
     .from("patients")
     .select("*")
     .eq("id", params.id)
     .single()
 
-  if (!data) {
-    return { status: 404 }
+  if (patientError) {
+    console.error(patientError)
+    return <div>Error</div>
   }
 
-  const { src } = await getS3Data(data.image_id ?? "")
+  const { data: drugs, error: drugsError } = await supabase
+    .from("drugs")
+    .select("image_id")
+    .eq("patient_id", patient.id)
+
+  if (drugsError) {
+    console.error(drugsError)
+    return <div>Error</div>
+  }
+
+  // 患者の顔画像のURLを取得
+  const { url: faceUrl } = await getS3Data(patient.image_id)
+
+  // 薬の画像のURLを取得
+  const drugUrls = await Promise.all(
+    drugs.map(async (drug) => {
+      const { url } = await getS3Data(drug.image_id)
+      return url
+    })
+  )
 
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
@@ -28,7 +48,11 @@ export default async function EditPatientPage({
           Edit Patient
         </h1>
 
-        <UpdatePatientForm patient={data} url={src} />
+        <UpdatePatientForm
+          patient={patient}
+          faceUrl={faceUrl}
+          drugUrls={drugUrls}
+        />
       </div>
     </section>
   )

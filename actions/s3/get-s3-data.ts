@@ -9,7 +9,7 @@ const Bucket = process.env.AMPLIFY_BUCKET
 
 export async function getS3Data(key: string) {
   const command = new GetObjectCommand({ Bucket, Key: key })
-  const src = await getSignedUrl(s3Client, command, { expiresIn: 3600 })
+  const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 })
 
-  return { src }
+  return { url }
 }

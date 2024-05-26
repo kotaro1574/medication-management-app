@@ -21,7 +21,7 @@ export default async function PatientPage({
     return { status: 404 }
   }
 
-  const { src } = await getS3Data(data.image_id ?? "")
+  const { url } = await getS3Data(data.image_id ?? "")
 
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
@@ -29,7 +29,7 @@ export default async function PatientPage({
         <Link href={`/patients/${data.id}/edit`}>Edit</Link>
       </div>
       <Image
-        src={src}
+        src={url}
         alt="S3 Image"
         placeholder={placeholder({ w: 300, h: 300 })}
         width={300}
