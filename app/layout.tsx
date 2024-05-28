@@ -29,13 +29,13 @@ interface RootLayoutProps {
 export default async function RootLayout({ children }: RootLayoutProps) {
   const supabase = createClient()
   const {
-    data: { session },
-  } = await supabase.auth.getSession()
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  const { data: profile, error } = await supabase
+  const { data: profile } = await supabase
     .from("profiles")
     .select("name")
-    .eq("id", session?.user.id ?? "")
+    .eq("id", user?.id ?? "")
     .single()
 
   return (
@@ -50,7 +50,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         >
           <ToasterProvider>
             <div className="relative flex min-h-screen flex-col">
-              {session && <SiteHeader profileName={profile?.name ?? ""} />}
+              {profile && <SiteHeader profileName={profile?.name ?? ""} />}
               <div className="flex-1">{children}</div>
             </div>
             <TailwindIndicator />

@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-type Facility = {
+type Group = {
   id: string
   name: string
 }
@@ -23,28 +23,41 @@ type Props = {
   isError: boolean
 }
 
-export function FacilitiesSelect({
-  onValueChange,
-  defaultValue,
-  isError,
-}: Props) {
+export function GroupsSelect({ onValueChange, defaultValue, isError }: Props) {
   const supabase = createClient()
-  const [facilities, setFacilities] = useState<Facility[]>([])
+  const [groups, setGroups] = useState<Group[]>([])
 
   useEffect(() => {
-    async function fetchFacilities() {
-      const { data, error } = await supabase
-        .from("facilities")
-        .select("id, name")
-      if (error) {
-        console.error("Error fetching facilities", error)
+    async function fetchGroups() {
+      const { data } = await supabase.auth.getUser()
+      if (!data.user) {
         return
       }
 
-      setFacilities(data)
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("facility_id")
+        .eq("id", data.user.id)
+        .single()
+
+      if (!profile) {
+        return
+      }
+
+      const { data: groups, error } = await supabase
+        .from("groups")
+        .select("id, name")
+        .eq("facility_id", profile.facility_id)
+
+      if (error) {
+        console.error("Error fetching groups", error)
+        return
+      }
+
+      setGroups(groups)
     }
 
-    fetchFacilities()
+    fetchGroups()
   }, [supabase])
 
   return (
@@ -56,10 +69,10 @@ export function FacilitiesSelect({
       </FormControl>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>施設を選択</SelectLabel>
-          {facilities.map((facility) => (
-            <SelectItem key={facility.id} value={facility.id}>
-              {facility.name}
+          <SelectLabel>グループを選択</SelectLabel>
+          {groups.map((group) => (
+            <SelectItem key={group.id} value={group.id}>
+              {group.name}
             </SelectItem>
           ))}
         </SelectGroup>
