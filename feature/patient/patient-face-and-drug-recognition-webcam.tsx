@@ -9,27 +9,35 @@ type Props = {
   videoConstraints: MediaTrackConstraints
   webcamRef: RefObject<Webcam>
   patientName: string | null
+  isDrugRecognition: boolean
   loading: boolean
-  faceError: string | null
+  error: string | null
 }
 
 export default function PatientFaceAndDrugRecognitionWebcam({
   videoConstraints,
   webcamRef,
   patientName,
-  faceError,
+  isDrugRecognition,
+  error,
   loading,
 }: Props) {
-  const recongitionDescription = !patientName
-    ? "服薬者の撮影をしてください。"
-    : "薬の撮影をしてください"
+  const recognitionDescription =
+    !patientName && !isDrugRecognition
+      ? "服薬者の撮影をしてください。"
+      : patientName && !isDrugRecognition
+      ? "薬の撮影をしてください"
+      : "認識完了"
+
+  const isFaceRecognition = !!patientName
+  const isError = !!error
 
   const getBackgroundColor = (
-    value: string | null,
-    error: string | null
+    isRecognition: boolean,
+    isError: boolean
   ): string => {
-    if (error) return "rgba(181, 15, 15, 0.6)"
-    if (value && !error) return "rgba(88, 105, 193, 0.6)"
+    if (isError) return "rgba(181, 15, 15, 0.6)"
+    if (isRecognition && !isError) return "rgba(88, 105, 193, 0.6)"
     return "rgba(163, 163, 163, 0.4)"
   }
 
@@ -50,17 +58,17 @@ export default function PatientFaceAndDrugRecognitionWebcam({
       />
 
       <p className="text-md absolute top-[24px] w-full text-center font-semibold">
-        {loading ? "認証中..." : recongitionDescription}
+        {loading ? "認証中..." : recognitionDescription}
       </p>
-      {faceError && (
+      {error && (
         <p className="text-md absolute top-[56px] w-full text-center font-semibold text-[#FF0000]">
-          {faceError}
+          {error}
         </p>
       )}
       <div className="absolute inset-x-2 bottom-2 space-y-2">
         <div
           style={{
-            backgroundColor: getBackgroundColor(patientName, faceError),
+            backgroundColor: getBackgroundColor(isFaceRecognition, isError),
           }}
           className="flex items-center gap-4 rounded-2xl px-2 py-2.5 backdrop-blur-sm"
         >
@@ -69,10 +77,16 @@ export default function PatientFaceAndDrugRecognitionWebcam({
           </div>
           {patientName && <p className="text-xl">{patientName}</p>}
         </div>
-        <div className="flex items-center gap-4 rounded-2xl bg-[#A4A4A4]/40 px-2 py-2.5">
+        <div
+          style={{
+            backgroundColor: getBackgroundColor(isDrugRecognition, isError),
+          }}
+          className="flex items-center gap-4 rounded-2xl bg-[#A4A4A4]/40 px-2 py-2.5"
+        >
           <div className="flex size-10 items-center justify-center rounded-full bg-white">
             <Icons.drug />
           </div>
+          {isDrugRecognition && <p className="text-xl">{patientName}</p>}
         </div>
       </div>
     </div>

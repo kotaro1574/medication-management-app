@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState, useTransition } from "react"
 import dynamic from "next/dynamic"
+import { patentsDrugRecognition } from "@/actions/patients/patents-drug-recognition"
 import { patentsFaceRecognition } from "@/actions/patients/patents-face-recognition"
 import Webcam from "react-webcam"
 
@@ -23,8 +24,9 @@ const FACING_MODE_ENVIRONMENT = "environment"
 
 export default function TopPage() {
   const [loading, startTransaction] = useTransition()
-  const [faceError, setFaceError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
   const [patentName, setPatentName] = useState<string | null>(null)
+  const [isDrugRecognition, setIsDrugRecognition] = useState<boolean>(false)
   const webcamRef = useRef<Webcam>(null)
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER)
 
@@ -46,16 +48,29 @@ export default function TopPage() {
 
     startTransaction(() => {
       ;(async () => {
-        const response = await patentsFaceRecognition({ imageSrc })
-        if (response.success) {
-          setPatentName(response.name)
-          setFaceError(null)
+        if (!patentName) {
+          const response = await patentsFaceRecognition({ imageSrc })
+          if (response.success) {
+            setPatentName(response.name)
+            setError(null)
+          } else {
+            setError(response.error)
+          }
         } else {
-          setFaceError(response.error)
+          const response = await patentsDrugRecognition({
+            imageSrc,
+            patentName,
+          })
+          if (response.success) {
+            setIsDrugRecognition(true)
+            setError(null)
+          } else {
+            setError(response.error)
+          }
         }
       })()
     })
-  }, [webcamRef])
+  }, [patentName])
 
   return (
     <div className="p-4">
@@ -64,8 +79,9 @@ export default function TopPage() {
           videoConstraints={videoConstraints}
           webcamRef={webcamRef}
           patientName={patentName}
+          isDrugRecognition={isDrugRecognition}
           loading={loading}
-          faceError={faceError}
+          error={error}
         />
 
         <div className="relative mt-4 flex w-full items-center justify-center">
