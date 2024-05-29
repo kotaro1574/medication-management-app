@@ -61,6 +61,6 @@ export async function patentsDrugRecognition({
   }
   return {
     success: true,
-    message: "薬の認識完了",
+    message: "薬の認証完了",
   }
 }

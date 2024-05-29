@@ -30,7 +30,7 @@ export default function PatientFaceAndDrugRecognitionWebcam({
       ? "服薬者の撮影をしてください。"
       : isFaceRecognition && !isDrugRecognition
       ? "薬の撮影をしてください"
-      : "認識完了"
+      : "認証完了"
 
   const getBackgroundColor = (
     isRecognition: boolean,
