@@ -67,15 +67,12 @@ export default function PatientFaceAndDrugRecognitionWebcam({
           <div className="flex size-10 items-center justify-center rounded-full bg-white">
             <Icons.user />
           </div>
-          <p className="text-xl">
-            {!patientName ? "患者の名前が入ります" : patientName}
-          </p>
+          {patientName && <p className="text-xl">{patientName}</p>}
         </div>
         <div className="flex items-center gap-4 rounded-2xl bg-[#A4A4A4]/40 px-2 py-2.5">
           <div className="flex size-10 items-center justify-center rounded-full bg-white">
             <Icons.drug />
           </div>
-          <p className="text-xl">薬の名前が入ります</p>
         </div>
       </div>
     </div>
