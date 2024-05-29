@@ -27,8 +27,6 @@ export async function patentsDrugRecognition({
 
     const isPatentNameIncluded = detectedText.includes(patentName)
 
-    console.log(detectedText)
-
     if (!isPatentNameIncluded) {
       throw new Error("服薬者の名前が含まれていません")
     }
