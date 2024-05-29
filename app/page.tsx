@@ -2,12 +2,14 @@
 
 import { useCallback, useRef, useState, useTransition } from "react"
 import dynamic from "next/dynamic"
+import { useRouter } from "next/navigation"
 import { patentsDrugRecognition } from "@/actions/patients/patents-drug-recognition"
 import { patentsFaceRecognition } from "@/actions/patients/patents-face-recognition"
 import Webcam from "react-webcam"
 
 import { Icons } from "@/components/ui/icons"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useToast } from "@/components/ui/use-toast"
 
 const DynamicPatientFaceAndDrugRecognitionWebcam = dynamic(
   () => import("@/feature/patient/patient-face-and-drug-recognition-webcam"),
@@ -25,10 +27,14 @@ const FACING_MODE_ENVIRONMENT = "environment"
 export default function TopPage() {
   const [loading, startTransaction] = useTransition()
   const [error, setError] = useState<string | null>(null)
-  const [patentName, setPatentName] = useState<string | null>(null)
+  const [patent, setPatent] = useState<{
+    name: string
+    id: string
+  } | null>(null)
   const [isDrugRecognition, setIsDrugRecognition] = useState<boolean>(false)
   const webcamRef = useRef<Webcam>(null)
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER)
+  const { toast } = useToast()
 
   let videoConstraints: MediaTrackConstraints = {
     facingMode: facingMode,
@@ -48,10 +54,10 @@ export default function TopPage() {
 
     startTransaction(() => {
       ;(async () => {
-        if (!patentName) {
+        if (!patent) {
           const response = await patentsFaceRecognition({ imageSrc })
           if (response.success) {
-            setPatentName(response.name)
+            setPatent(response.data)
             setError(null)
           } else {
             setError(response.error)
@@ -59,18 +65,24 @@ export default function TopPage() {
         } else {
           const response = await patentsDrugRecognition({
             imageSrc,
-            patentName,
+            patent: patent,
           })
           if (response.success) {
             setIsDrugRecognition(true)
             setError(null)
+            toast({ description: response.message })
+
+            setTimeout(() => {
+              setPatent(null)
+              setIsDrugRecognition(false)
+            }, 5000)
           } else {
             setError(response.error)
           }
         }
       })()
     })
-  }, [patentName])
+  }, [patent, toast])
 
   return (
     <div className="p-4">
@@ -78,7 +90,7 @@ export default function TopPage() {
         <DynamicPatientFaceAndDrugRecognitionWebcam
           videoConstraints={videoConstraints}
           webcamRef={webcamRef}
-          patientName={patentName}
+          patientName={patent?.name ?? null}
           isDrugRecognition={isDrugRecognition}
           loading={loading}
           error={error}

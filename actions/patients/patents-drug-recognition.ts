@@ -3,13 +3,17 @@
 import Vision from "@google-cloud/vision"
 
 import { ActionResult } from "@/types/action"
+import { createClient } from "@/lib/supabase/server"
 
 export async function patentsDrugRecognition({
   imageSrc,
-  patentName,
+  patent,
 }: {
   imageSrc: string
-  patentName: string
+  patent: {
+    name: string
+    id: string
+  }
 }): Promise<ActionResult> {
   try {
     const client = new Vision.ImageAnnotatorClient({
@@ -25,10 +29,29 @@ export async function patentsDrugRecognition({
       throw new Error("テキストが検出されませんでした")
     }
 
-    const isPatentNameIncluded = detectedText.includes(patentName)
+    const isPatentNameIncluded = detectedText.includes(patent.name)
 
     if (!isPatentNameIncluded) {
       throw new Error("服薬者の名前が含まれていません")
+    }
+
+    const supabase = createClient()
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) {
+      throw new Error("ユーザーが見つかりません")
+    }
+
+    const { error } = await supabase.from("drug_histories").insert({
+      patent_id: patent.id,
+      user_id: user.id,
+    })
+
+    if (error) {
+      throw error
     }
   } catch (error) {
     return {

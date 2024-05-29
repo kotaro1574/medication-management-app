@@ -22,15 +22,15 @@ export default function PatientFaceAndDrugRecognitionWebcam({
   error,
   loading,
 }: Props) {
-  const recognitionDescription =
-    !patientName && !isDrugRecognition
-      ? "服薬者の撮影をしてください。"
-      : patientName && !isDrugRecognition
-      ? "薬の撮影をしてください"
-      : "認識完了"
-
   const isFaceRecognition = !!patientName
   const isError = !!error
+
+  const recognitionDescription =
+    !isFaceRecognition && !isDrugRecognition
+      ? "服薬者の撮影をしてください。"
+      : isFaceRecognition && !isDrugRecognition
+      ? "薬の撮影をしてください"
+      : "認識完了"
 
   const getBackgroundColor = (
     isRecognition: boolean,
