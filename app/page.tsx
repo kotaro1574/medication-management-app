@@ -36,6 +36,9 @@ export default function TopPage() {
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER)
   const { toast } = useToast()
 
+  const successSound = new Audio("/success-sound.mp3")
+  const errorSound = new Audio("/error-sound.mp3")
+
   let videoConstraints: MediaTrackConstraints = {
     facingMode: facingMode,
   }
@@ -59,8 +62,10 @@ export default function TopPage() {
           if (response.success) {
             setPatent(response.data)
             setError(null)
+            successSound.play()
           } else {
             setError(response.error)
+            errorSound.play()
           }
         } else {
           const response = await patentsDrugRecognition({
@@ -70,6 +75,7 @@ export default function TopPage() {
           if (response.success) {
             setIsDrugRecognition(true)
             setError(null)
+            successSound.play()
             toast({ description: response.message })
 
             setTimeout(() => {
@@ -78,6 +84,7 @@ export default function TopPage() {
             }, 5000)
           } else {
             setError(response.error)
+            errorSound.play()
           }
         }
       })()
