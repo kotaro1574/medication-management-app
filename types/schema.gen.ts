@@ -34,6 +34,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      drug_histories: {
+        Row: {
+          created_at: string
+          id: string
+          patent_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          patent_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          patent_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       drugs: {
         Row: {
           created_at: string

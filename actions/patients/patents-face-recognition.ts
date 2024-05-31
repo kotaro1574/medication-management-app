@@ -9,7 +9,10 @@ type Result =
   | {
       success: true
       message: string
-      name: string
+      data: {
+        name: string
+        id: string
+      }
     }
   | {
       success: false
@@ -43,7 +46,7 @@ export async function patentsFaceRecognition({
 
     const { data, error } = await supabase
       .from("patients")
-      .select("name")
+      .select("id, name")
       .eq("face_id", faceId)
       .single()
 
@@ -58,7 +61,10 @@ export async function patentsFaceRecognition({
     return {
       success: true,
       message: "服薬者の顔認証完了",
-      name: data.name ?? "",
+      data: {
+        name: data.name,
+        id: data.id,
+      },
     }
   } catch (error) {
     if (error instanceof Error) {
