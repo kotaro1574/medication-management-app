@@ -36,9 +36,6 @@ export default function TopPage() {
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER)
   const { toast } = useToast()
 
-  const successSound = new Audio("/success-sound.mp3")
-  const errorSound = new Audio("/error-sound.mp3")
-
   let videoConstraints: MediaTrackConstraints = {
     facingMode: facingMode,
   }
@@ -54,6 +51,9 @@ export default function TopPage() {
   const onRecognition = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot()?.split(",")[1] ?? ""
     if (!imageSrc) return
+
+    const successSound = new Audio("/success-sound.mp3")
+    const errorSound = new Audio("/error-sound.mp3")
 
     startTransaction(() => {
       ;(async () => {
