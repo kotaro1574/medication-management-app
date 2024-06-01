@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {},
   images: {
     remotePatterns: [
       {
@@ -10,7 +9,31 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "drugs-dev.s3.ap-northeast-1.amazonaws.com",
+        hostname: "patient-drugs.s3.ap-northeast-1.amazonaws.com",
+      },
+      {
+        protocol: "https",
+        hostname: "patient-faces-stg.s3.ap-northeast-1.amazonaws.com",
+      },
+      {
+        protocol: "https",
+        hostname: "patient-drugs-stg.s3.ap-northeast-1.amazonaws.com",
+      },
+      {
+        protocol: "https",
+        hostname: "patient-faces-dev.s3.ap-northeast-1.amazonaws.com",
+      },
+      {
+        protocol: "https",
+        hostname: "patient-drugs-dev.s3.ap-northeast-1.amazonaws.com",
+      },
+      {
+        protocol: "https",
+        hostname: "patient-faces-localhost.s3.ap-northeast-1.amazonaws.com",
+      },
+      {
+        protocol: "https",
+        hostname: "patient-drugs-localhost.s3.ap-northeast-1.amazonaws.com",
       },
     ],
   },
