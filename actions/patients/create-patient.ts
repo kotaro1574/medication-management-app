@@ -14,7 +14,8 @@ import { createClient } from "@/lib/supabase/server"
 
 type Props = {
   formData: FormData
-  name: string
+  lastName: string
+  firstName: string
   birthday: string
   careLevel: Database["public"]["Enums"]["care_level_enum"]
   groupId: string
@@ -23,7 +24,8 @@ type Props = {
 
 export async function createPatient({
   formData,
-  name,
+  lastName,
+  firstName,
   birthday,
   careLevel,
   groupId,
@@ -63,8 +65,8 @@ export async function createPatient({
     const { data: patient, error: patientError } = await supabase
       .from("patients")
       .insert({
-        last_name: name,
-        first_name: "",
+        last_name: lastName,
+        first_name: firstName,
         image_id: faceImageId,
         face_ids: [faceId],
         birthday,
