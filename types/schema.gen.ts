@@ -131,12 +131,12 @@ export type Database = {
           created_at: string
           face_ids: string[]
           facility_id: string
-          firstname: string
+          first_name: string
           gender: Database["public"]["Enums"]["gender_enum"]
           group_id: string
           id: string
           image_id: string
-          lastname: string
+          last_name: string
           updated_at: string
         }
         Insert: {
@@ -145,12 +145,12 @@ export type Database = {
           created_at?: string
           face_ids: string[]
           facility_id: string
-          firstname: string
+          first_name: string
           gender: Database["public"]["Enums"]["gender_enum"]
           group_id: string
           id?: string
           image_id: string
-          lastname: string
+          last_name: string
           updated_at?: string
         }
         Update: {
@@ -159,12 +159,12 @@ export type Database = {
           created_at?: string
           face_ids?: string[]
           facility_id?: string
-          firstname?: string
+          first_name?: string
           gender?: Database["public"]["Enums"]["gender_enum"]
           group_id?: string
           id?: string
           image_id?: string
-          lastname?: string
+          last_name?: string
           updated_at?: string
         }
         Relationships: []
