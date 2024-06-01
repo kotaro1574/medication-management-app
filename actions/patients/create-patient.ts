@@ -63,9 +63,10 @@ export async function createPatient({
     const { data: patient, error: patientError } = await supabase
       .from("patients")
       .insert({
-        name,
+        last_name: name,
+        first_name: "",
         image_id: faceImageId,
-        face_id: faceId,
+        face_ids: [faceId],
         birthday,
         care_level: careLevel,
         group_id: groupId,

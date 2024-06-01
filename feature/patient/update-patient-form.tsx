@@ -67,7 +67,7 @@ export function UpdatePatientForm({ patient, faceUrl, drugUrls }: Props) {
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       faceImage: null,
-      name: patient.name,
+      name: patient.last_name + patient.first_name,
       birthday: patient.birthday,
       careLevel: patient.care_level,
       groupId: patient.group_id,

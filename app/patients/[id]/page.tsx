@@ -42,7 +42,7 @@ export default async function PatientPage({
       />
 
       <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-        {data.name}
+        {data.last_name} {data.first_name}
       </h1>
     </section>
   )

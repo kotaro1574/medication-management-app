@@ -31,7 +31,7 @@ export function DeletePatientDialog({ trigger, patient }: Props) {
         const response = await deletePatient({
           id: patient.id,
           faceData: {
-            faceId: patient.face_id,
+            faceIds: patient.face_ids,
             imageId: patient.image_id,
           },
         })
@@ -53,7 +53,7 @@ export function DeletePatientDialog({ trigger, patient }: Props) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>患者を削除しますか？</DialogTitle>
-          <DialogDescription>{`${patient.name}のデータは完全に削除されます。`}</DialogDescription>
+          <DialogDescription>{`${patient.last_name} ${patient.first_name}のデータは完全に削除されます。`}</DialogDescription>
         </DialogHeader>
         <DialogFooter className="sm:justify-start">
           <DialogClose asChild>
