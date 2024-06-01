@@ -67,8 +67,6 @@ export function CreatePatientForm() {
     resolver: zodResolver(formSchema),
   })
 
-  console.log(form.watch())
-
   const onSubmit = ({
     faceImage,
     name,
