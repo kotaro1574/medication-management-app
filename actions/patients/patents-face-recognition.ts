@@ -9,7 +9,10 @@ type Result =
   | {
       success: true
       message: string
-      name: string
+      data: {
+        name: string
+        id: string
+      }
     }
   | {
       success: false
@@ -24,7 +27,7 @@ export async function patentsFaceRecognition({
   try {
     const response = await rekognitionClient.send(
       new SearchFacesByImageCommand({
-        CollectionId: process.env.AMPLIFY_BUCKET,
+        CollectionId: process.env.FACES_BUCKET,
         Image: {
           Bytes: Buffer.from(imageSrc, "base64"),
         },
@@ -43,8 +46,8 @@ export async function patentsFaceRecognition({
 
     const { data, error } = await supabase
       .from("patients")
-      .select("id, name, face_ids")
-      .filter("face_ids", "cs", `{${faceId}}`)
+      .select("id, name")
+      .eq("face_id", faceId)
       .single()
 
     if (error) {
@@ -58,7 +61,10 @@ export async function patentsFaceRecognition({
     return {
       success: true,
       message: "服薬者の顔認証完了",
-      name: data.name ?? "",
+      data: {
+        name: data.name,
+        id: data.id,
+      },
     }
   } catch (error) {
     if (error instanceof Error) {

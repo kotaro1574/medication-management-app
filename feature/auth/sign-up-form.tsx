@@ -29,6 +29,8 @@ import {
 } from "@/components/ui/select"
 import { useToast } from "@/components/ui/use-toast"
 
+import { FacilitiesSelect } from "../facility/facilities-select"
+
 const allowedSpecialCharacters = "!@#$%^&*()_+-=[]{}|;:',.<>/?"
 
 const formSchema = z.object({
@@ -81,10 +83,11 @@ export function SignUpForm() {
     email,
     password,
     userName,
+    facilityId,
   }: z.infer<typeof formSchema>) => {
     try {
       setLoading(true)
-      const facilityId = uuidv4()
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -185,21 +188,11 @@ export function SignUpForm() {
           render={({ field }) => (
             <FormItem className="mt-4">
               <FormLabel>所属施設</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger isError={!!form.formState.errors.facilityId}>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>施設を選択</SelectLabel>
-                    <SelectItem value="apple">Apple</SelectItem>
-                    <SelectItem value="banana">Banana</SelectItem>
-                    <SelectItem value="blueberry">Blueberry</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              <FacilitiesSelect
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                isError={!!form.formState.errors.facilityId}
+              />
 
               {form.formState.errors.facilityId && (
                 <FormDescription>

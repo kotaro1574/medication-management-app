@@ -32,7 +32,10 @@ export async function updatePatient({
 }): Promise<Result> {
   const imageFile = formData.get("imageFile") as File
   try {
-    const { url, fields, key } = await getPresignedUrl(imageFile.type)
+    const { url, fields, key } = await getPresignedUrl(
+      imageFile.type,
+      process.env.FACES_BUCKET ?? ""
+    )
 
     const newFormData = new FormData()
     Object.entries(fields).forEach(([key, value]) => {
@@ -51,17 +54,17 @@ export async function updatePatient({
     }
 
     // インデックスに登録する前に既存の顔情報を削除
-    await deleteImage(faceData.imageId)
-    await deleteFace(process.env.AMPLIFY_BUCKET ?? "", faceData.faceIds)
+    await deleteImage(faceData.imageId, process.env.FACES_BUCKET ?? "")
+    await deleteFace(process.env.FACES_BUCKET ?? "", faceData.faceIds)
 
     // AWS Rekognition を呼び出して画像内の顔をインデックスに登録
     const response = await rekognitionClient.send(
       new IndexFacesCommand({
-        CollectionId: process.env.AMPLIFY_BUCKET,
+        CollectionId: process.env.FACES_BUCKET,
         ExternalImageId: key,
         Image: {
           S3Object: {
-            Bucket: process.env.AMPLIFY_BUCKET,
+            Bucket: process.env.FACES_BUCKET,
             Name: key,
           },
         },
@@ -72,13 +75,13 @@ export async function updatePatient({
       response.FaceRecords?.map((record) => record?.Face?.FaceId ?? "") ?? []
 
     if (!response.FaceRecords || response.FaceRecords.length === 0) {
-      await deleteImage(key)
+      await deleteImage(key, process.env.FACES_BUCKET ?? "")
       throw new Error("画像内に顔が見つかりませんでした")
     }
 
     if (response.FaceRecords.length > 1) {
-      await deleteImage(key)
-      await deleteFace(process.env.AMPLIFY_BUCKET ?? "", faceIds)
+      await deleteImage(key, process.env.FACES_BUCKET ?? "")
+      await deleteFace(process.env.FACES_BUCKET ?? "", faceIds)
       throw new Error("画像内に顔が1つではありません")
     }
 
@@ -94,8 +97,8 @@ export async function updatePatient({
       .eq("id", id)
 
     if (error) {
-      await deleteImage(key)
-      await deleteFace(process.env.AMPLIFY_BUCKET ?? "", faceIds)
+      await deleteImage(key, process.env.FACES_BUCKET ?? "")
+      await deleteFace(process.env.FACES_BUCKET ?? "", faceIds)
       throw new Error(
         `患者データの挿入時にエラーが発生しました: ${error.message}`
       )

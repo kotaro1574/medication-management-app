@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
 
     const response = await rekognitionClient.send(
       new SearchFacesByImageCommand({
-        CollectionId: process.env.AMPLIFY_BUCKET,
+        CollectionId: process.env.FACES_BUCKET,
         Image: {
           Bytes: Buffer.from(image, "base64"),
         },

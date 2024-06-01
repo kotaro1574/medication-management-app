@@ -34,27 +34,135 @@ export type Database = {
   }
   public: {
     Tables: {
-      patients: {
+      drug_histories: {
         Row: {
-          created_at: string | null
-          face_ids: string[] | null
+          created_at: string
           id: string
-          image_id: string | null
-          name: string | null
+          patent_id: string
+          user_id: string
         }
         Insert: {
-          created_at?: string | null
-          face_ids?: string[] | null
+          created_at?: string
           id?: string
-          image_id?: string | null
-          name?: string | null
+          patent_id: string
+          user_id: string
         }
         Update: {
-          created_at?: string | null
-          face_ids?: string[] | null
+          created_at?: string
           id?: string
-          image_id?: string | null
-          name?: string | null
+          patent_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      drugs: {
+        Row: {
+          created_at: string
+          id: string
+          image_id: string
+          patient_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_id: string
+          patient_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_id?: string
+          patient_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      facilities: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      groups: {
+        Row: {
+          created_at: string
+          facility_id: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          facility_id: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          facility_id?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      patients: {
+        Row: {
+          birthday: string
+          care_level: Database["public"]["Enums"]["care_level_enum"]
+          created_at: string
+          face_id: string
+          facility_id: string
+          gender: Database["public"]["Enums"]["gender_enum"]
+          group_id: string
+          id: string
+          image_id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          birthday: string
+          care_level: Database["public"]["Enums"]["care_level_enum"]
+          created_at?: string
+          face_id: string
+          facility_id: string
+          gender: Database["public"]["Enums"]["gender_enum"]
+          group_id: string
+          id?: string
+          image_id: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          birthday?: string
+          care_level?: Database["public"]["Enums"]["care_level_enum"]
+          created_at?: string
+          face_id?: string
+          facility_id?: string
+          gender?: Database["public"]["Enums"]["gender_enum"]
+          group_id?: string
+          id?: string
+          image_id?: string
+          name?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -64,21 +172,21 @@ export type Database = {
           facility_id: string
           id: string
           name: string
-          updated_at: string | null
+          updated_at: string
         }
         Insert: {
           created_at?: string
           facility_id: string
           id: string
           name: string
-          updated_at?: string | null
+          updated_at?: string
         }
         Update: {
           created_at?: string
           facility_id?: string
           id?: string
           name?: string
-          updated_at?: string | null
+          updated_at?: string
         }
         Relationships: [
           {
@@ -98,7 +206,16 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      care_level_enum:
+        | "independence"
+        | "needs_support_1"
+        | "needs_support_2"
+        | "needs_nursing_care_1"
+        | "needs_nursing_care_2"
+        | "needs_nursing_care_3"
+        | "needs_nursing_care_4"
+        | "needs_nursing_care_5"
+      gender_enum: "male" | "female"
     }
     CompositeTypes: {
       [_ in never]: never

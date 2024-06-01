@@ -55,25 +55,29 @@ export async function updateSession(request: NextRequest) {
   )
 
   // refreshing the auth token
-  await supabase.auth.getUser()
-
   const {
-    data: { session },
-  } = await supabase.auth.getSession()
-  if (
-    !session &&
-    !request.url.includes("/login") &&
-    !request.url.includes("/sign-up") &&
-    !request.url.includes("/api/auth/confirm") &&
-    !request.url.includes("/reset-password") &&
-    !request.url.includes("/reset-password/input-password")
-  ) {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  const authExemptUrls = [
+    "/login",
+    "/sign-up",
+    "/api/auth/confirm",
+    "/reset-password",
+    "/reset-password/input-password",
+  ]
+
+  const isAuthExemptUrl = authExemptUrls.some((url) =>
+    request.url.includes(url)
+  )
+
+  // ユーザーがログインしていない場合のリダイレクト
+  if (!user && !isAuthExemptUrl) {
     return NextResponse.redirect(new URL("/login", request.url))
   }
-  if (
-    (session && request.url.includes("/login")) ||
-    request.url.includes("/signup")
-  ) {
+
+  // ユーザーがログインしている場合のリダイレクト
+  if (user && isAuthExemptUrl) {
     return NextResponse.redirect(new URL("/", request.url))
   }
 
