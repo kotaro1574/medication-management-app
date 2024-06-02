@@ -3,6 +3,7 @@
 import Vision from "@google-cloud/vision"
 
 import { ActionResult } from "@/types/action"
+import { Database } from "@/types/schema.gen"
 import { createClient } from "@/lib/supabase/server"
 
 export async function patentsDrugRecognition({
@@ -10,10 +11,10 @@ export async function patentsDrugRecognition({
   patent,
 }: {
   imageSrc: string
-  patent: {
-    name: string
-    id: string
-  }
+  patent: Pick<
+    Database["public"]["Tables"]["patients"]["Row"],
+    "id" | "last_name" | "first_name"
+  >
 }): Promise<ActionResult> {
   try {
     const client = new Vision.ImageAnnotatorClient({
@@ -29,7 +30,11 @@ export async function patentsDrugRecognition({
       throw new Error("テキストが検出されませんでした")
     }
 
-    const isPatentNameIncluded = detectedText.includes(patent.name)
+    console.log(detectedText)
+
+    const isPatentNameIncluded =
+      detectedText.includes(patent.last_name) &&
+      detectedText.includes(patent.first_name)
 
     if (!isPatentNameIncluded) {
       throw new Error("服薬者の名前が含まれていません")

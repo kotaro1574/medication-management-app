@@ -8,7 +8,9 @@ import { Icons } from "@/components/ui/icons"
 type Props = {
   videoConstraints: MediaTrackConstraints
   webcamRef: RefObject<Webcam>
-  patientName: string | null
+  lastName: string
+  firstName: string
+  isFaceRecognition: boolean
   isDrugRecognition: boolean
   loading: boolean
   error: string | null
@@ -17,12 +19,13 @@ type Props = {
 export default function PatientFaceAndDrugRecognitionWebcam({
   videoConstraints,
   webcamRef,
-  patientName,
+  lastName,
+  firstName,
+  isFaceRecognition,
   isDrugRecognition,
   error,
   loading,
 }: Props) {
-  const isFaceRecognition = !!patientName
   const isError = !!error
 
   const recognitionDescription =
@@ -75,7 +78,11 @@ export default function PatientFaceAndDrugRecognitionWebcam({
           <div className="flex size-10 items-center justify-center rounded-full bg-white">
             <Icons.user />
           </div>
-          {patientName && <p className="text-xl">{patientName}</p>}
+          {isFaceRecognition && (
+            <p className="text-xl">
+              {lastName} {firstName}
+            </p>
+          )}
         </div>
         <div
           style={{
@@ -86,7 +93,11 @@ export default function PatientFaceAndDrugRecognitionWebcam({
           <div className="flex size-10 items-center justify-center rounded-full bg-white">
             <Icons.drug />
           </div>
-          {isDrugRecognition && <p className="text-xl">{patientName}</p>}
+          {isDrugRecognition && (
+            <p className="text-xl">
+              {lastName} {firstName}
+            </p>
+          )}
         </div>
       </div>
     </div>
