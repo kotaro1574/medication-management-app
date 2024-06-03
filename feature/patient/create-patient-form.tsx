@@ -32,7 +32,8 @@ import { GroupsSelect } from "../group/groups-select"
 
 const formSchema = z.object({
   faceImage: z.custom<File>().nullable(),
-  name: z.string(),
+  lastName: z.string(),
+  firstName: z.string(),
   birthday: z.string(),
   careLevel: z.enum([
     "independence",
@@ -57,7 +58,8 @@ export function CreatePatientForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       faceImage: null,
-      name: "",
+      lastName: "",
+      firstName: "",
       birthday: "",
       careLevel: undefined,
       groupId: "",
@@ -69,7 +71,8 @@ export function CreatePatientForm() {
 
   const onSubmit = ({
     faceImage,
-    name,
+    firstName,
+    lastName,
     birthday,
     careLevel,
     groupId,
@@ -88,7 +91,8 @@ export function CreatePatientForm() {
       ;(async () => {
         const response = await createPatient({
           formData,
-          name,
+          lastName,
+          firstName,
           birthday,
           careLevel,
           groupId,
@@ -159,16 +163,33 @@ export function CreatePatientForm() {
           />
           <FormField
             control={form.control}
-            name="name"
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>名字</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                {form.formState.errors.lastName && (
+                  <FormDescription>
+                    {form.formState.errors.lastName.message}
+                  </FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="firstName"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>名前</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
-                {form.formState.errors.name && (
+                {form.formState.errors.firstName && (
                   <FormDescription>
-                    {form.formState.errors.name.message}
+                    {form.formState.errors.firstName.message}
                   </FormDescription>
                 )}
               </FormItem>

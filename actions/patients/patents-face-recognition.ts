@@ -2,6 +2,7 @@
 
 import { SearchFacesByImageCommand } from "@aws-sdk/client-rekognition"
 
+import { Database } from "@/types/schema.gen"
 import { rekognitionClient } from "@/lib/aws/aws-clients"
 import { createClient } from "@/lib/supabase/server"
 
@@ -9,10 +10,10 @@ type Result =
   | {
       success: true
       message: string
-      data: {
-        name: string
-        id: string
-      }
+      data: Pick<
+        Database["public"]["Tables"]["patients"]["Row"],
+        "id" | "last_name" | "first_name"
+      >
     }
   | {
       success: false
@@ -46,8 +47,8 @@ export async function patentsFaceRecognition({
 
     const { data, error } = await supabase
       .from("patients")
-      .select("id, name")
-      .eq("face_id", faceId)
+      .select("id, last_name, first_name")
+      .filter("face_ids", "cs", `{${faceId}}`)
       .single()
 
     if (error) {
@@ -61,10 +62,7 @@ export async function patentsFaceRecognition({
     return {
       success: true,
       message: "服薬者の顔認証完了",
-      data: {
-        name: data.name,
-        id: data.id,
-      },
+      data,
     }
   } catch (error) {
     if (error instanceof Error) {

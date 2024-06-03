@@ -129,39 +129,42 @@ export type Database = {
           birthday: string
           care_level: Database["public"]["Enums"]["care_level_enum"]
           created_at: string
-          face_id: string
+          face_ids: string[]
           facility_id: string
+          first_name: string
           gender: Database["public"]["Enums"]["gender_enum"]
           group_id: string
           id: string
           image_id: string
-          name: string
+          last_name: string
           updated_at: string
         }
         Insert: {
           birthday: string
           care_level: Database["public"]["Enums"]["care_level_enum"]
           created_at?: string
-          face_id: string
+          face_ids: string[]
           facility_id: string
+          first_name: string
           gender: Database["public"]["Enums"]["gender_enum"]
           group_id: string
           id?: string
           image_id: string
-          name: string
+          last_name: string
           updated_at?: string
         }
         Update: {
           birthday?: string
           care_level?: Database["public"]["Enums"]["care_level_enum"]
           created_at?: string
-          face_id?: string
+          face_ids?: string[]
           facility_id?: string
+          first_name?: string
           gender?: Database["public"]["Enums"]["gender_enum"]
           group_id?: string
           id?: string
           image_id?: string
-          name?: string
+          last_name?: string
           updated_at?: string
         }
         Relationships: []
