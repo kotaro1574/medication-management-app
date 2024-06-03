@@ -31,7 +31,9 @@ import { useToast } from "@/components/ui/use-toast"
 import { GroupsSelect } from "../group/groups-select"
 
 const formSchema = z.object({
-  faceImage: z.custom<File>().nullable(),
+  faceImages: z
+    .array(z.custom<File>())
+    .min(5, { message: "5枚の画像が必要です。" }),
   lastName: z.string(),
   firstName: z.string(),
   birthday: z.string(),
@@ -57,7 +59,7 @@ export function CreatePatientForm() {
   const { toast } = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
-      faceImage: null,
+      faceImages: [],
       lastName: "",
       firstName: "",
       birthday: "",
@@ -70,7 +72,7 @@ export function CreatePatientForm() {
   })
 
   const onSubmit = ({
-    faceImage,
+    faceImages,
     firstName,
     lastName,
     birthday,
@@ -79,10 +81,12 @@ export function CreatePatientForm() {
     drugImages,
     gender,
   }: z.infer<typeof formSchema>) => {
-    if (!faceImage) return
+    if (!faceImages || faceImages.length === 0) return
 
     const formData = new FormData()
-    formData.append("faceImage", faceImage)
+    faceImages.forEach((file) => {
+      formData.append("faceImages", file)
+    })
     drugImages.forEach((file) => {
       formData.append("drugImages", file)
     })
@@ -120,24 +124,26 @@ export function CreatePatientForm() {
           <Controller
             render={({ field: { onChange, value } }) => (
               <FormItem>
-                <FormLabel htmlFor="faceImage">認証用人物画像</FormLabel>
-                {value && (
-                  <Image
-                    src={URL.createObjectURL(value)}
-                    width={300}
-                    alt="selected_image"
-                    height={300}
-                  />
-                )}
+                <FormLabel htmlFor="faceImages">認証用人物画像</FormLabel>
+                {value.length > 0 &&
+                  value.map((file) => (
+                    <Image
+                      key={file.name}
+                      src={URL.createObjectURL(file)}
+                      width={300}
+                      alt="selected_image"
+                      height={300}
+                    />
+                  ))}
                 <div className="relative">
                   <label
                     className={`${buttonVariants({
                       variant: "default",
                       size: "default",
                     })} mt-2`}
-                    htmlFor="single"
+                    htmlFor="multi-face"
                   >
-                    {form.getValues("faceImage") ? "画像を変更" : "画像を選ぶ"}
+                    {value.length > 0 ? "画像を変更" : "画像を選ぶ"}
                   </label>
 
                   <input
@@ -147,18 +153,19 @@ export function CreatePatientForm() {
                       width: 0,
                     }}
                     type="file"
-                    id="single"
+                    id="multi-face"
                     accept="image/*"
+                    multiple
                     onChange={(e) => {
-                      if (!e.target.files?.[0]) return
-                      onChange(e.target.files?.[0] as File)
+                      if (!e.target.files) return
+                      onChange(Array.from(e.target.files))
                     }}
                     disabled={loading}
                   />
                 </div>
               </FormItem>
             )}
-            name="faceImage"
+            name="faceImages"
             control={form.control}
           />
           <FormField
@@ -302,9 +309,9 @@ export function CreatePatientForm() {
                     </FormItem>
                   </RadioGroup>
                 </FormControl>
-                {form.formState.errors.groupId && (
+                {form.formState.errors.gender && (
                   <FormDescription>
-                    {form.formState.errors.groupId.message}
+                    {form.formState.errors.gender.message}
                   </FormDescription>
                 )}
               </FormItem>
@@ -330,7 +337,7 @@ export function CreatePatientForm() {
                       variant: "default",
                       size: "default",
                     })} mt-2`}
-                    htmlFor="multi"
+                    htmlFor="multi-drug"
                   >
                     {value.length > 0 ? "画像を変更" : "画像を選ぶ"}
                   </label>
@@ -342,13 +349,14 @@ export function CreatePatientForm() {
                       width: 0,
                     }}
                     type="file"
-                    id="multi"
+                    id="multi-drug"
                     accept="image/*"
                     multiple
                     onChange={(e) => {
                       if (!e.target.files) return
                       onChange(Array.from(e.target.files))
                     }}
+                    disabled={loading}
                   />
                 </div>
               </FormItem>
