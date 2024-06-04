@@ -88,7 +88,7 @@ export type Database = {
           patient_id: string
         }
         Insert: {
-          created_at: string
+          created_at?: string
           face_id: string
           id?: string
           image_id: string
