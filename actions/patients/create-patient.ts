@@ -114,9 +114,7 @@ export async function createPatient({
     )
 
     if (drugsError) {
-      drugImageIds.forEach((drugImageId) => {
-        deleteImage(drugImageIds, process.env.DRUGS_BUCKET ?? "")
-      })
+      await deleteImage(drugImageIds, process.env.DRUGS_BUCKET ?? "")
       throw new Error(
         `服薬画像の挿入時にエラーが発生しました: ${drugsError.message}`
       )
