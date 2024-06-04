@@ -36,8 +36,8 @@ export async function checkFaceImageExists(imageId: string, bucket: string) {
 export async function IndexFaces(
   imageIds: string[],
   bucket: string
-): Promise<string[]> {
-  const faceIds: string[] = []
+): Promise<{ faceId: string; imageId: string }[]> {
+  const faces: { faceId: string; imageId: string }[] = []
 
   for (const imageId of imageIds) {
     const indexFaceRes = await rekognitionClient.send(
@@ -65,10 +65,10 @@ export async function IndexFaces(
       throw new Error("顔データの登録に失敗しました")
     }
 
-    faceIds.push(faceId)
+    faces.push({ faceId, imageId })
   }
 
-  return faceIds
+  return faces
 }
 
 // Rekognitionコレクションから顔データを削除する関数

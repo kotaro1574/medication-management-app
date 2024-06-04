@@ -1,5 +1,7 @@
 "use server"
 
+import { create } from "domain"
+
 import { ActionResult } from "@/types/action"
 import { Database } from "@/types/schema.gen"
 import {
@@ -39,10 +41,8 @@ export async function createPatient({
     const faceImageIds = await uploadFaceImage(faceImages)
 
     // // AWS Rekognition を呼び出して画像内の顔をインデックスに登録
-    const faceIds = await IndexFaces(
-      faceImageIds,
-      process.env.FACES_BUCKET ?? ""
-    )
+    const faces = await IndexFaces(faceImageIds, process.env.FACES_BUCKET ?? "")
+    const faceIds = faces.map((face) => face.faceId)
 
     const supabase = createClient()
 
@@ -83,6 +83,23 @@ export async function createPatient({
       await deleteFace(process.env.FACES_BUCKET ?? "", faceIds)
       throw new Error(
         `患者データの挿入時にエラーが発生しました: ${patientError.message}`
+      )
+    }
+
+    // 顔データの処理
+    const { error: faceError } = await supabase.from("faces").insert(
+      faces.map((face) => ({
+        patient_id: patient.id,
+        face_id: face.faceId,
+        image_id: face.imageId,
+      }))
+    )
+
+    if (faceError) {
+      await deleteImage(faceImageIds, process.env.FACES_BUCKET ?? "")
+      await deleteFace(process.env.FACES_BUCKET ?? "", faceIds)
+      throw new Error(
+        `顔データの挿入時にエラーが発生しました: ${faceError.message}`
       )
     }
 
