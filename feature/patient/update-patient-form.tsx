@@ -53,13 +53,20 @@ const formSchema = z.object({
 })
 
 type Props = {
+  faceImageIds: string[]
+  drugImageIds: string[]
   patient: Database["public"]["Tables"]["patients"]["Row"]
   faceUrl: string
   drugUrls: string[]
 }
 
-export function UpdatePatientForm({ patient, faceUrl, drugUrls }: Props) {
-  console.log(drugUrls)
+export function UpdatePatientForm({
+  patient,
+  faceUrl,
+  drugUrls,
+  faceImageIds,
+  drugImageIds,
+}: Props) {
   const [loading, startTransaction] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -346,6 +353,8 @@ export function UpdatePatientForm({ patient, faceUrl, drugUrls }: Props) {
       </Form>
       <DeletePatientDialog
         patient={patient}
+        faceImageIds={faceImageIds}
+        drugImageIds={drugImageIds}
         trigger={
           <Button disabled={loading} className="mt-6" variant={"destructive"}>
             削除する
