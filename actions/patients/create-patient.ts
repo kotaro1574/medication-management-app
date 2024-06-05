@@ -1,12 +1,9 @@
 "use server"
 
-import { create } from "domain"
-
 import { ActionResult } from "@/types/action"
 import { Database } from "@/types/schema.gen"
 import {
   IndexFaces,
-  checkFaceImageExists,
   deleteFace,
   deleteImage,
   drugImagesUpload,

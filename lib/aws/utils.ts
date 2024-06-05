@@ -44,6 +44,7 @@ export async function IndexFaces(
       new IndexFacesCommand({
         CollectionId: bucket,
         ExternalImageId: imageId,
+        MaxFaces: 1,
         Image: {
           S3Object: {
             Bucket: bucket,
@@ -103,6 +104,7 @@ export async function deleteImage(faceImageIds: string[], bucket: string) {
 // 画像をS3にアップロードするためのプリサインドURLを取得する関数
 export async function getPresignedUrl(fileType: string, bucket: string) {
   const key = uuidv4()
+
   const { url, fields } = await createPresignedPost(s3Client, {
     Bucket: bucket,
     Key: key,
@@ -121,7 +123,7 @@ export async function getPresignedUrl(fileType: string, bucket: string) {
 export async function uploadFaceImage(faceImages: File[]): Promise<string[]> {
   const imageIds: string[] = []
 
-  for (const faceImage of faceImages) {
+  const uploadPromises = faceImages.map(async (faceImage, index) => {
     const {
       url: faceUrl,
       fields: faceFields,
@@ -140,11 +142,13 @@ export async function uploadFaceImage(faceImages: File[]): Promise<string[]> {
     })
 
     if (!uploadResponse.ok) {
-      throw new Error("S3への画像アップロードに失敗しました。")
+      throw new Error(`S3への画像アップロードに失敗しました。Index: ${index}`)
     }
 
     imageIds.push(imageId)
-  }
+  })
+
+  await Promise.all(uploadPromises)
 
   return imageIds
 }

@@ -11,6 +11,4 @@ INSERT INTO groups (name, facility_id) VALUES
 ('groupB', (SELECT id FROM facilities WHERE name = 'リハビリテーション施設'));
 
 INSERT INTO patients (last_name, first_name, birthday, care_level, facility_id, group_id, gender, image_id, face_ids) VALUES
-('杉田', '浩太朗', 'H5-11-02', 'independence', (SELECT id FROM facilities WHERE name = '健康センター'), (SELECT id FROM groups WHERE name = 'グループA'), 'male', '3b241a63-73ba-4e93-a81d-941d47d93ddb', array['9231e459-d4ad-4d89-b60a-ef564fffffba']),
-('杉田', '夏美', 'H4-06-10', 'needs_support_1', (SELECT id FROM facilities WHERE name = '健康センター'), (SELECT id FROM groups WHERE name = 'グループA'), 'female', '272c58bb-3e20-4e72-bfe1-68caeb97fd79', array['2b9c34c8-a82e-423f-9454-fa18fd4d3416']),
-('大田', '翔也', 'R50-03-03', 'needs_nursing_care_2', (SELECT id FROM facilities WHERE name = 'リハビリテーション施設'), (SELECT id FROM groups WHERE name = 'groupA'), 'male', '959e15a2-5e04-4464-aa9f-020ab61ec706', array['139e0f58-8854-4a59-9302-af8957c256b7']);
+('杉田', '浩太朗', 'H5-11-02', 'independence', (SELECT id FROM facilities WHERE name = '健康センター'), (SELECT id FROM groups WHERE name = 'グループA'), 'male', '76de6609-3fcb-4dcf-8b55-7cdf4a729724', array['c6993c3a-d03e-4d2f-b48b-ee56827080c0', 'b77c2537-0eed-4702-97c3-55ecd6fe5389', '95e5328e-3e53-4142-85a1-a818ca7596aa', '697c867c-0796-4d41-9f08-d56d30c771a9', '1e65d962-fc5f-49fd-9481-0bf691197fef']),
