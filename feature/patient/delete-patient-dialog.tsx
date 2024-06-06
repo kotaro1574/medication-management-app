@@ -17,11 +17,18 @@ import {
 import { toast } from "@/components/ui/use-toast"
 
 type Props = {
+  faceImageIds: string[]
+  drugImageIds: string[]
   trigger: ReactNode
   patient: Database["public"]["Tables"]["patients"]["Row"]
 }
 
-export function DeletePatientDialog({ trigger, patient }: Props) {
+export function DeletePatientDialog({
+  trigger,
+  patient,
+  faceImageIds,
+  drugImageIds,
+}: Props) {
   const [loading, startTransaction] = useTransition()
   const router = useRouter()
 
@@ -30,9 +37,10 @@ export function DeletePatientDialog({ trigger, patient }: Props) {
       ;(async () => {
         const response = await deletePatient({
           id: patient.id,
+          drugImageIds: drugImageIds,
           faceData: {
             faceIds: patient.face_ids,
-            imageId: patient.image_id,
+            imageIds: faceImageIds,
           },
         })
         if (response.success) {

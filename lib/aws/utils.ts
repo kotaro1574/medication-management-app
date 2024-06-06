@@ -28,41 +28,48 @@ export async function checkFaceImageExists(imageId: string, bucket: string) {
     res.FaceMatches && res.FaceMatches.length > 0 ? true : false
 
   if (faceExists) {
-    await deleteImage(imageId, bucket)
+    await deleteImage([imageId], bucket)
     throw new Error("コレクション内に同じ顔データが既に存在します。")
   }
 }
 
-export async function IndexFaces(imageId: string, bucket: string) {
-  const indexFaceRes = await rekognitionClient.send(
-    new IndexFacesCommand({
-      CollectionId: bucket,
-      ExternalImageId: imageId,
-      Image: {
-        S3Object: {
-          Bucket: bucket,
-          Name: imageId,
+export async function IndexFaces(
+  imageIds: string[],
+  bucket: string
+): Promise<{ faceId: string; imageId: string }[]> {
+  const faces: { faceId: string; imageId: string }[] = []
+
+  for (const imageId of imageIds) {
+    const indexFaceRes = await rekognitionClient.send(
+      new IndexFacesCommand({
+        CollectionId: bucket,
+        ExternalImageId: imageId,
+        MaxFaces: 1,
+        Image: {
+          S3Object: {
+            Bucket: bucket,
+            Name: imageId,
+          },
         },
-      },
-    })
-  )
+      })
+    )
 
-  if (!indexFaceRes.FaceRecords || indexFaceRes.FaceRecords.length === 0) {
-    await deleteImage(imageId, process.env.FACES_BUCKET ?? "")
-    throw new Error("画像内に顔が見つかりませんでした")
+    if (!indexFaceRes.FaceRecords || indexFaceRes.FaceRecords.length === 0) {
+      await deleteImage([imageId], bucket)
+      throw new Error("顔が見つからない画像が含まれています。")
+    }
+
+    const faceId = indexFaceRes.FaceRecords[0].Face?.FaceId
+
+    if (!faceId) {
+      await deleteImage([imageId], bucket)
+      throw new Error("顔データの登録に失敗しました")
+    }
+
+    faces.push({ faceId, imageId })
   }
 
-  const faceIds = indexFaceRes.FaceRecords.map(
-    (record) => record.Face?.FaceId ?? ""
-  )
-
-  if (indexFaceRes.FaceRecords.length > 1) {
-    await deleteImage(imageId, process.env.FACES_BUCKET ?? "")
-    await deleteFace(process.env.FACES_BUCKET ?? "", faceIds)
-    throw new Error("画像内に顔が1つではありません")
-  }
-
-  return faceIds[0]
+  return faces
 }
 
 // Rekognitionコレクションから顔データを削除する関数
@@ -80,21 +87,24 @@ export async function deleteFace(bucket: string, faceIds: string[]) {
 }
 
 // S3から画像を削除する関数
-export async function deleteImage(key: string, bucket: string) {
-  try {
-    const deleteParams = {
-      Bucket: bucket,
-      Key: key,
+export async function deleteImage(faceImageIds: string[], bucket: string) {
+  for (const faceImageId of faceImageIds) {
+    try {
+      const deleteParams = {
+        Bucket: bucket,
+        Key: faceImageId,
+      }
+      await s3Client.send(new DeleteObjectCommand(deleteParams))
+    } catch (error) {
+      console.error("Failed to delete image from S3", error)
     }
-    await s3Client.send(new DeleteObjectCommand(deleteParams))
-  } catch (error) {
-    console.error("Failed to delete image from S3", error)
   }
 }
 
 // 画像をS3にアップロードするためのプリサインドURLを取得する関数
 export async function getPresignedUrl(fileType: string, bucket: string) {
   const key = uuidv4()
+
   const { url, fields } = await createPresignedPost(s3Client, {
     Bucket: bucket,
     Key: key,
@@ -110,29 +120,37 @@ export async function getPresignedUrl(fileType: string, bucket: string) {
 }
 
 // 顔画像をS3にアップロードする関数
-export async function uploadFaceImage(faceImage: File) {
-  const {
-    url: faceUrl,
-    fields: faceFields,
-    key: imageId,
-  } = await getPresignedUrl(faceImage.type, process.env.FACES_BUCKET ?? "")
+export async function uploadFaceImage(faceImages: File[]): Promise<string[]> {
+  const imageIds: string[] = []
 
-  const newFormData = new FormData()
-  Object.entries(faceFields).forEach(([key, value]) => {
-    newFormData.append(key, value as string)
+  const uploadPromises = faceImages.map(async (faceImage, index) => {
+    const {
+      url: faceUrl,
+      fields: faceFields,
+      key: imageId,
+    } = await getPresignedUrl(faceImage.type, process.env.FACES_BUCKET ?? "")
+
+    const newFormData = new FormData()
+    Object.entries(faceFields).forEach(([key, value]) => {
+      newFormData.append(key, value as string)
+    })
+    newFormData.append("file", faceImage)
+
+    const uploadResponse = await fetch(faceUrl, {
+      method: "POST",
+      body: newFormData,
+    })
+
+    if (!uploadResponse.ok) {
+      throw new Error(`S3への画像アップロードに失敗しました。Index: ${index}`)
+    }
+
+    imageIds.push(imageId)
   })
-  newFormData.append("file", faceImage)
 
-  const uploadResponse = await fetch(faceUrl, {
-    method: "POST",
-    body: newFormData,
-  })
+  await Promise.all(uploadPromises)
 
-  if (!uploadResponse.ok) {
-    throw new Error("S3への画像アップロードに失敗しました。")
-  }
-
-  return imageId
+  return imageIds
 }
 
 // 薬画像をS3にアップロードする関数

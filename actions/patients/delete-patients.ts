@@ -15,17 +15,20 @@ type Result =
 
 export async function deletePatient({
   id,
+  drugImageIds,
   faceData,
 }: {
   id: string
+  drugImageIds: string[]
   faceData: {
     faceIds: string[]
-    imageId: string
+    imageIds: string[]
   }
 }): Promise<Result> {
   try {
-    deleteImage(faceData.imageId, process.env.FACES_BUCKET ?? "")
-    deleteFace(process.env.FACES_BUCKET ?? "", faceData.faceIds)
+    await deleteImage(faceData.imageIds, process.env.FACES_BUCKET ?? "")
+    await deleteImage(drugImageIds, process.env.DRUGS_BUCKET ?? "")
+    await deleteFace(process.env.FACES_BUCKET ?? "", faceData.faceIds)
 
     const supabase = createClient()
     const { error } = await supabase.from("patients").delete().eq("id", id)

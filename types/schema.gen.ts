@@ -79,6 +79,30 @@ export type Database = {
         }
         Relationships: []
       }
+      faces: {
+        Row: {
+          created_at: string
+          face_id: string
+          id: string
+          image_id: string
+          patient_id: string
+        }
+        Insert: {
+          created_at?: string
+          face_id: string
+          id?: string
+          image_id: string
+          patient_id: string
+        }
+        Update: {
+          created_at?: string
+          face_id?: string
+          id?: string
+          image_id?: string
+          patient_id?: string
+        }
+        Relationships: []
+      }
       facilities: {
         Row: {
           created_at: string

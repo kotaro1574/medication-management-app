@@ -4,7 +4,6 @@ import { ActionResult } from "@/types/action"
 import { Database } from "@/types/schema.gen"
 import {
   IndexFaces,
-  checkFaceImageExists,
   deleteFace,
   deleteImage,
   drugImagesUpload,
@@ -32,17 +31,15 @@ export async function createPatient({
   gender,
 }: Props): Promise<ActionResult> {
   try {
-    const faceImage = formData.get("faceImage") as File
+    const faceImages = formData.getAll("faceImages") as File[]
     const drugImages = formData.getAll("drugImages") as File[]
 
     // faceImageの処理
-    const faceImageId = await uploadFaceImage(faceImage)
-
-    // 顔画像が既に存在するかどうかをチェック
-    await checkFaceImageExists(faceImageId, process.env.FACES_BUCKET ?? "")
+    const faceImageIds = await uploadFaceImage(faceImages)
 
     // // AWS Rekognition を呼び出して画像内の顔をインデックスに登録
-    const faceId = await IndexFaces(faceImageId, process.env.FACES_BUCKET ?? "")
+    const faces = await IndexFaces(faceImageIds, process.env.FACES_BUCKET ?? "")
+    const faceIds = faces.map((face) => face.faceId)
 
     const supabase = createClient()
 
@@ -55,8 +52,8 @@ export async function createPatient({
       .single()
 
     if (profileError) {
-      await deleteImage(faceImageId, process.env.FACES_BUCKET ?? "")
-      await deleteFace(process.env.FACES_BUCKET ?? "", [faceId])
+      await deleteImage(faceImageIds, process.env.FACES_BUCKET ?? "")
+      await deleteFace(process.env.FACES_BUCKET ?? "", faceIds)
       throw new Error(
         `プロフィールデータの取得時にエラーが発生しました: ${profileError.message}`
       )
@@ -67,8 +64,8 @@ export async function createPatient({
       .insert({
         last_name: lastName,
         first_name: firstName,
-        image_id: faceImageId,
-        face_ids: [faceId],
+        image_id: faceImageIds[0],
+        face_ids: faceIds,
         birthday,
         care_level: careLevel,
         group_id: groupId,
@@ -79,10 +76,27 @@ export async function createPatient({
       .single()
 
     if (patientError) {
-      await deleteImage(faceImageId, process.env.FACES_BUCKET ?? "")
-      await deleteFace(process.env.FACES_BUCKET ?? "", [faceId])
+      await deleteImage(faceImageIds, process.env.FACES_BUCKET ?? "")
+      await deleteFace(process.env.FACES_BUCKET ?? "", faceIds)
       throw new Error(
         `患者データの挿入時にエラーが発生しました: ${patientError.message}`
+      )
+    }
+
+    // 顔データの処理
+    const { error: faceError } = await supabase.from("faces").insert(
+      faces.map((face) => ({
+        patient_id: patient.id,
+        face_id: face.faceId,
+        image_id: face.imageId,
+      }))
+    )
+
+    if (faceError) {
+      await deleteImage(faceImageIds, process.env.FACES_BUCKET ?? "")
+      await deleteFace(process.env.FACES_BUCKET ?? "", faceIds)
+      throw new Error(
+        `顔データの挿入時にエラーが発生しました: ${faceError.message}`
       )
     }
 
@@ -97,9 +111,7 @@ export async function createPatient({
     )
 
     if (drugsError) {
-      drugImageIds.forEach((drugImageId) => {
-        deleteImage(drugImageId, process.env.DRUGS_BUCKET ?? "")
-      })
+      await deleteImage(drugImageIds, process.env.DRUGS_BUCKET ?? "")
       throw new Error(
         `服薬画像の挿入時にエラーが発生しました: ${drugsError.message}`
       )

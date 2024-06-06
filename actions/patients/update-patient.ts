@@ -54,7 +54,7 @@ export async function updatePatient({
     }
 
     // インデックスに登録する前に既存の顔情報を削除
-    await deleteImage(faceData.imageId, process.env.FACES_BUCKET ?? "")
+    await deleteImage([faceData.imageId], process.env.FACES_BUCKET ?? "")
     await deleteFace(process.env.FACES_BUCKET ?? "", faceData.faceIds)
 
     // AWS Rekognition を呼び出して画像内の顔をインデックスに登録
@@ -75,12 +75,12 @@ export async function updatePatient({
       response.FaceRecords?.map((record) => record?.Face?.FaceId ?? "") ?? []
 
     if (!response.FaceRecords || response.FaceRecords.length === 0) {
-      await deleteImage(key, process.env.FACES_BUCKET ?? "")
+      await deleteImage([key], process.env.FACES_BUCKET ?? "")
       throw new Error("画像内に顔が見つかりませんでした")
     }
 
     if (response.FaceRecords.length > 1) {
-      await deleteImage(key, process.env.FACES_BUCKET ?? "")
+      await deleteImage([key], process.env.FACES_BUCKET ?? "")
       await deleteFace(process.env.FACES_BUCKET ?? "", faceIds)
       throw new Error("画像内に顔が1つではありません")
     }
@@ -97,7 +97,7 @@ export async function updatePatient({
       .eq("id", id)
 
     if (error) {
-      await deleteImage(key, process.env.FACES_BUCKET ?? "")
+      await deleteImage([key], process.env.FACES_BUCKET ?? "")
       await deleteFace(process.env.FACES_BUCKET ?? "", faceIds)
       throw new Error(
         `患者データの挿入時にエラーが発生しました: ${error.message}`
