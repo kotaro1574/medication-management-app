@@ -8,7 +8,11 @@ export default async function PatientsPage() {
 
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
-      <h1>Patients</h1>
+      <div className="mx-auto">
+        <h2 className="">4/1(水)</h2>
+        
+      </div>
+
       <ul>
         {patients?.map((patient) => (
           <li key={patient.id}>
