@@ -92,7 +92,7 @@ export default function TopPage() {
   }, [patent, toast])
 
   return (
-    <div className="p-4">
+    <section className="px-4 py-[60px]">
       <div className="mx-auto w-full sm:max-w-[500px] md:max-w-[600px]">
         <DynamicPatientFaceAndDrugRecognitionWebcam
           videoConstraints={videoConstraints}
@@ -120,6 +120,6 @@ export default function TopPage() {
           </button>
         </div>
       </div>
-    </div>
+    </section>
   )
 }
