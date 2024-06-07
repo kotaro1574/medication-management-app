@@ -2,6 +2,7 @@
 
 import { GroupsSelect } from "@/feature/group/groups-select"
 import { CareLevelSelect } from "@/feature/patient/care-level-select"
+import { GenderRadioGroup } from "@/feature/patient/gender-radio-group"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -16,13 +17,6 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 
 const formSchema = z.object({
   faceImages: z
@@ -165,24 +159,10 @@ export default function CreatePatientPage() {
                 <FormItem className="max-w-[150px] space-y-0">
                   <FormLabel className="text-[11px]">性別</FormLabel>
                   <FormControl>
-                    <RadioGroup
+                    <GenderRadioGroup
                       onValueChange={field.onChange}
                       defaultValue={field.value}
-                      className="flex flex-col space-y-1"
-                    >
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="male" />
-                        </FormControl>
-                        <FormLabel className="font-normal">男性</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="female" />
-                        </FormControl>
-                        <FormLabel className="font-normal">女性</FormLabel>
-                      </FormItem>
-                    </RadioGroup>
+                    />
                   </FormControl>
                   {form.formState.errors.gender && (
                     <FormDescription>
