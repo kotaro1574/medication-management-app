@@ -1,6 +1,7 @@
 "use client"
 
 import { GroupsSelect } from "@/feature/group/groups-select"
+import { CareLevelSelect } from "@/feature/patient/care-level-select"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -123,38 +124,13 @@ export default function CreatePatientPage() {
               control={form.control}
               name="careLevel"
               render={({ field }) => (
-                <FormItem className="max-w-[150px] space-y-0">
+                <FormItem className="max-w-[200px] space-y-0">
                   <FormLabel className="text-[11px]">介護度</FormLabel>
-                  <Select
+                  <CareLevelSelect
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="independence">自立</SelectItem>
-                      <SelectItem value="needs_support_1">要支援1</SelectItem>
-                      <SelectItem value="needs_support_2">要支援2</SelectItem>
-                      <SelectItem value="needs_nursing_care_1">
-                        要介護1
-                      </SelectItem>
-                      <SelectItem value="needs_nursing_care_2">
-                        要介護2
-                      </SelectItem>
-                      <SelectItem value="needs_nursing_care_3">
-                        要介護3
-                      </SelectItem>
-                      <SelectItem value="needs_nursing_care_4">
-                        要介護4
-                      </SelectItem>
-                      <SelectItem value="needs_nursing_care_5">
-                        要介護5
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+                    isError={!!form.formState.errors.careLevel}
+                  />
                   {form.formState.errors.careLevel && (
                     <FormDescription>
                       {form.formState.errors.careLevel.message}
@@ -167,14 +143,13 @@ export default function CreatePatientPage() {
               control={form.control}
               name="groupId"
               render={({ field }) => (
-                <FormItem className="max-w-[150px] space-y-0">
+                <FormItem className="max-w-[200px] space-y-0">
                   <FormLabel className="text-[11px]">グループ</FormLabel>
                   <GroupsSelect
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                     isError={!!form.formState.errors.groupId}
                   />
-
                   {form.formState.errors.groupId && (
                     <FormDescription>
                       {form.formState.errors.groupId.message}
