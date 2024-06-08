@@ -27,8 +27,6 @@ export function BirthdaySelect({
   const [years, setYears] = useState<number[]>([])
   const [days, setDays] = useState<number[]>([])
 
-  console.log(form.watch())
-
   const selectedEra = form.watch("era")
   const selectedMonth = form.watch("month")
 
