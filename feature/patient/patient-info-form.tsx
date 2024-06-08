@@ -16,6 +16,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { createPatientFormSchema } from "@/app/patients/create/page"
 
+import { BirthdaySelect } from "./birthday-select"
+
 export function PatientInfoForm({
   form,
 }: {
@@ -59,23 +61,7 @@ export function PatientInfoForm({
           )}
         />
       </div>
-      <FormField
-        control={form.control}
-        name="birthday"
-        render={({ field }) => (
-          <FormItem className="max-w-[150px] space-y-0">
-            <FormLabel className="text-[11px]">生年月日</FormLabel>
-            <FormControl>
-              <Input {...field} />
-            </FormControl>
-            {form.formState.errors.birthday && (
-              <FormDescription>
-                {form.formState.errors.birthday.message}
-              </FormDescription>
-            )}
-          </FormItem>
-        )}
-      />
+      <BirthdaySelect form={form} />
       <FormField
         control={form.control}
         name="careLevel"
