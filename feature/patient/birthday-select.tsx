@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { createPatientFormSchema } from "@/feature/patient/schema"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 
@@ -16,7 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { createPatientFormSchema } from "@/app/patients/create/page"
 
 export function BirthdaySelect({
   form,

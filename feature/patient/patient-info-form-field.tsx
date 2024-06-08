@@ -3,6 +3,7 @@
 import { GroupsSelect } from "@/feature/group/groups-select"
 import { CareLevelSelect } from "@/feature/patient/care-level-select"
 import { GenderRadioGroup } from "@/feature/patient/gender-radio-group"
+import { createPatientFormSchema } from "@/feature/patient/schema"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 
@@ -14,7 +15,6 @@ import {
   FormLabel,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { createPatientFormSchema } from "@/app/patients/create/page"
 
 import { BirthdaySelect } from "./birthday-select"
 
