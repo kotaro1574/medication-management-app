@@ -25,10 +25,12 @@ export function BirthdaySelect({
 }) {
   const eras = ["R", "H", "S", "T", "M"]
   const [years, setYears] = useState<number[]>([])
+  const [days, setDays] = useState<number[]>([])
 
   console.log(form.watch())
 
   const selectedEra = form.watch("era")
+  const selectedMonth = form.watch("month")
 
   useEffect(() => {
     const maxYears: { [key: string]: number } = {
@@ -48,13 +50,23 @@ export function BirthdaySelect({
     }
   }, [form, selectedEra])
 
+  useEffect(() => {
+    if (selectedMonth) {
+      const daysInMonth = new Date(2024, Number(selectedMonth), 0).getDate()
+      setDays(Array.from({ length: daysInMonth }, (_, i) => i + 1))
+      if (Number(form.watch("day")) > daysInMonth) {
+        form.setValue("day", "")
+      }
+    }
+  }, [form, selectedMonth])
+
   return (
     <div className="flex items-end gap-1">
       <FormField
         control={form.control}
         name="era"
         render={({ field }) => (
-          <FormItem className="w-[60px] space-y-0">
+          <FormItem className="w-full max-w-[60px] space-y-0">
             <FormLabel className="text-[11px]">生年月日</FormLabel>
             <FormControl>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -89,7 +101,7 @@ export function BirthdaySelect({
         control={form.control}
         name="year"
         render={({ field }) => (
-          <FormItem className="w-[60px] space-y-0">
+          <FormItem className="w-full max-w-[60px] space-y-0">
             <FormControl>
               <Select
                 onValueChange={field.onChange}
@@ -123,7 +135,85 @@ export function BirthdaySelect({
           </FormItem>
         )}
       />
-      <div>年</div>
+      <div className="text-sm">年</div>
+      <FormField
+        control={form.control}
+        name="month"
+        render={({ field }) => (
+          <FormItem className="w-full max-w-[60px] space-y-0">
+            <FormControl>
+              <Select
+                onValueChange={field.onChange}
+                disabled={!selectedEra}
+                defaultValue={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger isError={!!form.formState.errors.month}>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="min-w-[60px]">
+                  {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+                    <SelectItem
+                      isShowIndicator={false}
+                      key={month}
+                      className="pl-5"
+                      value={`${month}`}
+                    >
+                      {month}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormControl>
+            {form.formState.errors.month && (
+              <FormDescription>
+                {form.formState.errors.month.message}
+              </FormDescription>
+            )}
+          </FormItem>
+        )}
+      />
+      <div className="text-sm">月</div>
+      <FormField
+        control={form.control}
+        name="day"
+        render={({ field }) => (
+          <FormItem className="w-full max-w-[60px] space-y-0">
+            <FormControl>
+              <Select
+                onValueChange={field.onChange}
+                disabled={!selectedMonth}
+                defaultValue={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger isError={!!form.formState.errors.day}>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="min-w-[60px]">
+                  {days.map((day) => (
+                    <SelectItem
+                      isShowIndicator={false}
+                      key={day}
+                      className="pl-5"
+                      value={`${day}`}
+                    >
+                      {day}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormControl>
+            {form.formState.errors.day && (
+              <FormDescription>
+                {form.formState.errors.day.message}
+              </FormDescription>
+            )}
+          </FormItem>
+        )}
+      />
+      <div className="text-sm">日</div>
     </div>
   )
 }

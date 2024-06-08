@@ -61,7 +61,10 @@ export function PatientInfoForm({
           )}
         />
       </div>
+
+      {/* birthDayField 👇 */}
       <BirthdaySelect form={form} />
+
       <FormField
         control={form.control}
         name="careLevel"
