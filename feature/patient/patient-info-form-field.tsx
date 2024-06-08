@@ -18,7 +18,7 @@ import { createPatientFormSchema } from "@/app/patients/create/page"
 
 import { BirthdaySelect } from "./birthday-select"
 
-export function PatientInfoForm({
+export function PatientInfoFormField({
   form,
 }: {
   form: UseFormReturn<z.infer<typeof createPatientFormSchema>>

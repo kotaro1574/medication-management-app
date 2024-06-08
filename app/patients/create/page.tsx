@@ -1,6 +1,6 @@
 "use client"
 
-import { PatientInfoForm } from "@/feature/patient/patient-info-form"
+import { PatientInfoFormField } from "@/feature/patient/patient-info-form-field"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -55,7 +55,7 @@ export default function CreatePatientPage() {
       <h2 className="text-[20px] text-[#C2B37F]">利用者情報</h2>
       <Form {...form}>
         <form onSubmit={console.log}>
-          <PatientInfoForm form={form} />
+          <PatientInfoFormField form={form} />
         </form>
       </Form>
     </section>
