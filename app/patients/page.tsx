@@ -10,7 +10,7 @@ export default function PatientsPage() {
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
       <div className="mx-auto">
         <h2 className="">4/1(水)</h2>
-        <Tabs defaultValue="account" className="w-[400px]">
+        <Tabs defaultValue="account" className="w-[375px]">
           <TabsList>
             <TabsTrigger value="all">全て</TabsTrigger>
             <TabsTrigger value="floorA">Aフロア</TabsTrigger>
