@@ -31,6 +31,7 @@ export async function createPatient({
   gender,
 }: Props): Promise<ActionResult> {
   try {
+    //無意味
     const faceImages = formData.getAll("faceImages") as File[]
     const drugImages = formData.getAll("drugImages") as File[]
 
