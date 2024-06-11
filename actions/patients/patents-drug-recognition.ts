@@ -30,6 +30,8 @@ export async function patentsDrugRecognition({
       throw new Error("テキストが検出されませんでした")
     }
 
+    console.log(detectedText)
+
     const isPatentNameIncluded =
       detectedText.includes(patent.last_name) &&
       detectedText.includes(patent.first_name)
