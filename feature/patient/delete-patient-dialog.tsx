@@ -17,11 +17,18 @@ import {
 import { toast } from "@/components/ui/use-toast"
 
 type Props = {
+  faceImageIds: string[]
+  drugImageIds: string[]
   trigger: ReactNode
   patient: Database["public"]["Tables"]["patients"]["Row"]
 }
 
-export function DeletePatientDialog({ trigger, patient }: Props) {
+export function DeletePatientDialog({
+  trigger,
+  patient,
+  faceImageIds,
+  drugImageIds,
+}: Props) {
   const [loading, startTransaction] = useTransition()
   const router = useRouter()
 
@@ -30,9 +37,10 @@ export function DeletePatientDialog({ trigger, patient }: Props) {
       ;(async () => {
         const response = await deletePatient({
           id: patient.id,
+          drugImageIds: drugImageIds,
           faceData: {
-            faceId: patient.face_id,
-            imageId: patient.image_id,
+            faceIds: patient.face_ids,
+            imageIds: faceImageIds,
           },
         })
         if (response.success) {
@@ -53,7 +61,7 @@ export function DeletePatientDialog({ trigger, patient }: Props) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>患者を削除しますか？</DialogTitle>
-          <DialogDescription>{`${patient.name}のデータは完全に削除されます。`}</DialogDescription>
+          <DialogDescription>{`${patient.last_name} ${patient.first_name}のデータは完全に削除されます。`}</DialogDescription>
         </DialogHeader>
         <DialogFooter className="sm:justify-start">
           <DialogClose asChild>

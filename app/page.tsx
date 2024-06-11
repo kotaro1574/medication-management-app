@@ -2,11 +2,11 @@
 
 import { useCallback, useRef, useState, useTransition } from "react"
 import dynamic from "next/dynamic"
-import { useRouter } from "next/navigation"
 import { patentsDrugRecognition } from "@/actions/patients/patents-drug-recognition"
 import { patentsFaceRecognition } from "@/actions/patients/patents-face-recognition"
 import Webcam from "react-webcam"
 
+import { Database } from "@/types/schema.gen"
 import { Icons } from "@/components/ui/icons"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useToast } from "@/components/ui/use-toast"
@@ -27,10 +27,10 @@ const FACING_MODE_ENVIRONMENT = "environment"
 export default function TopPage() {
   const [loading, startTransaction] = useTransition()
   const [error, setError] = useState<string | null>(null)
-  const [patent, setPatent] = useState<{
-    name: string
-    id: string
-  } | null>(null)
+  const [patent, setPatent] = useState<Pick<
+    Database["public"]["Tables"]["patients"]["Row"],
+    "id" | "last_name" | "first_name"
+  > | null>(null)
   const [isDrugRecognition, setIsDrugRecognition] = useState<boolean>(false)
   const webcamRef = useRef<Webcam>(null)
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER)
@@ -92,12 +92,14 @@ export default function TopPage() {
   }, [patent, toast])
 
   return (
-    <div className="p-4">
+    <section className="px-4 py-[60px]">
       <div className="mx-auto w-full sm:max-w-[500px] md:max-w-[600px]">
         <DynamicPatientFaceAndDrugRecognitionWebcam
           videoConstraints={videoConstraints}
           webcamRef={webcamRef}
-          patientName={patent?.name ?? null}
+          lastName={patent?.last_name ?? ""}
+          firstName={patent?.first_name ?? ""}
+          isFaceRecognition={!!patent}
           isDrugRecognition={isDrugRecognition}
           loading={loading}
           error={error}
@@ -118,6 +120,6 @@ export default function TopPage() {
           </button>
         </div>
       </div>
-    </div>
+    </section>
   )
 }
