@@ -1,5 +1,6 @@
 "use client"
 
+import { PatientFacesWebcamDialog } from "@/feature/patient/patient-faces-webcam-dialog"
 import { PatientInfoFormField } from "@/feature/patient/patient-info-form-field"
 import { createPatientFormSchema } from "@/feature/patient/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -37,13 +38,18 @@ export default function CreatePatientPage() {
               <h2 className="text-[20px] text-[#C2B37F]">認証用人物写真</h2>
               <p className="text-[10px] text-[#FF0000]">＊登録必須</p>
             </div>
-            <Button
-              variant={"secondary"}
-              size={"secondary"}
-              className="block w-full"
-            >
-              顔を登録する
-            </Button>
+
+            <PatientFacesWebcamDialog
+              trigger={
+                <Button
+                  variant="secondary"
+                  size="secondary"
+                  className="block w-full"
+                >
+                  顔を登録する
+                </Button>
+              }
+            />
           </div>
           <div>
             <Button className="block w-full">登録</Button>
