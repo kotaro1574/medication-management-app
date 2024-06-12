@@ -40,6 +40,7 @@ export default function CreatePatientPage() {
             </div>
 
             <PatientFacesWebcamDialog
+              form={form}
               trigger={
                 <Button
                   variant="secondary"
