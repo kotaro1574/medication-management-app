@@ -28,7 +28,6 @@ export default function CreatePatientPage() {
 
   return (
     <section className="min-h-screen bg-[#F5F5F5] px-4 pb-8 pt-11">
-      <h2 className="text-[20px] text-[#C2B37F]">利用者情報</h2>
       <Form {...form}>
         <form onSubmit={console.log}>
           <PatientInfoFormField form={form} />
