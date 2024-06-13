@@ -1,8 +1,6 @@
 "use client"
 
-import Link from "next/link"
 
-import { createClient } from "@/lib/supabase/server"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function PatientsPage() {
