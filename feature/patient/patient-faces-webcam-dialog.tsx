@@ -4,6 +4,7 @@ import { UseFormReturn } from "react-hook-form"
 import Webcam from "react-webcam"
 import { z } from "zod"
 
+import { convertBase64ToFile } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -31,13 +32,26 @@ export function PatientFacesWebcamDialog({ trigger, form }: Props) {
   const [progress, setProgress] = useState(0)
 
   const onGetFaceImages = useCallback(() => {
-    const imageSrc = webcamRef.current?.getScreenshot()?.split(",")[1] ?? ""
+    const imageSrc = webcamRef.current?.getScreenshot()
     if (!imageSrc) return
+    const description =
+      progress === 0
+        ? "center"
+        : progress === 20
+        ? "right"
+        : progress === 40
+        ? "left"
+        : progress === 60
+        ? "up"
+        : progress === 80
+        ? "down"
+        : ""
 
+    const file = convertBase64ToFile(imageSrc, `faceImage_${description}.jpeg`)
     const currentFaceImages = form.getValues("faceImages")
-    form.setValue("faceImages", [...currentFaceImages, imageSrc])
+    form.setValue("faceImages", [...currentFaceImages, file])
     setProgress((prevState) => prevState + 20)
-  }, [form])
+  }, [form, progress])
 
   let videoConstraints: MediaTrackConstraints = {
     facingMode: facingMode,
@@ -67,7 +81,7 @@ export function PatientFacesWebcamDialog({ trigger, form }: Props) {
   return (
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md bg-[#F5F5F5]">
         <DialogHeader className="space-y-4">
           <DialogTitle>{description}</DialogTitle>
           <Progress value={progress} />
@@ -104,7 +118,7 @@ export function PatientFacesWebcamDialog({ trigger, form }: Props) {
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button type="button" variant="secondary">
+            <Button type="button" variant="secondary" size="secondary">
               閉じる
             </Button>
           </DialogClose>

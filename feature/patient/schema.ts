@@ -1,7 +1,9 @@
 import { z } from "zod"
 
 export const createPatientFormSchema = z.object({
-  faceImages: z.array(z.string()).min(5, { message: "5枚の画像が必要です。" }),
+  faceImages: z
+    .array(z.custom<File>())
+    .min(5, { message: "5枚の画像が必要です。" }),
   lastName: z.string(),
   firstName: z.string(),
   era: z.string(),
