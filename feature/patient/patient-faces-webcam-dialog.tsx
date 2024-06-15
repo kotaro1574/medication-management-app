@@ -30,6 +30,7 @@ export function PatientFacesWebcamDialog({ trigger, form }: Props) {
   const webcamRef = useRef<Webcam>(null)
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER)
   const [progress, setProgress] = useState(0)
+  const [isOpen, setIsOpen] = useState(false)
 
   const onGetFaceImages = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot()
@@ -50,7 +51,13 @@ export function PatientFacesWebcamDialog({ trigger, form }: Props) {
     const file = convertBase64ToFile(imageSrc, `faceImage_${description}.jpeg`)
     const currentFaceImages = form.getValues("faceImages")
     form.setValue("faceImages", [...currentFaceImages, file])
-    setProgress((prevState) => prevState + 20)
+    setProgress((prevState) => {
+      const newProgress = prevState + 20
+      if (newProgress >= 100) {
+        setTimeout(() => setIsOpen(false), 2000) // 2秒遅延してダイアログを閉じる
+      }
+      return newProgress
+    })
   }, [form, progress])
 
   let videoConstraints: MediaTrackConstraints = {
@@ -79,8 +86,10 @@ export function PatientFacesWebcamDialog({ trigger, form }: Props) {
       : "撮影が完了しました"
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild onClick={() => setIsOpen(true)}>
+        {trigger}
+      </DialogTrigger>
       <DialogContent className="max-w-md bg-[#F5F5F5]">
         <DialogHeader className="space-y-4">
           <DialogTitle>{description}</DialogTitle>
