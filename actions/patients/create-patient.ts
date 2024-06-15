@@ -101,6 +101,9 @@ export async function createPatient({
       )
     }
 
+    if (drugImages.length !== 0)
+      return { success: true, message: "患者が作成されました" }
+
     // 服薬画像の処理
     const drugImageIds = await drugImagesUpload(drugImages)
 
