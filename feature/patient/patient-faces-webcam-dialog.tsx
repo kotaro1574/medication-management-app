@@ -5,12 +5,9 @@ import Webcam from "react-webcam"
 import { z } from "zod"
 
 import { convertBase64ToFile } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -87,10 +84,19 @@ export function PatientFacesWebcamDialog({ trigger, form }: Props) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild onClick={() => setIsOpen(true)}>
+      <DialogTrigger
+        asChild
+        onClick={() => {
+          setIsOpen(true)
+          if (progress === 100) {
+            form.setValue("faceImages", [])
+            setProgress(0)
+          }
+        }}
+      >
         {trigger}
       </DialogTrigger>
-      <DialogContent className="max-w-md bg-[#F5F5F5]">
+      <DialogContent className="max-w-md bg-[#F5F5F5]" isClose={false}>
         <DialogHeader className="space-y-4">
           <DialogTitle>{description}</DialogTitle>
           <Progress value={progress} />
@@ -125,13 +131,6 @@ export function PatientFacesWebcamDialog({ trigger, form }: Props) {
             </button>
           </div>
         </div>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button type="button" variant="secondary" size="secondary">
-              閉じる
-            </Button>
-          </DialogClose>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

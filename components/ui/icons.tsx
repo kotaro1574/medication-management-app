@@ -1,10 +1,8 @@
-import {
-  LucideProps,
-  Moon,
-  SunMedium,
-  Twitter,
-  type Icon as LucideIcon,
-} from "lucide-react"
+import { LucideProps, Moon, SunMedium, Twitter, type Icon as LucideIcon } from "lucide-react";
+
+
+
+
 
 export type Icon = LucideIcon
 
@@ -130,6 +128,25 @@ export const Icons = {
         strokeWidth="0.9375"
         strokeLinecap="round"
         strokeLinejoin="round"
+      />
+    </svg>
+  ),
+  faceImagesCheck: (props: LucideProps) => (
+    <svg
+      width="40"
+      height="40"
+      viewBox="0 0 40 40"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M40 20C40 31.0457 31.0457 40 20 40C8.9543 40 0 31.0457 0 20C0 8.9543 8.9543 0 20 0C31.0457 0 40 8.9543 40 20Z"
+        fill="#66CC85"
+      />
+      <path
+        d="M20 0C8.95437 0 0 8.95437 0 20C0 31.0462 8.95437 40 20 40C31.0462 40 40 31.0462 40 20C40 8.95437 31.0462 0 20 0ZM20 37.5394C10.3506 37.5394 2.5 29.6494 2.5 19.9999C2.5 10.3505 10.3506 2.49992 20 2.49992C29.6494 2.49992 37.5 10.3506 37.5 19.9999C37.5 29.6493 29.6494 37.5394 20 37.5394ZM27.9819 12.6819L16.2475 24.49L10.9631 19.2056C10.475 18.7175 9.68371 18.7175 9.19496 19.2056C8.70684 19.6938 8.70684 20.485 9.19496 20.9731L15.3818 27.1606C15.87 27.6481 16.6612 27.6481 17.15 27.1606C17.2062 27.1044 17.2544 27.0431 17.2981 26.9794L29.7506 14.45C30.2381 13.9618 30.2381 13.1706 29.7506 12.6819C29.2619 12.1938 28.4706 12.1938 27.9819 12.6819Z"
+        fill="white"
       />
     </svg>
   ),

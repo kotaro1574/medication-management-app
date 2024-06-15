@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { createPatient } from "@/actions/patients/create-patient"
 import { PatientFacesWebcamDialog } from "@/feature/patient/patient-faces-webcam-dialog"
@@ -10,8 +11,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
+import { Icons } from "@/components/ui/icons"
 import { useToast } from "@/components/ui/use-toast"
 
 export default function CreatePatientPage() {
@@ -84,6 +87,8 @@ export default function CreatePatientPage() {
     })
   }
 
+  const isFullFaceImages = form.watch("faceImages")?.length >= 5
+
   return (
     <section className="min-h-screen bg-[#F5F5F5] px-4 pb-8 pt-11">
       <Form {...form}>
@@ -94,7 +99,23 @@ export default function CreatePatientPage() {
               <h2 className="text-[20px] text-[#C2B37F]">認証用人物写真</h2>
               <p className="text-[10px] text-[#FF0000]">＊登録必須</p>
             </div>
-
+            {isFullFaceImages && (
+              <div className="relative flex items-center justify-center">
+                <div className="relative w-full max-w-[150px]">
+                  <AspectRatio ratio={15 / 21}>
+                    <Image
+                      src={URL.createObjectURL(form.watch("faceImages")[0])}
+                      alt="face image"
+                      fill
+                      className="rounded-[8px] object-cover"
+                    />
+                  </AspectRatio>
+                  <div className="absolute right-[-12px] top-[-12px]">
+                    <Icons.faceImagesCheck />
+                  </div>
+                </div>
+              </div>
+            )}
             <PatientFacesWebcamDialog
               form={form}
               trigger={
@@ -103,7 +124,7 @@ export default function CreatePatientPage() {
                   size="secondary"
                   className="block w-full"
                 >
-                  顔を登録する
+                  {isFullFaceImages ? "顔を登録し直す" : "顔を登録する"}
                 </Button>
               }
             />
