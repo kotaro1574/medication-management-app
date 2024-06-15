@@ -24,6 +24,16 @@ export function toBase64(file: File): Promise<string> {
   })
 }
 
+export function convertBase64ToFile(base64: string, filename: string): File {
+  const mimeType = base64.match(/^data:(.*?);base64,/)?.[1] ?? "image/jpeg"
+  const base64Data = base64.replace(/^data:(.*?);base64,/, "")
+  const binaryData = Buffer.from(base64Data, "base64")
+
+  const blob = new Blob([binaryData], { type: mimeType })
+
+  return new File([blob], filename, { type: mimeType })
+}
+
 export function placeholder({
   w,
   h,
