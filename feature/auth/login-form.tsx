@@ -1,9 +1,10 @@
 "use client"
 
-import { startTransition, useState } from "react"
+import { useTransition } from "react"
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { login } from "@/actions/auth/login"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -33,16 +34,12 @@ const formSchema = z.object({
   password: z.string(),
 })
 
-const errorSchema = z.object({
-  message: z.string(),
-})
-
 export function LoginForm({
   loginInfoWithCookies,
 }: {
   loginInfoWithCookies: RequestCookie[]
 }) {
-  const [loading, setLoading] = useState(false)
+  const [loading, startTransaction] = useTransition()
   const { toast } = useToast()
   const router = useRouter()
   const form = useForm<z.infer<typeof formSchema>>({
@@ -54,34 +51,18 @@ export function LoginForm({
   })
 
   const onSubmit = async ({ email, password }: z.infer<typeof formSchema>) => {
-    try {
-      setLoading(true)
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      })
+    startTransaction(() => {
+      ;(async () => {
+        const response = await login({ email, password })
 
-      if (!res.ok) {
-        throw new Error("ログインに失敗しました")
-      }
-
-      router.push("/")
-      startTransition(() => {
-        router.refresh()
-      })
-      toast({ description: "ログイン完了" })
-    } catch (error) {
-      const parseError = errorSchema.parse(error)
-      toast({
-        variant: "destructive",
-        description: parseError.message,
-      })
-    } finally {
-      setLoading(false)
-    }
+        if (response.success) {
+          toast({ title: response.message })
+          router.push("/")
+        } else {
+          toast({ title: response.error, variant: "destructive" })
+        }
+      })()
+    })
   }
 
   const onDropdownMenuItemClick = (value: string) => {
