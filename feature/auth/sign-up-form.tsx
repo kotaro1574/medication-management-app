@@ -115,6 +115,23 @@ export function SignUpForm() {
       toast({ description: "登録完了メールを確認してください 📩" })
     } catch (error) {
       const parseError = errorSchema.parse(error)
+
+      if (parseError.message === "User already registered") {
+        form.setError("email", {
+          message: "このメールアドレスは既に登録されています",
+        })
+        return
+      }
+
+      if (parseError.message === "Rate limit exceeded") {
+        toast({
+          variant: "destructive",
+          description:
+            "リクエストが多すぎます。しばらく待ってから再度お試しください。",
+        })
+        return
+      }
+
       toast({
         variant: "destructive",
         description: parseError.message,
