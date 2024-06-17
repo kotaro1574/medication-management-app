@@ -1,14 +1,16 @@
 "use client"
 
-import { useTransition } from "react"
+import { useState, useTransition } from "react"
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { login } from "@/actions/auth/login"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { AlertCircle } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -40,6 +42,7 @@ export function LoginForm({
   loginInfoWithCookies: RequestCookie[]
 }) {
   const [loading, startTransaction] = useTransition()
+  const [error, setError] = useState<string | null>(null)
   const { toast } = useToast()
   const router = useRouter()
   const form = useForm<z.infer<typeof formSchema>>({
@@ -59,6 +62,10 @@ export function LoginForm({
           toast({ title: response.message })
           router.push("/")
         } else {
+          if (response.error === "Invalid login credentials") {
+            setError("メールアドレスまたはパスワードが間違っています")
+            return
+          }
           toast({ title: response.error, variant: "destructive" })
         }
       })()
@@ -76,77 +83,86 @@ export function LoginForm({
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel>メールアドレス</FormLabel>
-              <FormControl>
-                <Input isError={!!form.formState.errors.email} {...field} />
-              </FormControl>
-              {form.formState.errors.email && (
-                <FormDescription>
-                  {form.formState.errors.email.message}
-                </FormDescription>
-              )}
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem className="mt-4 w-full">
-              <FormLabel>パスワード</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  isError={!!form.formState.errors.password}
-                  {...field}
-                />
-              </FormControl>
-              {form.formState.errors.password && (
-                <FormDescription>
-                  {form.formState.errors.password.message}
-                </FormDescription>
-              )}
-            </FormItem>
-          )}
-        />
+    <div>
+      {error && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="size-4" />
+          <AlertTitle>エラー</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>メールアドレス</FormLabel>
+                <FormControl>
+                  <Input isError={!!form.formState.errors.email} {...field} />
+                </FormControl>
+                {form.formState.errors.email && (
+                  <FormDescription>
+                    {form.formState.errors.email.message}
+                  </FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem className="mt-4 w-full">
+                <FormLabel>パスワード</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    isError={!!form.formState.errors.password}
+                    {...field}
+                  />
+                </FormControl>
+                {form.formState.errors.password && (
+                  <FormDescription>
+                    {form.formState.errors.password.message}
+                  </FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
 
-        <div className="mt-[24px] flex flex-col items-center gap-6  text-sm text-neutral-400">
-          {loginInfoWithCookies.length > 0 && (
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <div>履歴選択</div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {loginInfoWithCookies.map((cookie) => (
-                  <DropdownMenuItem
-                    key={cookie.name}
-                    onClick={() => onDropdownMenuItemClick(cookie.value)}
-                  >
-                    {JSON.parse(cookie.value).name}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-          <div>
-            <Link href="reset-password">パスワードをお忘れですか？</Link>
+          <div className="mt-[24px] flex flex-col items-center gap-6  text-sm text-neutral-400">
+            {loginInfoWithCookies.length > 0 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <div>履歴選択</div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {loginInfoWithCookies.map((cookie) => (
+                    <DropdownMenuItem
+                      key={cookie.name}
+                      onClick={() => onDropdownMenuItemClick(cookie.value)}
+                    >
+                      {JSON.parse(cookie.value).name}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+            <div>
+              <Link href="reset-password">パスワードをお忘れですか？</Link>
+            </div>
           </div>
-        </div>
-        <Button
-          className="mt-[24px] block w-full"
-          disabled={loading}
-          type="submit"
-        >
-          {loading ? "loading.." : "ログイン"}
-        </Button>
-      </form>
-    </Form>
+          <Button
+            className="mt-[24px] block w-full"
+            disabled={loading}
+            type="submit"
+          >
+            {loading ? "loading.." : "ログイン"}
+          </Button>
+        </form>
+      </Form>
+    </div>
   )
 }

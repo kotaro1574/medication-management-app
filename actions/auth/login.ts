@@ -31,12 +31,6 @@ export async function login({
       })
 
     if (userError) {
-      if (userError.message === "Invalid login credentials") {
-        return {
-          success: false,
-          error: "メールアドレスまたはパスワードが間違っています。",
-        }
-      }
       return { success: false, error: userError.message }
     }
 
