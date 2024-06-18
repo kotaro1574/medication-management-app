@@ -1,17 +1,26 @@
 "use client"
 
 import { useState, useTransition } from "react"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { createPatient } from "@/actions/patients/create-patient"
+import { PatientDrugFormField } from "@/feature/patient/patient-drug-form-field"
 import { PatientFaceImagesFormField } from "@/feature/patient/patient-face-images-form-field"
 import { PatientInfoFormField } from "@/feature/patient/patient-info-form-field"
 import { createPatientFormSchema } from "@/feature/patient/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { Button } from "@/components/ui/button"
-import { Form } from "@/components/ui/form"
+import { Button, buttonVariants } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form"
 import { useToast } from "@/components/ui/use-toast"
 
 export default function CreatePatientPage() {
@@ -100,16 +109,7 @@ export default function CreatePatientPage() {
               アラートタイマー追加
             </Button>
           </div>
-          <div className="space-y-4">
-            <h2 className="text-[20px] text-[#C2B37F]">お薬情報</h2>
-            <Button
-              variant="secondary"
-              size="secondary"
-              className="block w-full"
-            >
-              お薬情報を追加
-            </Button>
-          </div>
+          <PatientDrugFormField loading={loading} form={form} />
           <div>
             <Button disabled={loading} className="block w-full">
               {loading ? "登録中..." : "登録する"}
