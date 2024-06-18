@@ -90,6 +90,26 @@ export default function CreatePatientPage() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
           <PatientInfoFormField form={form} />
           <PatientFaceImagesFormField form={form} />
+          <div className="space-y-4">
+            <h2 className="text-[20px] text-[#C2B37F]">アラートタイマー</h2>
+            <Button
+              variant="secondary"
+              size="secondary"
+              className="block w-full"
+            >
+              アラートタイマー追加
+            </Button>
+          </div>
+          <div className="space-y-4">
+            <h2 className="text-[20px] text-[#C2B37F]">お薬情報</h2>
+            <Button
+              variant="secondary"
+              size="secondary"
+              className="block w-full"
+            >
+              お薬情報を追加
+            </Button>
+          </div>
           <div>
             <Button disabled={loading} className="block w-full">
               {loading ? "登録中..." : "登録する"}

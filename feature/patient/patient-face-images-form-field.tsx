@@ -18,13 +18,13 @@ export function PatientFaceImagesFormField({
   const isFullFaceImages = form.watch("faceImages")?.length >= 5
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       <div className="flex gap-1">
         <h2 className="text-[20px] text-[#C2B37F]">認証用人物写真</h2>
         <p className="text-[10px] text-[#FF0000]">＊登録必須</p>
       </div>
       {isFullFaceImages && (
-        <div className="relative flex items-center justify-center">
+        <div className="relative my-4 flex items-center justify-center">
           <div className="relative w-full max-w-[150px]">
             <AspectRatio ratio={15 / 21}>
               <Image
