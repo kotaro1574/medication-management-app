@@ -5,6 +5,7 @@ import { z } from "zod"
 import { buttonVariants } from "@/components/ui/button"
 import { FormItem } from "@/components/ui/form"
 
+import { DrugSelectedItem } from "../drug/drug-selected-item"
 import { createPatientFormSchema } from "./schema"
 
 export function PatientDrugFormField({
@@ -20,6 +21,9 @@ export function PatientDrugFormField({
       <Controller
         render={({ field: { onChange, value } }) => (
           <FormItem>
+            <DrugSelectedItem />
+            <DrugSelectedItem />
+            <DrugSelectedItem />
             {value.length > 0 &&
               value.map((file) => (
                 <Image
