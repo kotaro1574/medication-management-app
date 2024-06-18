@@ -1,15 +1,14 @@
 "use client"
 
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function PatientsPage() {
   return (
-    <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
+    <section className="pt-[52px]">
       <div className="mx-auto">
         <h2 className="mb-[46px] text-center text-[20px]">4/1(水)</h2>
-        <Tabs defaultValue="account" className="w-[375px]">
-          <TabsList>
+        <Tabs defaultValue="account" className="">
+          <TabsList className="rounded-b-lg px-4 shadow-sm">
             <TabsTrigger value="all">全て</TabsTrigger>
             <TabsTrigger value="floorA">Aフロア</TabsTrigger>
             <TabsTrigger value="floorB">Bフロア</TabsTrigger>
@@ -17,24 +16,26 @@ export default function PatientsPage() {
             <TabsTrigger value="floorD">Dフロア</TabsTrigger>
             <TabsTrigger value="floorE">Eフロア</TabsTrigger>
           </TabsList>
-          <TabsContent value="all">
-            Make changes to your account here.
-          </TabsContent>
-          <TabsContent value="floorA">
-            Make changes to your account here.
-          </TabsContent>
-          <TabsContent value="floorB">
-            Make changes to your account here.
-          </TabsContent>
-          <TabsContent value="floorC">
-            Make changes to your account here.
-          </TabsContent>
-          <TabsContent value="floorD">
-            Make changes to your account here.
-          </TabsContent>
-          <TabsContent value="floorE">
-            Make changes to your account here.
-          </TabsContent>
+          <div className="bg-[#F5F5F5] px-4 py-8">
+            <TabsContent value="all">
+              Make changes to your account here.
+            </TabsContent>
+            <TabsContent value="floorA">
+              Make changes to your account here.
+            </TabsContent>
+            <TabsContent value="floorB">
+              Make changes to your account here.
+            </TabsContent>
+            <TabsContent value="floorC">
+              Make changes to your account here.
+            </TabsContent>
+            <TabsContent value="floorD">
+              Make changes to your account here.
+            </TabsContent>
+            <TabsContent value="floorE">
+              Make changes to your account here.
+            </TabsContent>
+          </div>
         </Tabs>
       </div>
     </section>
