@@ -96,7 +96,13 @@ export function PatientFacesWebcamDialog({ trigger, form }: Props) {
       >
         {trigger}
       </DialogTrigger>
-      <DialogContent className="max-w-md bg-[#F5F5F5]" isClose={false}>
+      <DialogContent
+        className="bg-[#F5F5F5]"
+        style={{
+          width: "calc(100% - 32px)",
+        }}
+        isClose={false}
+      >
         <DialogHeader className="space-y-4">
           <DialogTitle>{description}</DialogTitle>
           <Progress value={progress} />
