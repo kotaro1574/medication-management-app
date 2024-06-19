@@ -21,18 +21,9 @@ export function PatientDrugFormField({
       <Controller
         render={({ field: { onChange, value } }) => (
           <FormItem>
-            <DrugSelectedItem />
-            <DrugSelectedItem />
-            <DrugSelectedItem />
             {value.length > 0 &&
               value.map((file) => (
-                <Image
-                  key={file.name}
-                  src={URL.createObjectURL(file)}
-                  width={300}
-                  alt="selected_image"
-                  height={300}
-                />
+                <DrugSelectedItem src={URL.createObjectURL(file)} />
               ))}
             <div className="relative">
               <label
