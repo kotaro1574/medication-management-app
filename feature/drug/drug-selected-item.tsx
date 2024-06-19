@@ -1,23 +1,35 @@
 import Image from "next/image"
+import { UseFormReturn } from "react-hook-form"
+import { z } from "zod"
 
 import { formatDate } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Icons } from "@/components/ui/icons"
 
+import { createPatientFormSchema } from "../patient/schema"
+
 export function DrugSelectedItem({
-  src,
+  form,
+  file,
   userName,
   date,
 }: {
-  src: string
+  form: UseFormReturn<z.infer<typeof createPatientFormSchema>>
+  file: File
   date: Date
   userName: string
 }) {
+  const onDelete = () => {
+    const drugImages = form.getValues("drugImages") as File[]
+    const newDrugImages = drugImages.filter((_file) => _file !== file)
+    form.setValue("drugImages", newDrugImages)
+  }
+
   return (
     <div className="flex items-center gap-2 px-2 py-1">
       <div className="relative w-full max-w-[63px]">
         <AspectRatio ratio={63 / 73} className="w-full">
-          <Image src={src} fill alt="drug_image" />
+          <Image src={URL.createObjectURL(file)} fill alt="drug_image" />
         </AspectRatio>
         <div className="absolute bottom-0 right-0">
           <Icons.magnifyingGlass />
@@ -31,7 +43,7 @@ export function DrugSelectedItem({
           <div className="mt-2 text-[11px]">{userName}</div>
         </div>
         <div>
-          <Icons.trash />
+          <Icons.trash className="cursor-pointer" onClick={onDelete} />
         </div>
       </div>
     </div>

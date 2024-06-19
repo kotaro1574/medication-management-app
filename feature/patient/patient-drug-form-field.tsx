@@ -1,4 +1,3 @@
-import Image from "next/image"
 import { Controller, UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 
@@ -26,7 +25,9 @@ export function PatientDrugFormField({
             {value.length > 0 &&
               value.map((file) => (
                 <DrugSelectedItem
-                  src={URL.createObjectURL(file)}
+                  key={file.name}
+                  form={form}
+                  file={file}
                   date={new Date()}
                   userName={userName}
                 />

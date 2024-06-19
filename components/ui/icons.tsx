@@ -177,13 +177,13 @@ export const Icons = {
       {...props}
     >
       <g filter="url(#filter0_b_910_211)">
-        <rect width="23" height="23" rx="8" fill="white" fill-opacity="0.4" />
+        <rect width="23" height="23" rx="8" fill="white" fillOpacity="0.4" />
         <path
           d="M8.16667 10.6667H10.6667M10.6667 10.6667H13.1667M10.6667 10.6667V8.16667M10.6667 10.6667V13.1667M15.6667 15.6667L19 19M4 10.6667C4 12.4348 4.70238 14.1305 5.95262 15.3807C7.20286 16.631 8.89856 17.3333 10.6667 17.3333C12.4348 17.3333 14.1305 16.631 15.3807 15.3807C16.631 14.1305 17.3333 12.4348 17.3333 10.6667C17.3333 8.89856 16.631 7.20286 15.3807 5.95262C14.1305 4.70238 12.4348 4 10.6667 4C8.89856 4 7.20286 4.70238 5.95262 5.95262C4.70238 7.20286 4 8.89856 4 10.6667Z"
           stroke="#A4A4A4"
-          stroke-width="1.25"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="1.25"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </g>
       <defs>
@@ -194,9 +194,9 @@ export const Icons = {
           width="31"
           height="31"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feGaussianBlur in="BackgroundImageFix" stdDeviation="2" />
           <feComposite
             in2="SourceAlpha"
