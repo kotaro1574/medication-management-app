@@ -7,6 +7,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Icons } from "@/components/ui/icons"
 
 import { createPatientFormSchema } from "../patient/schema"
+import { DrugInfoDialog } from "./drug-info-dialog"
 
 export function DrugSelectedItem({
   form,
@@ -32,7 +33,14 @@ export function DrugSelectedItem({
           <Image src={URL.createObjectURL(file)} fill alt="drug_image" />
         </AspectRatio>
         <div className="absolute bottom-0 right-0">
-          <Icons.magnifyingGlass />
+          <DrugInfoDialog
+            trigger={
+              <button className="block">
+                <Icons.magnifyingGlass />
+              </button>
+            }
+            file={file}
+          />
         </div>
       </div>
       <div className="flex w-full items-center justify-between border-t border-[#A4A4A4] px-2 py-[15.5px] text-[#A4A4A4]">
