@@ -1,5 +1,6 @@
 import { PlaceholderValue } from "next/dist/shared/lib/get-img-props"
 import { clsx, type ClassValue } from "clsx"
+import { format as _format } from "date-fns"
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -61,4 +62,15 @@ export function placeholder({
       : window.btoa(str)
 
   return `data:image/svg+xml;base64,${toBase64(shimmer(w, h))}`
+}
+
+//形式が増えたら追記する
+type Format =
+  | "yyyy/MM/dd"
+
+/**
+ * 日付をformatする関数
+ */
+export const formatDate = (date: Date, format: Format) => {
+  return _format(date, format)
 }
