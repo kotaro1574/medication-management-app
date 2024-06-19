@@ -11,9 +11,11 @@ import { createPatientFormSchema } from "./schema"
 export function PatientDrugFormField({
   form,
   loading,
+  userName,
 }: {
   form: UseFormReturn<z.infer<typeof createPatientFormSchema>>
   loading: boolean
+  userName: string
 }) {
   return (
     <div className="space-y-4">
@@ -23,7 +25,11 @@ export function PatientDrugFormField({
           <FormItem>
             {value.length > 0 &&
               value.map((file) => (
-                <DrugSelectedItem src={URL.createObjectURL(file)} />
+                <DrugSelectedItem
+                  src={URL.createObjectURL(file)}
+                  date={new Date()}
+                  userName={userName}
+                />
               ))}
             <div className="relative">
               <label

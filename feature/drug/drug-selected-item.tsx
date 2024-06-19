@@ -1,9 +1,18 @@
 import Image from "next/image"
 
+import { formatDate } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Icons } from "@/components/ui/icons"
 
-export function DrugSelectedItem({ src }: { src: string }) {
+export function DrugSelectedItem({
+  src,
+  userName,
+  date,
+}: {
+  src: string
+  date: Date
+  userName: string
+}) {
   return (
     <div className="flex items-center gap-2 px-2 py-1">
       <div className="relative w-full max-w-[63px]">
@@ -14,10 +23,12 @@ export function DrugSelectedItem({ src }: { src: string }) {
           <Icons.magnifyingGlass />
         </div>
       </div>
-      <div className="flex w-full items-center justify-between border-t border-[#A4A4A4] px-2 py-3 text-[#A4A4A4]">
+      <div className="flex w-full items-center justify-between border-t border-[#A4A4A4] px-2 py-[15.5px] text-[#A4A4A4]">
         <div>
-          <div className="text-md font-semibold">2024/04/11</div>
-          <div className="mt-2 text-[11px]">メディネオ太郎</div>
+          <div className="text-sm font-semibold">
+            {formatDate(date, "yyyy/MM/dd")}
+          </div>
+          <div className="mt-2 text-[11px]">{userName}</div>
         </div>
         <div>
           <Icons.trash />

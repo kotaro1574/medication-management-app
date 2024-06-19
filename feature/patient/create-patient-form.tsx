@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { useToast } from "@/components/ui/use-toast"
 
-export function CreatePatientForm() {
+export function CreatePatientForm({ userName }: { userName: string }) {
   const [loading, startTransaction] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -96,7 +96,11 @@ export function CreatePatientForm() {
             アラートタイマー追加
           </Button>
         </div>
-        <PatientDrugFormField loading={loading} form={form} />
+        <PatientDrugFormField
+          loading={loading}
+          form={form}
+          userName={userName}
+        />
         <div>
           <Button disabled={loading} className="block w-full">
             {loading ? "登録中..." : "登録する"}
