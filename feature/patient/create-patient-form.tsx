@@ -90,12 +90,12 @@ export function CreatePatientForm({ userName }: { userName: string }) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
         <PatientInfoFormField form={form} />
         <PatientFaceImagesFormField form={form} />
-        <div className="space-y-4">
+        {/* <div className="space-y-4">
           <h2 className="text-[20px] text-[#C2B37F]">アラートタイマー</h2>
           <Button variant="secondary" size="secondary" className="block w-full">
             アラートタイマー追加
           </Button>
-        </div>
+        </div> */}
         <PatientDrugFormField
           loading={loading}
           form={form}
