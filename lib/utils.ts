@@ -2,6 +2,9 @@ import { PlaceholderValue } from "next/dist/shared/lib/get-img-props"
 import { clsx, type ClassValue } from "clsx"
 import { format as _format } from "date-fns"
 import { twMerge } from "tailwind-merge"
+import { match } from "ts-pattern"
+
+import { Database } from "@/types/schema.gen"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -65,12 +68,35 @@ export function placeholder({
 }
 
 //形式が増えたら追記する
-type Format =
-  | "yyyy/MM/dd"
+type Format = "yyyy/MM/dd"
 
 /**
  * 日付をformatする関数
  */
 export const formatDate = (date: Date, format: Format) => {
   return _format(date, format)
+}
+
+export const formatGender = (
+  gender: Database["public"]["Enums"]["gender_enum"]
+) => {
+  return match(gender)
+    .with("male", () => "男性")
+    .with("female", () => "女性")
+    .exhaustive()
+}
+
+export const formatCareLevel = (
+  careLevel: Database["public"]["Enums"]["care_level_enum"]
+) => {
+  return match(careLevel)
+    .with("independence", () => "自立")
+    .with("needs_support_1", () => "要支援1")
+    .with("needs_support_2", () => "要支援2")
+    .with("needs_nursing_care_1", () => "要介護1")
+    .with("needs_nursing_care_2", () => "要介護2")
+    .with("needs_nursing_care_3", () => "要介護3")
+    .with("needs_nursing_care_4", () => "要介護4")
+    .with("needs_nursing_care_5", () => "要介護5")
+    .exhaustive()
 }

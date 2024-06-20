@@ -3,6 +3,7 @@ import { getS3Data } from "@/actions/s3/get-s3-data"
 import { PatientAvatar } from "@/feature/patient/patient-avatar"
 
 import { createClient } from "@/lib/supabase/server"
+import { formatCareLevel, formatGender } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 
 export default async function PatientPage({
@@ -32,8 +33,9 @@ export default async function PatientPage({
             <h2 className="text-xl">
               {data.last_name} {data.first_name}
             </h2>
-            <div className="">
-              {data.birthday} / {data.gender} / {data.care_level}
+            <div>
+              {data.birthday} / {formatGender(data.gender)} /{" "}
+              {formatCareLevel(data.care_level)}
             </div>
           </div>
         </div>
