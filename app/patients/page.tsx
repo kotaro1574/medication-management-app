@@ -7,8 +7,8 @@ export default function PatientsPage() {
     <section className="pt-[52px]">
       <div className="mx-auto">
         <h2 className="mb-[46px] text-center text-[20px]">4/1(水)</h2>
-        <Tabs defaultValue="account" className="">
-          <TabsList className="rounded-b-lg px-4 shadow-sm">
+        <Tabs defaultValue="all" className="">
+          <TabsList className="overflow-x-scroll rounded-b-lg px-4 shadow-shadow">
             <TabsTrigger value="all">全て</TabsTrigger>
             <TabsTrigger value="floorA">Aフロア</TabsTrigger>
             <TabsTrigger value="floorB">Bフロア</TabsTrigger>
@@ -16,26 +16,24 @@ export default function PatientsPage() {
             <TabsTrigger value="floorD">Dフロア</TabsTrigger>
             <TabsTrigger value="floorE">Eフロア</TabsTrigger>
           </TabsList>
-          <div className="bg-[#F5F5F5] px-4 py-8">
-            <TabsContent value="all">
-              Make changes to your account here.
-            </TabsContent>
-            <TabsContent value="floorA">
-              Make changes to your account here.
-            </TabsContent>
-            <TabsContent value="floorB">
-              Make changes to your account here.
-            </TabsContent>
-            <TabsContent value="floorC">
-              Make changes to your account here.
-            </TabsContent>
-            <TabsContent value="floorD">
-              Make changes to your account here.
-            </TabsContent>
-            <TabsContent value="floorE">
-              Make changes to your account here.
-            </TabsContent>
-          </div>
+          <TabsContent value="all" className="bg-[#F5F5F5] px-4 py-8">
+            Make changes to your account here.
+          </TabsContent>
+          <TabsContent value="floorA" className="bg-[#F5F5F5] px-4 py-8">
+            Make changes to your account here.
+          </TabsContent>
+          <TabsContent value="floorB" className="bg-[#F5F5F5] px-4 py-8">
+            Make changes to your account here.
+          </TabsContent>
+          <TabsContent value="floorC" className="bg-[#F5F5F5] px-4 py-8">
+            Make changes to your account here.
+          </TabsContent>
+          <TabsContent value="floorD" className="bg-[#F5F5F5] px-4 py-8">
+            Make changes to your account here.
+          </TabsContent>
+          <TabsContent value="floorE" className="bg-[#F5F5F5] px-4 py-8">
+            Make changes to your account here.
+          </TabsContent>
         </Tabs>
       </div>
     </section>
