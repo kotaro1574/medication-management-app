@@ -66,7 +66,7 @@ export function CreatePatientForm({ userName }: { userName: string }) {
           formData,
           firstName,
           lastName,
-          birthday: `${era}-${year}-${month}-${day}`,
+          birthday: `${era}${year}.${month}.${day}`,
           careLevel,
           groupId,
           gender,
