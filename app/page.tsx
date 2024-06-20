@@ -40,6 +40,12 @@ export default function TopPage() {
     facingMode: facingMode,
   }
 
+  const onReset = useCallback(() => {
+    setPatent(null)
+    setIsDrugRecognition(false)
+    setError(null)
+  }, [])
+
   const handleClick = useCallback(() => {
     setFacingMode((prevState) =>
       prevState === FACING_MODE_USER
@@ -106,6 +112,14 @@ export default function TopPage() {
         />
 
         <div className="relative mt-4 flex w-full items-center justify-center">
+          {patent && (
+            <button
+              onClick={onReset}
+              className="absolute left-2 top-0 text-xs text-[#A4A4A4] hover:text-[#A4A4A4]/60"
+            >
+              認証やり直し
+            </button>
+          )}
           <button
             onClick={onRecognition}
             className="text-[#D9D9D9] hover:text-red-600"
@@ -113,7 +127,7 @@ export default function TopPage() {
             <Icons.shutter />
           </button>
           <button
-            className="absolute right-2 top-0 text-[#D9D9D9] hover:text-[#D9D9D9]/90"
+            className="absolute right-2 top-0 text-[#A4A4A4] hover:text-[#A4A4A4]/60"
             onClick={handleClick}
           >
             <Icons.switch />

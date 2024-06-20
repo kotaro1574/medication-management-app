@@ -1,5 +1,6 @@
 import { PlaceholderValue } from "next/dist/shared/lib/get-img-props"
 import { clsx, type ClassValue } from "clsx"
+import { format as _format } from "date-fns"
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -22,6 +23,16 @@ export function toBase64(file: File): Promise<string> {
       reject(error)
     }
   })
+}
+
+export function convertBase64ToFile(base64: string, filename: string): File {
+  const mimeType = base64.match(/^data:(.*?);base64,/)?.[1] ?? "image/jpeg"
+  const base64Data = base64.replace(/^data:(.*?);base64,/, "")
+  const binaryData = Buffer.from(base64Data, "base64")
+
+  const blob = new Blob([binaryData], { type: mimeType })
+
+  return new File([blob], filename, { type: mimeType })
 }
 
 export function placeholder({
@@ -51,4 +62,15 @@ export function placeholder({
       : window.btoa(str)
 
   return `data:image/svg+xml;base64,${toBase64(shimmer(w, h))}`
+}
+
+//形式が増えたら追記する
+type Format =
+  | "yyyy/MM/dd"
+
+/**
+ * 日付をformatする関数
+ */
+export const formatDate = (date: Date, format: Format) => {
+  return _format(date, format)
 }
