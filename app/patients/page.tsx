@@ -10,13 +10,27 @@ export default function PatientsPage() {
         <Tabs defaultValue="all" className="">
           <TabsList className="space-x-2 overflow-x-scroll rounded-b-lg px-4 shadow-shadow">
             <TabsTrigger value="all">全て</TabsTrigger>
-            <TabsTrigger value="floorA">Aフロア</TabsTrigger>
-            <TabsTrigger value="floorB">Bフロア</TabsTrigger>
-            <TabsTrigger value="floorC">Cフロア</TabsTrigger>
-            <TabsTrigger value="floorD">Dフロア</TabsTrigger>
-            <TabsTrigger value="floorE">Eフロア</TabsTrigger>
-            <TabsTrigger value="floorF">Fフロア</TabsTrigger>
-            <TabsTrigger value="floorG">Gフロア</TabsTrigger>
+            <TabsTrigger value="floorA">
+              <p className="line-clamp-1">Aフロア</p>
+            </TabsTrigger>
+            <TabsTrigger value="floorB">
+              <p className="line-clamp-1">Bフロア</p>
+            </TabsTrigger>
+            <TabsTrigger value="floorC">
+              <p className="line-clamp-1">Cフロア</p>
+            </TabsTrigger>
+            <TabsTrigger value="floorD">
+              <p className="line-clamp-1">Dフロア</p>
+            </TabsTrigger>
+            <TabsTrigger value="floorE">
+              <p className="line-clamp-1">Eフロア</p>
+            </TabsTrigger>
+            <TabsTrigger value="floorF">
+              <p className="line-clamp-1">Fフロア</p>
+            </TabsTrigger>
+            <TabsTrigger value="floorG">
+              <p className="line-clamp-1">Gフロア</p>
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="all" className="bg-[#F5F5F5] px-4 py-8">
             Make changes to your account here.
