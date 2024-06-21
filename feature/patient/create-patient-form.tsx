@@ -37,6 +37,22 @@ export function CreatePatientForm({ userName }: { userName: string }) {
     resolver: zodResolver(createPatientFormSchema),
   })
 
+  const calculateAge = (
+    era: string,
+    year: string,
+    month: string,
+    day: string
+  ) => {
+    const birthDate = new Date(`${era}${year}-${month}-${day}`)
+    const today = new Date()
+    let age = today.getFullYear() - birthDate.getFullYear()
+    const m = today.getMonth() - birthDate.getMonth()
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--
+    }
+    return age
+  }
+
   const onSubmit = ({
     faceImages,
     lastName,
@@ -60,13 +76,16 @@ export function CreatePatientForm({ userName }: { userName: string }) {
       formData.append("drugImages", file)
     })
 
+    const age = calculateAge(era, year, month, day)
+    const birthday = `${era}${year}.${month}.${day}生(${age}歳)`
+
     startTransaction(() => {
       ;(async () => {
         const response = await createPatient({
           formData,
           firstName,
           lastName,
-          birthday: `${era}${year}.${month}.${day}`,
+          birthday,
           careLevel,
           groupId,
           gender,
