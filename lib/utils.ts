@@ -2,7 +2,6 @@ import { PlaceholderValue } from "next/dist/shared/lib/get-img-props"
 import { clsx, type ClassValue } from "clsx"
 import { format as _format } from "date-fns"
 import { twMerge } from "tailwind-merge"
-import { match } from "ts-pattern"
 
 import { Database } from "@/types/schema.gen"
 
@@ -79,24 +78,38 @@ export const formatDate = (date: Date, format: Format) => {
 
 export const formatGender = (
   gender: Database["public"]["Enums"]["gender_enum"]
-) => {
-  return match(gender)
-    .with("male", () => "男性")
-    .with("female", () => "女性")
-    .exhaustive()
+): string => {
+  switch (gender) {
+    case "male":
+      return "男性"
+    case "female":
+      return "女性"
+    default:
+      return "不明"
+  }
 }
 
 export const formatCareLevel = (
   careLevel: Database["public"]["Enums"]["care_level_enum"]
 ) => {
-  return match(careLevel)
-    .with("independence", () => "自立")
-    .with("needs_support_1", () => "要支援1")
-    .with("needs_support_2", () => "要支援2")
-    .with("needs_nursing_care_1", () => "要介護1")
-    .with("needs_nursing_care_2", () => "要介護2")
-    .with("needs_nursing_care_3", () => "要介護3")
-    .with("needs_nursing_care_4", () => "要介護4")
-    .with("needs_nursing_care_5", () => "要介護5")
-    .exhaustive()
+  switch (careLevel) {
+    case "independence":
+      return "自立"
+    case "needs_support_1":
+      return "要支援1"
+    case "needs_support_2":
+      return "要支援2"
+    case "needs_nursing_care_1":
+      return "要介護1"
+    case "needs_nursing_care_2":
+      return "要介護2"
+    case "needs_nursing_care_3":
+      return "要介護3"
+    case "needs_nursing_care_4":
+      return "要介護4"
+    case "needs_nursing_care_5":
+      return "要介護5"
+    default:
+      return "不明"
+  }
 }
