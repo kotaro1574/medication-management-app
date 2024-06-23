@@ -1,6 +1,10 @@
 "use client"
 
+import { getS3Data } from "@/actions/s3/get-s3-data"
+import { PatientAvatar } from "@/feature/patient/patient-avatar"
+
 import { formatDate } from "@/lib/utils"
+import { Icons } from "@/components/ui/icons"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const today = new Date()
@@ -40,46 +44,11 @@ const tabs = [
   },
 ]
 
-const tabsContents = [
-  {
-    value: "all",
-    content: "Make changes to your account here.",
-  },
-  {
-    value: "floorA",
-    content: "Make changes to your account here.",
-  },
-  {
-    value: "floorB",
-    content: "Make changes to your account here.",
-  },
-  {
-    value: "floorC",
-    content: "Make changes to your account here.",
-  },
-  {
-    value: "floorD",
-    content: "Make changes to your account here.",
-  },
-  {
-    value: "floorE",
-    content: "Make changes to your account here.",
-  },
-  {
-    value: "floorF",
-    content: "Make changes to your account here.",
-  },
-  {
-    value: "floorG",
-    content: "Make changes to your account here.",
-  },
-]
-
 export default function PatientsPage() {
   return (
     <section className="min-h-screen bg-[#F5F5F5] pt-[52px]">
       <div className="mx-auto">
-        <h2 className="bg-white pb-[46px] text-center text-[20px]">
+        <h2 className="bg-white pb-[46px] pt-[16px] text-center text-[20px]">
           {formatDate(today, "yyyy/MM/dd")}
         </h2>
         <Tabs defaultValue="all" className="">
@@ -113,40 +82,27 @@ export default function PatientsPage() {
               <p className="line-clamp-1">Gフロア</p>
             </TabsTrigger> */}
           </TabsList>
-          {tabsContents.map((tabsContent) => (
-            <TabsContent
-              key={tabsContent.value}
-              value={tabsContent.value}
-              className="px-4 py-8"
-            >
-              {tabsContent.content}
-            </TabsContent>
-          ))}
-          {/* 確認してOKだったら消す */}
-          {/* <TabsContent value="all" className="px-4 py-8">
-            Make changes to your account here.
+
+          <TabsContent value="all" className="px-4 py-8">
+            <div className="rounded-[16px] bg-white px-[9px] py-[12px] shadow-shadow">
+              <div className="flex justify-between">
+                <div className="text-center">
+                  {/* <PatientAvatar src={url} /> */}
+                  <p className="mt-[2px] text-[10px]">山田 花子</p>
+                </div>
+                <div className="flex w-full items-center justify-around">
+                  <div className="text-center">
+                    <Icons.drugHistory />
+                    <div className="mt-px text-[11px]">7:30</div>
+                  </div>
+                  <div className="text-center">
+                    <Icons.drugHistory />
+                    <div className="mt-px text-[11px]">7:30</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </TabsContent>
-          <TabsContent value="floorA" className="px-4 py-8">
-            Make changes to your account here.
-          </TabsContent>
-          <TabsContent value="floorB" className="px-4 py-8">
-            Make changes to your account here.
-          </TabsContent>
-          <TabsContent value="floorC" className="px-4 py-8">
-            Make changes to your account here.
-          </TabsContent>
-          <TabsContent value="floorD" className="px-4 py-8">
-            Make changes to your account here.
-          </TabsContent>
-          <TabsContent value="floorE" className="px-4 py-8">
-            Make changes to your account here.
-          </TabsContent>
-          <TabsContent value="floorF" className="px-4 py-8">
-            Make changes to your account here.
-          </TabsContent>
-          <TabsContent value="floorG" className="px-4 py-8">
-            Make changes to your account here.
-          </TabsContent> */}
         </Tabs>
       </div>
     </section>
