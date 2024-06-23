@@ -65,8 +65,6 @@ export async function updateSession(request: NextRequest) {
     "/api/auth/confirm",
     "/reset-password",
     "/reset-password/input-password",
-    // あとで消す
-    "/patients",
   ]
 
   const isAuthExemptUrl = authExemptUrls.some((url) =>

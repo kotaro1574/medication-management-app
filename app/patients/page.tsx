@@ -1,12 +1,17 @@
 "use client"
 
+import { formatDate } from "@/lib/utils"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+const today = new Date()
 
 export default function PatientsPage() {
   return (
     <section className="min-h-screen bg-[#F5F5F5] pt-[52px]">
       <div className="mx-auto">
-        <h2 className="bg-white pb-[46px] text-center text-[20px]">4/1(水)</h2>
+        <h2 className="bg-white pb-[46px] text-center text-[20px]">
+          {formatDate(today, "yyyy/MM/dd")}
+        </h2>
         <Tabs defaultValue="all" className="">
           <TabsList className="space-x-2 overflow-x-scroll rounded-b-lg bg-white px-4 shadow-shadow">
             <TabsTrigger value="all">全て</TabsTrigger>
