@@ -48,7 +48,7 @@ export default function PatientsPage() {
     <section className="min-h-screen bg-[#F5F5F5] pt-[52px]">
       <div className="mx-auto">
         <h2 className="bg-white pb-[46px] pt-[16px] text-center text-[20px]">
-          {formatDate(today, "yyyy/MM/dd")}
+          {formatDate(today, "M/d(EEE)")}
         </h2>
         <Tabs defaultValue="all" className="">
           <TabsList className="space-x-2 overflow-x-scroll rounded-b-lg bg-white px-4 shadow-shadow">
