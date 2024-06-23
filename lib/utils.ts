@@ -3,6 +3,8 @@ import { clsx, type ClassValue } from "clsx"
 import { format as _format } from "date-fns"
 import { twMerge } from "tailwind-merge"
 
+import { Database } from "@/types/schema.gen"
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -65,12 +67,49 @@ export function placeholder({
 }
 
 //形式が増えたら追記する
-type Format =
-  | "yyyy/MM/dd"
+type Format = "yyyy/MM/dd"
 
 /**
  * 日付をformatする関数
  */
 export const formatDate = (date: Date, format: Format) => {
   return _format(date, format)
+}
+
+export const formatGender = (
+  gender: Database["public"]["Enums"]["gender_enum"]
+): string => {
+  switch (gender) {
+    case "male":
+      return "男性"
+    case "female":
+      return "女性"
+    default:
+      return "不明"
+  }
+}
+
+export const formatCareLevel = (
+  careLevel: Database["public"]["Enums"]["care_level_enum"]
+) => {
+  switch (careLevel) {
+    case "independence":
+      return "自立"
+    case "needs_support_1":
+      return "要支援1"
+    case "needs_support_2":
+      return "要支援2"
+    case "needs_nursing_care_1":
+      return "要介護1"
+    case "needs_nursing_care_2":
+      return "要介護2"
+    case "needs_nursing_care_3":
+      return "要介護3"
+    case "needs_nursing_care_4":
+      return "要介護4"
+    case "needs_nursing_care_5":
+      return "要介護5"
+    default:
+      return "不明"
+  }
 }
