@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { getS3Data } from "@/actions/s3/get-s3-data"
-import { DrugHistoryItem } from "@/feature/drugHistory/drug-history-item"
+import { DrugHistory } from "@/feature/drugHistory/drug-history"
 import { PatientAvatar } from "@/feature/patient/patient-avatar"
 
 import { createClient } from "@/lib/supabase/server"
@@ -49,11 +49,7 @@ export default async function PatientPage({
           </Link>
         </div>
       </div>
-      <div className="space-y-2 px-4 py-8">
-        {Array.from({ length: 7 }).map((_, i) => (
-          <DrugHistoryItem key={i} />
-        ))}
-      </div>
+      <DrugHistory />
     </section>
   )
 }
