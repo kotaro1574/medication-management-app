@@ -1,6 +1,5 @@
 "use client"
 
-import { getS3Data } from "@/actions/s3/get-s3-data"
 import { PatientAvatar } from "@/feature/patient/patient-avatar"
 
 import { formatDate } from "@/lib/utils"
