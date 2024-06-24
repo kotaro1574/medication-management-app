@@ -44,17 +44,6 @@ export default async function PatientsPage() {
     return <div>error</div>
   }
 
-  const _tabs = groups.map((group) => ({
-    value: group.name,
-    contents: patients
-      .filter((patient) => patient.group_id === group.id)
-      .map((patient) => {
-        return {
-          name: `${patient.last_name} ${patient.first_name}`,
-        }
-      }),
-  }))
-
   const tabs = [
     {
       value: "all",
@@ -64,7 +53,16 @@ export default async function PatientsPage() {
         }
       }),
     },
-    ..._tabs,
+    ...groups.map((group) => ({
+      value: group.name,
+      contents: patients
+        .filter((patient) => patient.group_id === group.id)
+        .map((patient) => {
+          return {
+            name: `${patient.last_name} ${patient.first_name}`,
+          }
+        }),
+    })),
   ]
 
   const today = new Date()
