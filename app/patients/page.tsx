@@ -1,90 +1,109 @@
 "use client"
 
-import { PatientAvatar } from "@/feature/patient/patient-avatar"
+import { GroupTabs } from "@/feature/group/group-tabs"
 
 import { formatDate } from "@/lib/utils"
-import { Icons } from "@/components/ui/icons"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-
-const today = new Date()
 
 const tabs = [
   {
     value: "all",
-    label: "全て",
+    contents: [
+      {
+        name: "山田 花子",
+      },
+      {
+        name: "山田 太郎",
+      },
+    ],
   },
   {
     value: "floorA",
-    label: "Aフロア",
+    contents: [
+      {
+        name: "山田 花子",
+      },
+      {
+        name: "山田 太郎",
+      },
+    ],
   },
   {
     value: "floorB",
-    label: "Bフロア",
+    contents: [
+      {
+        name: "山田 花子",
+      },
+      {
+        name: "山田 太郎",
+      },
+    ],
   },
   {
     value: "floorC",
-    label: "Cフロア",
+    contents: [
+      {
+        name: "山田 花子",
+      },
+      {
+        name: "山田 太郎",
+      },
+    ],
   },
   {
     value: "floorD",
-    label: "Dフロア",
+    contents: [
+      {
+        name: "山田 花子",
+      },
+      {
+        name: "山田 太郎",
+      },
+    ],
   },
   {
     value: "floorE",
-    label: "Eフロア",
+    contents: [
+      {
+        name: "山田 花子",
+      },
+      {
+        name: "山田 太郎",
+      },
+    ],
   },
   {
     value: "floorF",
-    label: "Fフロア",
+    contents: [
+      {
+        name: "山田 花子",
+      },
+      {
+        name: "山田 太郎",
+      },
+    ],
   },
   {
     value: "floorG",
-    label: "Gフロア",
+    contents: [
+      {
+        name: "山田 花子",
+      },
+      {
+        name: "山田 太郎",
+      },
+    ],
   },
 ]
 
 export default function PatientsPage() {
+  const today = new Date()
   return (
     <section className="min-h-screen bg-[#F5F5F5] pt-[44px]">
       <div className="mx-auto">
         <h2 className="bg-white pb-[46px] pt-[16px] text-center text-[20px]">
           {formatDate(today, "M/d(EEE)")}
         </h2>
-        <Tabs defaultValue="all" className="">
-          <TabsList className="space-x-2 overflow-x-scroll rounded-b-lg bg-white px-4 shadow-shadow">
-            {tabs.map((tabsName) => (
-              <TabsTrigger key={tabsName.value} value={tabsName.value}>
-                <p className="line-clamp-1">{tabsName.label}</p>
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          <TabsContent value="all" className="px-4 py-8">
-            <div className="rounded-[16px] bg-white px-[9px] py-[12px] shadow-shadow">
-              <div className="flex justify-between">
-                <div className="w-full max-w-[60px] text-center">
-                  <PatientAvatar
-                    size={40}
-                    src={
-                      "https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80"
-                    }
-                  />
-                  <p className="mt-[2px] line-clamp-1 text-[10px]">山田 花子</p>
-                </div>
-                <div className="flex w-full items-center justify-around">
-                  <div className="text-center">
-                    <Icons.drugHistory />
-                    <div className="mt-px text-[11px]">7:30</div>
-                  </div>
-                  <div className="text-center">
-                    <Icons.drugHistory />
-                    <div className="mt-px text-[11px]">7:30</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs>
+        <GroupTabs items={tabs} />
       </div>
     </section>
   )
