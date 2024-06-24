@@ -1,5 +1,3 @@
-import { error } from "console"
-import { redirect } from "next/dist/server/api-utils"
 import { GroupTabs } from "@/feature/group/group-tabs"
 
 import { createClient } from "@/lib/supabase/server"
