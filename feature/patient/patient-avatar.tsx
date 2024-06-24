@@ -1,8 +1,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
-export function PatientAvatar({ src }: { src: string }) {
+type Props = {
+  size?: number
+  src: string
+}
+
+export function PatientAvatar({ size = 60, src }: Props) {
   return (
-    <Avatar className="size-[60px]">
+    <Avatar className={`size-[${size}px]`}>
       <AvatarImage src={src} alt={"avatar-image"} />
       <AvatarFallback />
     </Avatar>

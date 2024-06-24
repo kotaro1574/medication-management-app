@@ -85,9 +85,14 @@ export default function PatientsPage() {
           <TabsContent value="all" className="px-4 py-8">
             <div className="rounded-[16px] bg-white px-[9px] py-[12px] shadow-shadow">
               <div className="flex justify-between">
-                <div className="text-center">
-                  {/* <PatientAvatar src={url} /> */}
-                  <p className="mt-[2px] text-[10px]">山田 花子</p>
+                <div className="w-full max-w-[60px] text-center">
+                  <PatientAvatar
+                    size={40}
+                    src={
+                      "https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80"
+                    }
+                  />
+                  <p className="mt-[2px] line-clamp-1 text-[10px]">山田 花子</p>
                 </div>
                 <div className="flex w-full items-center justify-around">
                   <div className="text-center">
