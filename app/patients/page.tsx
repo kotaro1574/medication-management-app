@@ -1,5 +1,3 @@
-"use client"
-
 import { GroupTabs } from "@/feature/group/group-tabs"
 
 import { formatDate } from "@/lib/utils"
