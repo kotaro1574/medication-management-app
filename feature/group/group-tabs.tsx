@@ -10,6 +10,7 @@ type props = {
     value: string
     contents: {
       name: string
+      url: string
     }[]
   }[]
 }
@@ -19,24 +20,26 @@ export function GroupTabs({ items }: props) {
     <Tabs defaultValue="all" className="">
       <TabsList className="space-x-2 overflow-x-scroll rounded-b-lg bg-white px-4 shadow-shadow">
         {items.map((item) => (
-          <TabsTrigger key={item.value} value={item.value}>
+          <TabsTrigger key={`trigger-${item.value}`} value={item.value}>
             <p className="line-clamp-1">{item.value}</p>
           </TabsTrigger>
         ))}
       </TabsList>
 
       {items.map((item) => (
-        <TabsContent value={item.value} className="space-y-2 px-4 py-8">
+        <TabsContent
+          key={`content-${item.value}`}
+          value={item.value}
+          className="space-y-2 px-4 py-8"
+        >
           {item.contents.map((content) => (
-            <div className="rounded-[16px] bg-white px-[9px] py-[12px] shadow-shadow">
+            <div
+              key={`content-item-${content.name}`}
+              className="rounded-[16px] bg-white px-[9px] py-[12px] shadow-shadow"
+            >
               <div className="flex justify-between">
                 <div className="w-full max-w-[60px] text-center">
-                  <PatientAvatar
-                    size={40}
-                    src={
-                      "https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80"
-                    }
-                  />
+                  <PatientAvatar size={40} src={content.url} />
                   <p className="mt-[2px] line-clamp-1 text-[10px]">
                     {content.name}
                   </p>

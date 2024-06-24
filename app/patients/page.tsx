@@ -1,3 +1,4 @@
+import { getS3Data } from "@/actions/s3/get-s3-data"
 import { GroupTabs } from "@/feature/group/group-tabs"
 
 import { createClient } from "@/lib/supabase/server"
@@ -35,29 +36,41 @@ export default async function PatientsPage() {
 
   const { data: patients, error: patientsError } = await supabase
     .from("patients")
-    .select("first_name, last_name, group_id")
+    .select("first_name, last_name, group_id, image_id")
     .eq("facility_id", profile.facility_id)
 
   if (patientsError) {
     return <div>error</div>
   }
 
+  const patientsWithUrl = await Promise.all(
+    patients.map(async (patient) => {
+      const { url } = await getS3Data(
+        patient.image_id,
+        process.env.FACES_BUCKET ?? ""
+      )
+      return { ...patient, url }
+    })
+  )
+
   const tabs = [
     {
       value: "all",
-      contents: patients.map((patient) => {
+      contents: patientsWithUrl.map((patient) => {
         return {
           name: `${patient.last_name} ${patient.first_name}`,
+          url: patient.url,
         }
       }),
     },
     ...groups.map((group) => ({
       value: group.name,
-      contents: patients
+      contents: patientsWithUrl
         .filter((patient) => patient.group_id === group.id)
         .map((patient) => {
           return {
             name: `${patient.last_name} ${patient.first_name}`,
+            url: patient.url,
           }
         }),
     })),
