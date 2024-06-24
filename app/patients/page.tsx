@@ -56,7 +56,7 @@ export default async function PatientsPage() {
 
   const tabs = [
     {
-      value: "all",
+      value: "全て",
       contents: patientsWithUrl.map((patient) => {
         return {
           name: `${patient.last_name} ${patient.first_name}`,
