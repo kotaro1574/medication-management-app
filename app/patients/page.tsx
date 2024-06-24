@@ -57,29 +57,6 @@ export default function PatientsPage() {
                 <p className="line-clamp-1">{tabsName.label}</p>
               </TabsTrigger>
             ))}
-            {/* 確認してOKだったら消す */}
-            {/* <TabsTrigger value="all"><p className="line-clamp-1">全て</p></TabsTrigger>
-            <TabsTrigger value="floorA">
-              <p className="line-clamp-1">Aフロア</p>
-            </TabsTrigger>
-            <TabsTrigger value="floorB">
-              <p className="line-clamp-1">Bフロア</p>
-            </TabsTrigger>
-            <TabsTrigger value="floorC">
-              <p className="line-clamp-1">Cフロア</p>
-            </TabsTrigger>
-            <TabsTrigger value="floorD">
-              <p className="line-clamp-1">Dフロア</p>
-            </TabsTrigger>
-            <TabsTrigger value="floorE">
-              <p className="line-clamp-1">Eフロア</p>
-            </TabsTrigger>
-            <TabsTrigger value="floorF">
-              <p className="line-clamp-1">Fフロア</p>
-            </TabsTrigger>
-            <TabsTrigger value="floorG">
-              <p className="line-clamp-1">Gフロア</p>
-            </TabsTrigger> */}
           </TabsList>
 
           <TabsContent value="all" className="px-4 py-8">
