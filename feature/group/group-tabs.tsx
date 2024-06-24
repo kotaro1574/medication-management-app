@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { PatientAvatar } from "@/feature/patient/patient-avatar"
 
 import { Icons } from "@/components/ui/icons"
@@ -9,6 +10,7 @@ type props = {
   items: {
     value: string
     contents: {
+      id: string
       name: string
       url: string
     }[]
@@ -33,29 +35,32 @@ export function GroupTabs({ items }: props) {
           className="space-y-2 px-4 py-8"
         >
           {item.contents.map((content) => (
-            <div
+            <Link
               key={`content-item-${content.name}`}
-              className="rounded-[16px] bg-white px-[9px] py-[12px] shadow-shadow"
+              href={`/patients/${content.id}`}
+              className="block"
             >
-              <div className="flex justify-between">
-                <div className="w-full max-w-[60px] text-center">
-                  <PatientAvatar size={40} src={content.url} />
-                  <p className="mt-[2px] line-clamp-1 text-[10px]">
-                    {content.name}
-                  </p>
-                </div>
-                <div className="flex w-full items-center justify-around">
-                  <div className="text-center">
-                    <Icons.drugHistory />
-                    <div className="mt-px text-[11px]">7:30</div>
+              <div className="rounded-[16px] bg-white px-[9px] py-[12px] shadow-shadow">
+                <div className="flex justify-between">
+                  <div className="w-full max-w-[60px] text-center">
+                    <PatientAvatar size={40} src={content.url} />
+                    <p className="mt-[2px] line-clamp-1 text-[10px]">
+                      {content.name}
+                    </p>
                   </div>
-                  <div className="text-center">
-                    <Icons.drugHistory />
-                    <div className="mt-px text-[11px]">7:30</div>
+                  <div className="flex w-full items-center justify-around">
+                    <div className="text-center">
+                      <Icons.drugHistory />
+                      <div className="mt-px text-[11px]">7:30</div>
+                    </div>
+                    <div className="text-center">
+                      <Icons.drugHistory />
+                      <div className="mt-px text-[11px]">7:30</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </TabsContent>
       ))}

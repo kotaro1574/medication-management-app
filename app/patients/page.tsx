@@ -1,5 +1,6 @@
 import { getS3Data } from "@/actions/s3/get-s3-data"
 import { GroupTabs } from "@/feature/group/group-tabs"
+import { id } from "date-fns/locale"
 
 import { createClient } from "@/lib/supabase/server"
 import { formatDate } from "@/lib/utils"
@@ -36,7 +37,7 @@ export default async function PatientsPage() {
 
   const { data: patients, error: patientsError } = await supabase
     .from("patients")
-    .select("first_name, last_name, group_id, image_id")
+    .select("id, first_name, last_name, group_id, image_id")
     .eq("facility_id", profile.facility_id)
 
   if (patientsError) {
@@ -60,6 +61,7 @@ export default async function PatientsPage() {
         return {
           name: `${patient.last_name} ${patient.first_name}`,
           url: patient.url,
+          id: patient.id,
         }
       }),
     },
@@ -71,6 +73,7 @@ export default async function PatientsPage() {
           return {
             name: `${patient.last_name} ${patient.first_name}`,
             url: patient.url,
+            id: patient.id,
           }
         }),
     })),
