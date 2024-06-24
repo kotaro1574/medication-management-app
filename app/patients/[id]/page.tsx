@@ -1,9 +1,11 @@
-import Image from "next/image"
 import Link from "next/link"
 import { getS3Data } from "@/actions/s3/get-s3-data"
+import { DrugHistory } from "@/feature/drugHistory/drug-history"
+import { PatientAvatar } from "@/feature/patient/patient-avatar"
 
 import { createClient } from "@/lib/supabase/server"
-import { placeholder } from "@/lib/utils"
+import { formatCareLevel, formatGender } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
 
 export default async function PatientPage({
   params,
@@ -24,26 +26,30 @@ export default async function PatientPage({
   const { url } = await getS3Data(data.image_id, process.env.FACES_BUCKET ?? "")
 
   return (
-    <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
-      <div>
-        <Link href={`/patients/${data.id}/edit`}>Edit</Link>
+    <section className="min-h-screen bg-[#F5F5F5]">
+      <div className="rounded-b-[8px] bg-white px-4 pb-4 pt-[60px] shadow-shadow">
+        <div className="flex items-center gap-2">
+          <PatientAvatar src={url} />
+          <div>
+            <h2 className="text-xl">
+              {data.last_name} {data.first_name}
+            </h2>
+            <div>
+              {data.birthday} / {formatGender(data.gender)} /{" "}
+              {formatCareLevel(data.care_level)}
+            </div>
+          </div>
+        </div>
+        <div className="mt-[38px]">
+          <Link
+            href={`/patients/${params.id}/edit`}
+            className={`${buttonVariants()} block w-full`}
+          >
+            編集
+          </Link>
+        </div>
       </div>
-      <Image
-        src={url}
-        alt="S3 Image"
-        placeholder={placeholder({ w: 300, h: 300 })}
-        width={300}
-        height={300}
-        className="rounded-md object-cover"
-        style={{
-          maxWidth: "100%",
-          height: "auto",
-        }}
-      />
-
-      <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-        {data.last_name} {data.first_name}
-      </h1>
+      <DrugHistory />
     </section>
   )
 }
