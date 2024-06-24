@@ -1,24 +1,108 @@
-import Link from "next/link"
+import { GroupTabs } from "@/feature/group/group-tabs"
 
-import { createClient } from "@/lib/supabase/server"
+import { formatDate } from "@/lib/utils"
 
-export default async function PatientsPage() {
-  const supabase = createClient()
-  const { data: patients } = await supabase.from("patients").select("*")
+const tabs = [
+  {
+    value: "all",
+    contents: [
+      {
+        name: "山田 花子",
+      },
+      {
+        name: "山田 太郎",
+      },
+    ],
+  },
+  {
+    value: "floorA",
+    contents: [
+      {
+        name: "山田 花子",
+      },
+      {
+        name: "山田 太郎",
+      },
+    ],
+  },
+  {
+    value: "floorB",
+    contents: [
+      {
+        name: "山田 花子",
+      },
+      {
+        name: "山田 太郎",
+      },
+    ],
+  },
+  {
+    value: "floorC",
+    contents: [
+      {
+        name: "山田 花子",
+      },
+      {
+        name: "山田 太郎",
+      },
+    ],
+  },
+  {
+    value: "floorD",
+    contents: [
+      {
+        name: "山田 花子",
+      },
+      {
+        name: "山田 太郎",
+      },
+    ],
+  },
+  {
+    value: "floorE",
+    contents: [
+      {
+        name: "山田 花子",
+      },
+      {
+        name: "山田 太郎",
+      },
+    ],
+  },
+  {
+    value: "floorF",
+    contents: [
+      {
+        name: "山田 花子",
+      },
+      {
+        name: "山田 太郎",
+      },
+    ],
+  },
+  {
+    value: "floorG",
+    contents: [
+      {
+        name: "山田 花子",
+      },
+      {
+        name: "山田 太郎",
+      },
+    ],
+  },
+]
 
+export default function PatientsPage() {
+  const today = new Date()
   return (
-    <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
-      <h1>Patients</h1>
-      <ul>
-        {patients?.map((patient) => (
-          <li key={patient.id}>
-            <Link href={`/patients/${patient.id}`}>
-              {patient.last_name} {patient.first_name}
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <Link href="/patients/create">Create Patient</Link>
+    <section className="min-h-screen bg-[#F5F5F5] pt-[44px]">
+      <div className="mx-auto">
+        <h2 className="bg-white pb-[46px] pt-[16px] text-center text-[20px]">
+          {formatDate(today, "M/d(EEE)")}
+        </h2>
+        <GroupTabs items={tabs} />
+      </div>
     </section>
   )
 }
