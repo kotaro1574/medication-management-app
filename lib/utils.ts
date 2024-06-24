@@ -1,6 +1,7 @@
 import { PlaceholderValue } from "next/dist/shared/lib/get-img-props"
 import { clsx, type ClassValue } from "clsx"
 import { format as _format } from "date-fns"
+import { ja } from "date-fns/locale"
 import { twMerge } from "tailwind-merge"
 
 import { Database } from "@/types/schema.gen"
@@ -73,7 +74,7 @@ type Format = "yyyy/MM/dd" | "M/d(EEE)"
  * 日付をformatする関数
  */
 export const formatDate = (date: Date, format: Format) => {
-  return _format(date, format)
+  return _format(date, format, { locale: ja })
 }
 
 export const formatGender = (
