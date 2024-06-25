@@ -15,8 +15,17 @@ import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { useToast } from "@/components/ui/use-toast"
 
+// 和暦を西暦に変換するマッピング
+const eraToGregorian: { [key: string]: number } = {
+  M: 1868, // 明治
+  T: 1912, // 大正
+  S: 1926, // 昭和
+  H: 1989, // 平成
+  R: 2019, // 令和
+}
+
 export function CreatePatientForm({ userName }: { userName: string }) {
-  const [loading, startTransaction] = useTransition()
+  const [loading, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const { toast } = useToast()
@@ -43,11 +52,19 @@ export function CreatePatientForm({ userName }: { userName: string }) {
     month: string,
     day: string
   ) => {
-    const birthDate = new Date(`${era}${year}-${month}-${day}`)
+    const gregorianYear = eraToGregorian[era] + parseInt(year, 10) - 1
+    const birthDate = new Date(
+      `${gregorianYear}-${String(month).padStart(2, "0")}-${String(
+        day
+      ).padStart(2, "0")}`
+    )
     const today = new Date()
     let age = today.getFullYear() - birthDate.getFullYear()
-    const m = today.getMonth() - birthDate.getMonth()
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    const isBirthdayPassedThisYear =
+      today.getMonth() > birthDate.getMonth() ||
+      (today.getMonth() === birthDate.getMonth() &&
+        today.getDate() >= birthDate.getDate())
+    if (!isBirthdayPassedThisYear) {
       age--
     }
     return age
@@ -79,7 +96,7 @@ export function CreatePatientForm({ userName }: { userName: string }) {
     const age = calculateAge(era, year, month, day)
     const birthday = `${era}${year}.${month}.${day}生(${age}歳)`
 
-    startTransaction(() => {
+    startTransition(() => {
       ;(async () => {
         const response = await createPatient({
           formData,
