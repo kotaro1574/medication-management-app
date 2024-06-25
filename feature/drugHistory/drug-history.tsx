@@ -5,6 +5,8 @@ import { DrugHistoryItem } from "@/feature/drugHistory/drug-history-item"
 import { addDays, format, startOfWeek } from "date-fns"
 import { ja } from "date-fns/locale"
 
+import { Icons } from "@/components/ui/icons"
+
 export function DrugHistory() {
   const [currentWeekStartDate, setCurrentWeekStartDate] = useState(
     startOfWeek(new Date(), { locale: ja })
@@ -31,8 +33,8 @@ export function DrugHistory() {
   })
 
   return (
-    <div>
-      <div className="space-y-2 px-4 py-8">
+    <div className="px-4 py-8">
+      <div className="space-y-2">
         {weekDays.map((day, i) => (
           <DrugHistoryItem
             key={i}
@@ -42,15 +44,15 @@ export function DrugHistory() {
           />
         ))}
       </div>
-      <div className="flex justify-between px-4 py-8">
+      <div className="mx-auto flex items-center justify-center gap-4 px-4 pt-6">
         <button onClick={handlePrevWeek} className="text-xl">
-          &lt;
+          <Icons.chevronLeft />
         </button>
         <span>
           {weekRangeStart}〜{weekRangeEnd}
         </span>
         <button onClick={handleNextWeek} className="text-xl">
-          &gt;
+          <Icons.chevronRight />
         </button>
       </div>
     </div>
