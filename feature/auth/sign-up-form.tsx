@@ -99,8 +99,16 @@ export function SignUpForm() {
         },
       })
 
+      console.log(data, error)
+
       if (error) {
         throw error
+      }
+
+      // 登録されているメールアドレスの場合、空の配列が返ってくる。
+      const identities = data.user?.identities
+      if (identities?.length === 0) {
+        throw new Error("このメールアドレスは既に登録されています")
       }
 
       if (data.user) {
@@ -123,7 +131,7 @@ export function SignUpForm() {
         return
       }
 
-      if (parseError.message === "Rate limit exceeded") {
+      if (parseError.message === "Email rate limit exceeded") {
         toast({
           variant: "destructive",
           description:
