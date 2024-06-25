@@ -99,8 +99,6 @@ export function SignUpForm() {
         },
       })
 
-      console.log(data, error)
-
       if (error) {
         throw error
       }
