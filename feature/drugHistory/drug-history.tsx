@@ -33,7 +33,7 @@ export function DrugHistory() {
   })
 
   return (
-    <div className="px-4 py-8">
+    <div>
       <div className="space-y-2">
         {weekDays.map((day, i) => (
           <DrugHistoryItem
