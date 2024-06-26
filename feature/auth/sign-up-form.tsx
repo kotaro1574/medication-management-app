@@ -106,7 +106,10 @@ export function SignUpForm() {
       // 登録されているメールアドレスの場合、空の配列が返ってくる。
       const identities = data.user?.identities
       if (identities?.length === 0) {
-        throw new Error("このメールアドレスは既に登録されています")
+        form.setError("email", {
+          message: "このメールアドレスは既に登録されています",
+        })
+        return
       }
 
       if (data.user) {
