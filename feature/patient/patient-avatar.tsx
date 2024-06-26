@@ -8,7 +8,7 @@ type Props = {
 export function PatientAvatar({ size = 60, src }: Props) {
   return (
     <Avatar className={`size-[${size}px]`}>
-      <AvatarImage src={src} alt={"avatar-image"} />
+      <AvatarImage src={src} alt={"avatar-image"} className="object-cover" />
       <AvatarFallback />
     </Avatar>
   )
