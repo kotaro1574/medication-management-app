@@ -68,7 +68,7 @@ export function placeholder({
 }
 
 //形式が増えたら追記する
-type Format = "yyyy/MM/dd" | "M/d(EEE)"
+type Format = "yyyy/MM/dd" | "M/d(EEE)" | "M/d" | "yyyy/MM/dd" | "H:mm"
 
 /**
  * 日付をformatする関数
