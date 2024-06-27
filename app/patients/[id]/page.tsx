@@ -86,7 +86,7 @@ export default async function PatientPage({
     <section className="min-h-screen bg-[#F5F5F5]">
       <div className="rounded-b-[8px] bg-white px-4 pb-4 pt-[60px] shadow-shadow">
         <div className="flex items-center gap-2">
-          <PatientAvatar src={avatarUrl} />
+          <PatientAvatar size={60} src={avatarUrl} />
           <div>
             <h2 className="text-xl">
               {patients.last_name} {patients.first_name}

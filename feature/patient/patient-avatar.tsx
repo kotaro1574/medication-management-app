@@ -5,11 +5,16 @@ type Props = {
   src: string
 }
 
-export function PatientAvatar({ size = 60, src }: Props) {
+export function PatientAvatar({ size = 40, src }: Props) {
   return (
-    <Avatar className={`size-[${size}px]`}>
+    <Avatar
+      style={{
+        width: size,
+        height: size,
+      }}
+    >
       <AvatarImage src={src} alt={"avatar-image"} className="object-cover" />
-      <AvatarFallback />
+      <AvatarFallback size={size} />
     </Avatar>
   )
 }

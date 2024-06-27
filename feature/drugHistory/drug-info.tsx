@@ -3,7 +3,7 @@
 import Image from "next/image"
 
 import { Database } from "@/types/schema.gen"
-import { formatDate } from "@/lib/utils"
+import { formatDate, placeholder } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 
 type drugWithUrls = Database["public"]["Tables"]["drugs"]["Row"] & {
@@ -30,7 +30,12 @@ export function DrugInfo({ drugs }: Props) {
             </div>
           </div>
           <AspectRatio className="mt-1" ratio={340 / 400}>
-            <Image alt={drug.id} src={drug.url} fill />
+            <Image
+              alt={drug.id}
+              src={drug.url}
+              fill
+              placeholder={placeholder({ w: 340, h: 400 })}
+            />
           </AspectRatio>
         </div>
       ))}
