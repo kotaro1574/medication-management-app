@@ -82,6 +82,27 @@ export default async function PatientPage({
     )
   }
 
+  const userIds = drugHistories.map((dh) => dh.user_id)
+  const { data: profiles, error: profileError } = await supabase
+    .from("profiles")
+    .select("id, name")
+    .in("id", userIds)
+
+  if (profileError) {
+    return (
+      <div>
+        <h1>エラーが発生しました</h1>
+        <pre>{JSON.stringify(profileError, null, 2)}</pre>
+      </div>
+    )
+  }
+
+  // profileデータをdrugHistoriesに統合
+  const drugHistoriesWithNames = drugHistories.map((dh) => {
+    const profile = profiles.find((p) => p.id === dh.user_id)
+    return { ...dh, user_name: profile?.name ?? "" }
+  })
+
   return (
     <section className="min-h-screen bg-[#F5F5F5]">
       <div className="rounded-b-[8px] bg-white px-4 pb-4 pt-[60px] shadow-shadow">
@@ -107,7 +128,10 @@ export default async function PatientPage({
         </div>
       </div>
       <div className="space-y-[38px] px-4 py-8">
-        <DrugHistory drugHistories={drugHistories} id={params.id} />
+        <DrugHistory
+          drugHistoriesWithNames={drugHistoriesWithNames}
+          id={params.id}
+        />
         <DrugInfo drugs={drugWithUrls} />
       </div>
     </section>

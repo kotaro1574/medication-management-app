@@ -1,17 +1,23 @@
-import { Database } from "@/types/schema.gen"
 import { formatDate } from "@/lib/utils"
 import { Icons } from "@/components/ui/icons"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
+import { drugHistoryWithName } from "./drug-history"
 
 export function DrugHistoryItem({
   day,
   month,
   weekday,
-  drugHistories,
+  drugHistoriesWithNames,
 }: {
   day: string
   month: string
   weekday: string
-  drugHistories: Database["public"]["Tables"]["drug_histories"]["Row"][]
+  drugHistoriesWithNames: drugHistoryWithName[]
 }) {
   return (
     <div className="flex items-center gap-8 rounded-2xl bg-white p-2 shadow-shadow">
@@ -20,13 +26,22 @@ export function DrugHistoryItem({
         <div className="pt-[2.5px] font-semibold leading-none">{day}</div>
         <div className="pb-[2.5px] text-[8px]">{weekday}</div>
       </div>
-      {drugHistories.map((drugHistory, i) => (
-        <div key={drugHistory.id} className="text-center">
-          <Icons.drugHistory />
-          <div className="mt-1 text-[11px]">
-            {formatDate(new Date(drugHistory.created_at), "H:mm")}
-          </div>
-        </div>
+      {drugHistoriesWithNames.map((drugHistory, i) => (
+        <Popover key={drugHistory.id}>
+          <PopoverTrigger>
+            <div className="text-center">
+              <Icons.drugHistory />
+              <div className="mt-1 text-[11px]">
+                {formatDate(new Date(drugHistory.created_at), "H:mm")}
+              </div>
+            </div>
+          </PopoverTrigger>
+          <PopoverContent>
+            <div className="text-sm font-semibold">
+              担当者：{drugHistory.user_name}
+            </div>
+          </PopoverContent>
+        </Popover>
       ))}
     </div>
   )

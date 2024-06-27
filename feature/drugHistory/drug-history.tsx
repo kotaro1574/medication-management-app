@@ -9,13 +9,18 @@ import { Database } from "@/types/schema.gen"
 import { createClient } from "@/lib/supabase/client"
 import { Icons } from "@/components/ui/icons"
 
+export type drugHistoryWithName =
+  Database["public"]["Tables"]["drug_histories"]["Row"] & {
+    user_name: string
+  }
+
 type Props = {
-  drugHistories: Database["public"]["Tables"]["drug_histories"]["Row"][]
+  drugHistoriesWithNames: drugHistoryWithName[]
   id: string
 }
 
-export function DrugHistory({ drugHistories: _drugHistories, id }: Props) {
-  const [drugHistories, setDrugHistories] = useState(_drugHistories)
+export function DrugHistory({ drugHistoriesWithNames, id }: Props) {
+  const [drugHistories, setDrugHistories] = useState(drugHistoriesWithNames)
   const [currentWeekStartDate, setCurrentWeekStartDate] = useState(
     startOfWeek(new Date(), { locale: ja })
   )
@@ -37,18 +42,33 @@ export function DrugHistory({ drugHistories: _drugHistories, id }: Props) {
       const saturday = addDays(currentWeekStartDate, 6)
       saturday.setHours(23, 59, 59, 999)
 
-      const { data: drugHistories, error } = await supabase
+      const { data: drugHistories, error: drugError } = await supabase
         .from("drug_histories")
         .select("*")
         .eq("patent_id", id)
         .gte("created_at", sunday.toISOString())
         .lte("created_at", saturday.toISOString())
 
-      if (error) {
-        console.error(error)
+      if (drugError) {
+        return console.error(drugError)
       }
 
-      setDrugHistories(drugHistories ?? [])
+      const userIds = drugHistories.map((dh) => dh.user_id)
+      const { data: profiles, error: profileError } = await supabase
+        .from("profiles")
+        .select("id, name")
+        .in("id", userIds)
+
+      if (profileError) {
+        return console.error(profileError)
+      }
+
+      const drugHistoriesWithNames = drugHistories.map((dh) => {
+        const profile = profiles.find((p) => p.id === dh.user_id)
+        return { ...dh, user_name: profile?.name ?? "" }
+      })
+
+      setDrugHistories(drugHistoriesWithNames ?? [])
     }
 
     handleGetDrugHistories()
@@ -82,7 +102,7 @@ export function DrugHistory({ drugHistories: _drugHistories, id }: Props) {
       <div className="space-y-2">
         {weekDays.map((day, i) => (
           <DrugHistoryItem
-            drugHistories={filterDrugHistoriesByDate(day.date)}
+            drugHistoriesWithNames={filterDrugHistoriesByDate(day.date)}
             key={i}
             day={day.day}
             month={day.month}
