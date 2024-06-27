@@ -1,4 +1,3 @@
-import Image from "next/image"
 import Link from "next/link"
 import { getS3Data } from "@/actions/s3/get-s3-data"
 import { DrugHistory } from "@/feature/drugHistory/drug-history"
@@ -7,7 +6,6 @@ import { PatientAvatar } from "@/feature/patient/patient-avatar"
 
 import { createClient } from "@/lib/supabase/server"
 import { formatCareLevel, formatGender } from "@/lib/utils"
-import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { buttonVariants } from "@/components/ui/button"
 
 export default async function PatientPage({
@@ -45,7 +43,7 @@ export default async function PatientPage({
     )
   }
 
-  const { url } = await getS3Data(
+  const { url: avatarUrl } = await getS3Data(
     patients.image_id,
     process.env.FACES_BUCKET ?? ""
   )
@@ -60,11 +58,35 @@ export default async function PatientPage({
     })
   )
 
+  const today = new Date()
+
+  const sunday = new Date(today.setDate(today.getDate() - today.getDay()))
+  sunday.setHours(0, 0, 0, 0) // 日付を0時0分0秒に設定
+
+  const saturday = new Date(today.setDate(sunday.getDate() + 6))
+  saturday.setHours(23, 59, 59, 999) // 日付を23時59分59秒に設定
+
+  const { data: drugHistories, error: drugHistoryError } = await supabase
+    .from("drug_histories")
+    .select("*")
+    .eq("patent_id", params.id)
+    .gte("created_at", sunday.toISOString())
+    .lte("created_at", saturday.toISOString())
+
+  if (drugHistoryError) {
+    return (
+      <div>
+        <h1>エラーが発生しました</h1>
+        <pre>{JSON.stringify(drugHistoryError, null, 2)}</pre>
+      </div>
+    )
+  }
+
   return (
     <section className="min-h-screen bg-[#F5F5F5]">
       <div className="rounded-b-[8px] bg-white px-4 pb-4 pt-[60px] shadow-shadow">
         <div className="flex items-center gap-2">
-          <PatientAvatar src={url} />
+          <PatientAvatar src={avatarUrl} />
           <div>
             <h2 className="text-xl">
               {patients.last_name} {patients.first_name}
@@ -84,11 +106,9 @@ export default async function PatientPage({
           </Link>
         </div>
       </div>
-      <div className="px-4 py-8">
-        <DrugHistory />
-        <div className="mt-[38px]">
-          <DrugInfo drugs={drugWithUrls} />
-        </div>
+      <div className="space-y-[38px] px-4 py-8">
+        <DrugHistory drugHistories={drugHistories} id={params.id} />
+        <DrugInfo drugs={drugWithUrls} />
       </div>
     </section>
   )
