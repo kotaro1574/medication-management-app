@@ -1,6 +1,4 @@
 import {
-  ChevronLeft,
-  ChevronRight,
   LucideProps,
   Moon,
   SunMedium,
@@ -180,7 +178,7 @@ export const Icons = {
       />
     </svg>
   ),
-  faceImagesCheck: (props: LucideProps) => (
+  successCheck: (props: LucideProps) => (
     <svg
       width="40"
       height="40"

@@ -16,6 +16,7 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form"
+import { Icons } from "@/components/ui/icons"
 import { Input } from "@/components/ui/input"
 
 const formSchema = z.object({
@@ -63,15 +64,34 @@ export default function ResetPasswordPage() {
 
   if (isSend) {
     return (
-      <div className="container max-w-[450px] py-[120px]">
-        <p className="text-center">メールを送信しました</p>
+      <div className="container max-w-[450px] space-y-6 py-[120px]">
+        <h1 className="text-center text-[24px] font-bold text-[#c2b37f]">
+          パスワード再設定
+        </h1>
+        <div className="mx-auto max-w-[255px] space-y-4">
+          <Icons.successCheck className="mx-auto size-20" />
+          <p className="max-w-[255px] font-semibold">
+            パスワード再設定用のURLをご入力のメールアドレスに送信しました。
+            <br />
+            記載された内容に従って、パスワードの再設定を行なってください。
+          </p>
+        </div>
+        <div className="mx-auto max-w-[255px] text-sm text-[#A4A4A4]">
+          <p>メールが届かない場合は以下の場合が考えられます</p>
+          <ul className="list-disc pl-6">
+            <li>迷惑メールフォルダに入ってしまっている場合</li>
+            <li>メールアドレスが間違っている場合</li>
+            <li>メールアドレスが登録されていない場合</li>
+          </ul>
+        </div>
       </div>
     )
   }
+
   return (
     <div className="container max-w-[450px] py-[120px]">
       <h1 className="text-center text-[24px] font-bold text-[#c2b37f]">
-        パスワードを忘れた場合
+        パスワード再設定
       </h1>
       <p className="mt-[24px] text-center text-sm text-neutral-400">
         アカウントに結びついている

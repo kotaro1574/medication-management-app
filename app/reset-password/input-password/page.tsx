@@ -20,30 +20,11 @@ import {
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 
-const allowedSpecialCharacters = "!@#$%^&*()_+-=[]{}|;:',.<>/?"
-
 const formSchema = z
   .object({
-    password: z
-      .string()
-      .min(8, {
-        message: "パスワードは8文字以上である必要があります。",
-      })
-      .regex(/^(?=.*[a-z])/, {
-        message:
-          "パスワードには少なくとも1つの小文字が含まれている必要があります。",
-      })
-      .regex(/^(?=.*[A-Z])/, {
-        message:
-          "パスワードには少なくとも1つの大文字が含まれている必要があります。",
-      })
-      .regex(/^(?=.*[0-9])/, {
-        message:
-          "パスワードには少なくとも1つの数字が含まれている必要があります。",
-      })
-      .regex(/^(?=.*[!@#$%^&*()_+\-=[\]{}|;:',.<>/?])/, {
-        message: `パスワードには少なくとも1つの特殊文字が含まれている必要があります。使用できる特殊文字: ${allowedSpecialCharacters}`,
-      }),
+    password: z.string().min(8, {
+      message: "パスワードは8文字以上である必要があります。",
+    }),
     passwordConf: z.string(),
   })
   .refine((data) => data.password === data.passwordConf, {
@@ -93,7 +74,7 @@ export default function InputPasswordForReset() {
   return (
     <div className="container max-w-[450px] py-[120px]">
       <h1 className="text-center text-[24px] font-bold text-[#c2b37f]">
-        パスワードをリセット
+        パスワード再設定
       </h1>
       <p className="mt-[24px] text-center text-sm text-neutral-400">
         新しいパスワードを入力してください

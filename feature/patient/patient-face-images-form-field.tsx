@@ -35,7 +35,7 @@ export function PatientFaceImagesFormField({
               />
             </AspectRatio>
             <div className="absolute right-[-12px] top-[-12px]">
-              <Icons.faceImagesCheck />
+              <Icons.successCheck />
             </div>
           </div>
         </div>
