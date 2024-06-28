@@ -20,8 +20,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 
-const allowedSpecialCharacters = "!@#$%^&*()_+-=[]{}|;:',.<>/?"
-
 const formSchema = z
   .object({
     password: z.string().min(8, {

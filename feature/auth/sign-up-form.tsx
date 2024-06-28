@@ -24,8 +24,6 @@ import { useToast } from "@/components/ui/use-toast"
 
 import { FacilitiesSelect } from "../facility/facilities-select"
 
-const allowedSpecialCharacters = "!@#$%^&*()_+-=[]{}|;:',.<>/?"
-
 const formSchema = z.object({
   email: z
     .string()
