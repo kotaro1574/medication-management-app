@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { setLoginInfo } from "@/actions/cookie/set-login-info"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { v4 as uuidv4 } from "uuid"
 import { z } from "zod"
 
 import { createClient } from "@/lib/supabase/client"
@@ -17,16 +17,8 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form"
+import { Icons } from "@/components/ui/icons"
 import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { useToast } from "@/components/ui/use-toast"
 
 import { FacilitiesSelect } from "../facility/facilities-select"
@@ -68,6 +60,8 @@ const errorSchema = z.object({
 export function SignUpForm() {
   const supabase = createClient()
   const [loading, setLoading] = useState(false)
+  const [isConfirm, setIsConfirm] = useState(false)
+  const router = useRouter()
   const { toast } = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -121,7 +115,7 @@ export function SignUpForm() {
         })
       }
 
-      toast({ description: "登録完了メールを確認してください 📩" })
+      setIsConfirm(true)
     } catch (error) {
       const parseError = errorSchema.parse(error)
 
@@ -150,7 +144,14 @@ export function SignUpForm() {
     }
   }
 
-  return (
+  const onLogin = () => {
+    router.push("/")
+    toast({
+      title: "ログインしました",
+    })
+  }
+
+  return !isConfirm ? (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
@@ -235,5 +236,18 @@ export function SignUpForm() {
         </div>
       </form>
     </Form>
+  ) : (
+    <div className="space-y-6">
+      <div className="space-y-4 text-center">
+        <Icons.successCheck className="mx-auto size-20" />
+        <p className="font-semibold">ユーザー登録が完了しました</p>
+      </div>
+      <Button className="block w-full" onClick={onLogin}>
+        ログインする
+      </Button>
+      <Button className="block w-full" variant={"ghost"}>
+        連続でユーザー登録をする
+      </Button>
+    </div>
   )
 }
