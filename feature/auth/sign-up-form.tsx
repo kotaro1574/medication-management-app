@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
+import { logout } from "@/actions/auth/logout"
 import { setLoginInfo } from "@/actions/cookie/set-login-info"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -61,6 +62,7 @@ export function SignUpForm() {
   const supabase = createClient()
   const [loading, setLoading] = useState(false)
   const [isConfirm, setIsConfirm] = useState(false)
+  const [logoutLoading, startTransaction] = useTransition()
   const router = useRouter()
   const { toast } = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
@@ -148,6 +150,21 @@ export function SignUpForm() {
     router.push("/")
     toast({
       title: "ログインしました",
+    })
+  }
+
+  const onReset = () => {
+    startTransaction(() => {
+      ;(async () => {
+        const response = await logout()
+        if (response.success) {
+          console.log(response.message)
+          form.reset()
+          setIsConfirm(false)
+        } else {
+          toast({ title: response.error, variant: "destructive" })
+        }
+      })()
     })
   }
 
@@ -242,10 +259,19 @@ export function SignUpForm() {
         <Icons.successCheck className="mx-auto size-20" />
         <p className="font-semibold">ユーザー登録が完了しました</p>
       </div>
-      <Button className="block w-full" onClick={onLogin}>
+      <Button
+        className="block w-full"
+        disabled={logoutLoading}
+        onClick={onLogin}
+      >
         ログインする
       </Button>
-      <Button className="block w-full" variant={"ghost"}>
+      <Button
+        className="block w-full"
+        disabled={logoutLoading}
+        variant={"ghost"}
+        onClick={onReset}
+      >
         連続でユーザー登録をする
       </Button>
     </div>
