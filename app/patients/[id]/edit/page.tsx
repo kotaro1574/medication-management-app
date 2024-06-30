@@ -62,20 +62,14 @@ export default async function EditPatientPage({
   const drugImageIds = drugs.map((drug) => drug.image_id)
 
   return (
-    <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
-      <div className="mzax-w-[980px] flex flex-col items-start gap-2">
-        <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-          Edit Patient
-        </h1>
-
-        <UpdatePatientForm
-          faceImageIds={faceImageIds}
-          drugImageIds={drugImageIds}
-          patient={patient}
-          faceUrl={faceUrl}
-          drugUrls={drugUrls}
-        />
-      </div>
+    <section className="min-h-screen bg-[#F5F5F5] px-4 pb-8 pt-11">
+      <UpdatePatientForm
+        faceImageIds={faceImageIds}
+        drugImageIds={drugImageIds}
+        patient={patient}
+        faceUrl={faceUrl}
+        drugUrls={drugUrls}
+      />
     </section>
   )
 }

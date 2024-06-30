@@ -6,7 +6,7 @@ import { createPatient } from "@/actions/patients/create-patient"
 import { PatientDrugFormField } from "@/feature/patient/patient-drug-form-field"
 import { PatientFaceImagesFormField } from "@/feature/patient/patient-face-images-form-field"
 import { PatientInfoFormField } from "@/feature/patient/patient-info-form-field"
-import { createPatientFormSchema } from "@/feature/patient/schema"
+import { patientFormSchema } from "@/feature/patient/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -29,7 +29,7 @@ export function CreatePatientForm({ userName }: { userName: string }) {
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const { toast } = useToast()
-  const form = useForm<z.infer<typeof createPatientFormSchema>>({
+  const form = useForm<z.infer<typeof patientFormSchema>>({
     defaultValues: {
       faceImages: [],
       lastName: "",
@@ -43,7 +43,7 @@ export function CreatePatientForm({ userName }: { userName: string }) {
       gender: undefined,
       drugImages: [],
     },
-    resolver: zodResolver(createPatientFormSchema),
+    resolver: zodResolver(patientFormSchema),
   })
 
   const calculateAge = (
@@ -82,7 +82,7 @@ export function CreatePatientForm({ userName }: { userName: string }) {
     groupId,
     drugImages,
     gender,
-  }: z.infer<typeof createPatientFormSchema>) => {
+  }: z.infer<typeof patientFormSchema>) => {
     if (!faceImages || faceImages.length === 0) return
     const formData = new FormData()
     faceImages.forEach((file) => {
