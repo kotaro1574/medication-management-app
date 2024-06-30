@@ -3,6 +3,14 @@
 @tailwind utilities;
 
 @layer base {
+  .hidden-scrollbar {
+    -ms-overflow-style: none; /* IE, Edge 対応 */
+    scrollbar-width: none; /* Firefox 対応 */
+  }
+  .hidden-scrollbar::-webkit-scrollbar {
+    /* Chrome, Safari 対応 */
+    display: none;
+  }
   :root {
     --base-color: rgba(255, 202, 14, 1);
     --shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
