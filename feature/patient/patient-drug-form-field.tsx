@@ -5,14 +5,14 @@ import { buttonVariants } from "@/components/ui/button"
 import { FormItem } from "@/components/ui/form"
 
 import { DrugSelectedItem } from "../drug/drug-selected-item"
-import { createPatientFormSchema } from "./schema"
+import { patientFormSchema } from "./schema"
 
 export function PatientDrugFormField({
   form,
   loading,
   userName,
 }: {
-  form: UseFormReturn<z.infer<typeof createPatientFormSchema>>
+  form: UseFormReturn<z.infer<typeof patientFormSchema>>
   loading: boolean
   userName: string
 }) {

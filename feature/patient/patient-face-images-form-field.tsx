@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import { PatientFacesWebcamDialog } from "@/feature/patient/patient-faces-webcam-dialog"
-import { createPatientFormSchema } from "@/feature/patient/schema"
+import { patientFormSchema } from "@/feature/patient/schema"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 
@@ -13,7 +13,7 @@ import { Icons } from "@/components/ui/icons"
 export function PatientFaceImagesFormField({
   form,
 }: {
-  form: UseFormReturn<z.infer<typeof createPatientFormSchema>>
+  form: UseFormReturn<z.infer<typeof patientFormSchema>>
 }) {
   const isFullFaceImages = form.watch("faceImages")?.length >= 5
 

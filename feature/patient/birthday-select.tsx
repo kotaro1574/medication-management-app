@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { createPatientFormSchema } from "@/feature/patient/schema"
+import { patientFormSchema } from "@/feature/patient/schema"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 
@@ -21,7 +21,7 @@ import {
 export function BirthdaySelect({
   form,
 }: {
-  form: UseFormReturn<z.infer<typeof createPatientFormSchema>>
+  form: UseFormReturn<z.infer<typeof patientFormSchema>>
 }) {
   const eras = ["R", "H", "S", "T", "M"]
   const [years, setYears] = useState<number[]>([])

@@ -6,7 +6,7 @@ import { formatDate } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Icons } from "@/components/ui/icons"
 
-import { createPatientFormSchema } from "../patient/schema"
+import { patientFormSchema } from "../patient/schema"
 import { DrugInfoDialog } from "./drug-info-dialog"
 
 export function DrugSelectedItem({
@@ -15,7 +15,7 @@ export function DrugSelectedItem({
   userName,
   date,
 }: {
-  form: UseFormReturn<z.infer<typeof createPatientFormSchema>>
+  form: UseFormReturn<z.infer<typeof patientFormSchema>>
   file: File
   date: Date
   userName: string

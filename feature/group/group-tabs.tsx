@@ -20,7 +20,7 @@ type props = {
 export function GroupTabs({ items }: props) {
   return (
     <Tabs defaultValue={items[0].value} className="">
-      <TabsList className="space-x-2 overflow-x-scroll rounded-b-lg bg-white px-4 shadow-shadow">
+      <TabsList className="hidden-scrollbar overflow-x-scroll rounded-b-lg bg-white px-4 shadow-shadow">
         {items.map((item) => (
           <TabsTrigger key={`trigger-${item.value}`} value={item.value}>
             <p className="line-clamp-1">{item.value}</p>
@@ -42,7 +42,7 @@ export function GroupTabs({ items }: props) {
             >
               <div className="rounded-[16px] bg-white px-[9px] py-[12px] shadow-shadow">
                 <div className="flex justify-between">
-                  <div className="w-full max-w-[60px] text-center">
+                  <div className="flex w-full max-w-[60px] flex-col items-center">
                     <PatientAvatar size={40} src={content.url} />
                     <p className="mt-[2px] line-clamp-1 text-[10px]">
                       {content.name}
