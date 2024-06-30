@@ -3,7 +3,7 @@
 import { GroupsSelect } from "@/feature/group/groups-select"
 import { CareLevelSelect } from "@/feature/patient/care-level-select"
 import { GenderRadioGroup } from "@/feature/patient/gender-radio-group"
-import { createPatientFormSchema } from "@/feature/patient/schema"
+import { patientFormSchema } from "@/feature/patient/schema"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 
@@ -21,7 +21,7 @@ import { BirthdaySelect } from "./birthday-select"
 export function PatientInfoFormField({
   form,
 }: {
-  form: UseFormReturn<z.infer<typeof createPatientFormSchema>>
+  form: UseFormReturn<z.infer<typeof patientFormSchema>>
 }) {
   return (
     <div>
