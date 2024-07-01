@@ -16,10 +16,12 @@ export function DrugSelectedItem({
   date,
 }: {
   form: UseFormReturn<z.infer<typeof patientFormSchema>>
-  file: File
+  file: File | string
   date: Date
   userName: string
 }) {
+  const fileUrl = typeof file === "string" ? file : URL.createObjectURL(file)
+
   const onDelete = () => {
     const drugImages = form.getValues("drugImages") as File[]
     const newDrugImages = drugImages.filter((_file) => _file !== file)
@@ -30,7 +32,7 @@ export function DrugSelectedItem({
     <div className="flex items-center gap-2 px-2 py-1">
       <div className="relative w-full max-w-[63px]">
         <AspectRatio ratio={63 / 73} className="w-full">
-          <Image src={URL.createObjectURL(file)} fill alt="drug_image" />
+          <Image src={fileUrl} fill alt="drug_image" />
         </AspectRatio>
         <div className="absolute bottom-0 right-0">
           <DrugInfoDialog
