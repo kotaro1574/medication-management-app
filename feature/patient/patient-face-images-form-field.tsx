@@ -6,16 +6,19 @@ import { patientFormSchema } from "@/feature/patient/schema"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 
+import { placeholder } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/ui/icons"
 
 export function PatientFaceImagesFormField({
   form,
+  faceUrl,
 }: {
   form: UseFormReturn<z.infer<typeof patientFormSchema>>
+  faceUrl?: string
 }) {
-  const isFullFaceImages = form.watch("faceImages")?.length >= 5
+  const isFullFaceImages = form.watch("faceImages")?.length >= 5 || !!faceUrl
 
   return (
     <div className="space-y-4">
@@ -28,9 +31,16 @@ export function PatientFaceImagesFormField({
           <div className="relative w-full max-w-[150px]">
             <AspectRatio ratio={15 / 21}>
               <Image
-                src={URL.createObjectURL(form.watch("faceImages")[0])}
+                src={
+                  form.watch("faceImages").length
+                    ? URL.createObjectURL(form.watch("faceImages")[0])
+                    : !!faceUrl
+                    ? faceUrl
+                    : ""
+                }
                 alt="face image"
                 fill
+                placeholder={placeholder({ w: 150, h: 210 })}
                 className="rounded-[8px] object-cover"
               />
             </AspectRatio>

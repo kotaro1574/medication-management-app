@@ -13,6 +13,7 @@ import { Form } from "@/components/ui/form"
 import { useToast } from "@/components/ui/use-toast"
 
 import { DeletePatientDialog } from "./delete-patient-dialog"
+import { PatientFaceImagesFormField } from "./patient-face-images-form-field"
 import { PatientInfoFormField } from "./patient-info-form-field"
 
 type Props = {
@@ -34,25 +35,21 @@ export function UpdatePatientForm({
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const { toast } = useToast()
+
   const extractInfo = (input_str: string) => {
-    const pattern = /([A-Z])(\d+)\.(\d+)\.(\d+)生\((\d+)歳\)/
+    const pattern = /([A-Z])(\d+)\.(\d+)\.(\d+)生\(\d+歳\)/
     const match = input_str.match(pattern)
 
     if (match) {
-      const era = String(match[1])
-      const year = String(match[2])
-      const month = String(match[3])
-      const day = String(match[4])
-      const age = String(match[5])
+      const [_, era, year, month, day] = match
 
-      return { era, year, month, day, age }
+      return { era, year, month, day }
     } else {
       return {
         era: "",
         year: "",
         month: "",
         day: "",
-        age: "",
       }
     }
   }
@@ -111,8 +108,9 @@ export function UpdatePatientForm({
     <div>
       <div>{error}</div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
           <PatientInfoFormField form={form} />
+          <PatientFaceImagesFormField form={form} faceUrl={faceUrl} />
         </form>
       </Form>
       <DeletePatientDialog

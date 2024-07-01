@@ -58,6 +58,7 @@ export default async function EditPatientPage({
     })
   )
 
+  // 削除のために画像IDを取得
   const faceImageIds = faces.map((face) => face.image_id)
   const drugImageIds = drugs.map((drug) => drug.image_id)
 
