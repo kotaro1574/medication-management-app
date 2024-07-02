@@ -11,18 +11,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { genBirthdayText } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { useToast } from "@/components/ui/use-toast"
-
-// 和暦を西暦に変換するマッピング
-const eraToGregorian: { [key: string]: number } = {
-  M: 1868, // 明治
-  T: 1912, // 大正
-  S: 1926, // 昭和
-  H: 1989, // 平成
-  R: 2019, // 令和
-}
 
 export function CreatePatientForm({
   currentUserName,
@@ -50,30 +42,6 @@ export function CreatePatientForm({
     resolver: zodResolver(patientFormSchema),
   })
 
-  const calculateAge = (
-    era: string,
-    year: string,
-    month: string,
-    day: string
-  ) => {
-    const gregorianYear = eraToGregorian[era] + parseInt(year, 10) - 1
-    const birthDate = new Date(
-      `${gregorianYear}-${String(month).padStart(2, "0")}-${String(
-        day
-      ).padStart(2, "0")}`
-    )
-    const today = new Date()
-    let age = today.getFullYear() - birthDate.getFullYear()
-    const isBirthdayPassedThisYear =
-      today.getMonth() > birthDate.getMonth() ||
-      (today.getMonth() === birthDate.getMonth() &&
-        today.getDate() >= birthDate.getDate())
-    if (!isBirthdayPassedThisYear) {
-      age--
-    }
-    return age
-  }
-
   const onSubmit = ({
     faceImages,
     lastName,
@@ -97,9 +65,7 @@ export function CreatePatientForm({
       formData.append("drugImages", file)
     })
 
-    const age = calculateAge(era, year, month, day)
-    const birthday = `${era}${year}.${month}.${day}生(${age}歳)`
-
+    const birthday = genBirthdayText(era, year, month, day)
     startTransition(() => {
       ;(async () => {
         const response = await createPatient({

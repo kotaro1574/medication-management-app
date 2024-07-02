@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { Database } from "@/types/schema.gen"
+import { extractBirthdayInfo } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { useToast } from "@/components/ui/use-toast"
@@ -39,25 +40,7 @@ export function UpdatePatientForm({
   const router = useRouter()
   const { toast } = useToast()
 
-  const extractInfo = (input_str: string) => {
-    const pattern = /([A-Z])(\d+)\.(\d+)\.(\d+)生\(\d+歳\)/
-    const match = input_str.match(pattern)
-
-    if (match) {
-      const [_, era, year, month, day] = match
-
-      return { era, year, month, day }
-    } else {
-      return {
-        era: "",
-        year: "",
-        month: "",
-        day: "",
-      }
-    }
-  }
-
-  const { era, year, month, day } = extractInfo(patient.birthday)
+  const { era, year, month, day } = extractBirthdayInfo(patient.birthday)
   const form = useForm<z.infer<typeof patientFormSchema>>({
     defaultValues: {
       faceImages: [],
@@ -75,35 +58,49 @@ export function UpdatePatientForm({
     resolver: zodResolver(patientFormSchema),
   })
 
-  const onSubmit = ({ faceImages }: z.infer<typeof patientFormSchema>) => {
-    if (!faceImages) {
-      return
-    }
-    // const formData = new FormData()
-    // formData.append("faceImages", faceImages)
+  const onSubmit = ({
+    faceImages,
+    lastName,
+    firstName,
+    era,
+    year,
+    month,
+    day,
+    careLevel,
+    groupId,
+    drugImages,
+    gender,
+  }: z.infer<typeof patientFormSchema>) => {
+    const formData = new FormData()
+    faceImages.forEach((file) => {
+      formData.append("faceImages", file)
+    })
 
+    drugImages.forEach((file) => {
+      formData.append("drugImages", file)
+    })
     startTransaction(() => {
-      ;(async () => {
-        // const response = await updatePatient({
-        //   formData,
-        //   name,
-        //   id: patient.id,
-        //   faceData: {
-        //     faceIds: patient.face_ids ?? [],
-        //     imageId: patient.image_id ?? "",
-        //   },
-        // })
-        // if (response.success) {
-        //   setError(null)
-        //   router.push("/patients")
-        //   router.refresh()
-        //   toast({
-        //     title: response.message,
-        //   })
-        // } else {
-        //   setError(response.error)
-        // }
-      })()
+      // ;(async () => {
+      //   const response = await updatePatient({
+      //     formData,
+      //     name,
+      //     id: patient.id,
+      //     faceData: {
+      //       faceIds: patient.face_ids ?? [],
+      //       imageId: patient.image_id ?? "",
+      //     },
+      //   })
+      //   if (response.success) {
+      //     setError(null)
+      //     router.push("/patients")
+      //     router.refresh()
+      //     toast({
+      //       title: response.message,
+      //     })
+      //   } else {
+      //     setError(response.error)
+      //   }
+      // })()
     })
   }
 
