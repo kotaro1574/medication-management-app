@@ -2,13 +2,14 @@
 
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
+import { updatePatient } from "@/actions/patients/update-patient"
 import { patientFormSchema } from "@/feature/patient/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { Database } from "@/types/schema.gen"
-import { extractBirthdayInfo } from "@/lib/utils"
+import { extractBirthdayInfo, genBirthdayText } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { useToast } from "@/components/ui/use-toast"
@@ -79,28 +80,31 @@ export function UpdatePatientForm({
     drugImages.forEach((file) => {
       formData.append("drugImages", file)
     })
+
+    const birthday = genBirthdayText(era, year, month, day)
     startTransaction(() => {
-      // ;(async () => {
-      //   const response = await updatePatient({
-      //     formData,
-      //     name,
-      //     id: patient.id,
-      //     faceData: {
-      //       faceIds: patient.face_ids ?? [],
-      //       imageId: patient.image_id ?? "",
-      //     },
-      //   })
-      //   if (response.success) {
-      //     setError(null)
-      //     router.push("/patients")
-      //     router.refresh()
-      //     toast({
-      //       title: response.message,
-      //     })
-      //   } else {
-      //     setError(response.error)
-      //   }
-      // })()
+      ;(async () => {
+        const response = await updatePatient({
+          patientId: patient.id,
+          formData,
+          firstName,
+          lastName,
+          birthday,
+          careLevel,
+          groupId,
+          gender,
+        })
+        if (response.success) {
+          setError(null)
+          router.push("/patients")
+          router.refresh()
+          toast({
+            title: response.message,
+          })
+        } else {
+          setError(response.error)
+        }
+      })()
     })
   }
 
