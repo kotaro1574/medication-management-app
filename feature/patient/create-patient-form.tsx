@@ -24,7 +24,11 @@ const eraToGregorian: { [key: string]: number } = {
   R: 2019, // 令和
 }
 
-export function CreatePatientForm({ userName }: { userName: string }) {
+export function CreatePatientForm({
+  currentUserName,
+}: {
+  currentUserName: string
+}) {
   const [loading, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -135,8 +139,8 @@ export function CreatePatientForm({ userName }: { userName: string }) {
         <PatientDrugFormField
           loading={loading}
           form={form}
-          currentUserName={userName}
-          drugUrls={[]}
+          currentUserName={currentUserName}
+          drugs={[]}
         />
         <div>
           <Button disabled={loading} className="block w-full">

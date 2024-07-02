@@ -11,12 +11,12 @@ export function PatientDrugFormField({
   form,
   loading,
   currentUserName,
-  drugUrls,
+  drugs,
 }: {
   form: UseFormReturn<z.infer<typeof patientFormSchema>>
   loading: boolean
   currentUserName: string
-  drugUrls: string[]
+  drugs: { url: string; userName: string }[]
 }) {
   return (
     <div className="space-y-4">
@@ -24,14 +24,14 @@ export function PatientDrugFormField({
       <Controller
         render={({ field: { onChange, value } }) => (
           <FormItem>
-            {drugUrls.length > 0 &&
-              drugUrls.map((url) => (
+            {drugs.length > 0 &&
+              drugs.map((drug) => (
                 <DrugSelectedItem
-                  key={url}
+                  key={drug.url}
                   form={form}
-                  file={url}
+                  file={drug.url}
                   date={new Date()}
-                  userName={"userName"}
+                  userName={drug.userName}
                 />
               ))}
 

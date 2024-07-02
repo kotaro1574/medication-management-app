@@ -22,13 +22,15 @@ type Props = {
   drugImageIds: string[]
   patient: Database["public"]["Tables"]["patients"]["Row"]
   faceUrl: string
-  drugUrls: string[]
+  drugs: { url: string; userName: string }[]
+  currentUserName: string
 }
 
 export function UpdatePatientForm({
+  currentUserName,
   patient,
   faceUrl,
-  drugUrls,
+  drugs,
   faceImageIds,
   drugImageIds,
 }: Props) {
@@ -113,10 +115,10 @@ export function UpdatePatientForm({
           <PatientInfoFormField form={form} />
           <PatientFaceImagesFormField form={form} faceUrl={faceUrl} />
           <PatientDrugFormField
-            drugUrls={drugUrls}
+            drugs={drugs}
             loading={loading}
             form={form}
-            currentUserName={""}
+            currentUserName={currentUserName}
           />
         </form>
       </Form>

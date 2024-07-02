@@ -9,6 +9,22 @@ export default async function EditPatientPage({
   params: { id: string }
 }) {
   const supabase = createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("name")
+    .eq("id", user?.id ?? "")
+    .single()
+
+  if (profileError) {
+    console.error(profileError)
+    return <div>Error</div>
+  }
+
   const { data: patient, error: patientError } = await supabase
     .from("patients")
     .select("*")
@@ -31,9 +47,9 @@ export default async function EditPatientPage({
     return <div>Error</div>
   }
 
-  const { data: drugs, error: drugsError } = await supabase
+  const { data: _drugs, error: drugsError } = await supabase
     .from("drugs")
-    .select("image_id")
+    .select("image_id, user_id")
     .eq("patient_id", patient.id)
 
   if (drugsError) {
@@ -48,19 +64,26 @@ export default async function EditPatientPage({
   )
 
   // 薬の画像のURLを取得
-  const drugUrls = await Promise.all(
-    drugs.map(async (drug) => {
+  const drugs = await Promise.all(
+    _drugs.map(async (drug) => {
       const { url } = await getS3Data(
         drug.image_id,
         process.env.DRUGS_BUCKET ?? ""
       )
-      return url
+
+      const { data } = await supabase
+        .from("profiles")
+        .select("name")
+        .eq("id", drug.user_id)
+        .single()
+
+      return { url, userName: data?.name ?? "" }
     })
   )
 
   // 削除のために画像IDを取得
   const faceImageIds = faces.map((face) => face.image_id)
-  const drugImageIds = drugs.map((drug) => drug.image_id)
+  const drugImageIds = _drugs.map((drug) => drug.image_id)
 
   return (
     <section className="min-h-screen bg-[#F5F5F5] px-4 pb-8 pt-11">
@@ -69,7 +92,8 @@ export default async function EditPatientPage({
         drugImageIds={drugImageIds}
         patient={patient}
         faceUrl={faceUrl}
-        drugUrls={drugUrls}
+        drugs={drugs}
+        currentUserName={profile.name}
       />
     </section>
   )
