@@ -116,7 +116,7 @@ export function UpdatePatientForm({
             drugUrls={drugUrls}
             loading={loading}
             form={form}
-            userName={""}
+            currentUserName={""}
           />
         </form>
       </Form>

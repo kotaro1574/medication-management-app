@@ -10,12 +10,12 @@ import { patientFormSchema } from "./schema"
 export function PatientDrugFormField({
   form,
   loading,
-  userName,
+  currentUserName,
   drugUrls,
 }: {
   form: UseFormReturn<z.infer<typeof patientFormSchema>>
   loading: boolean
-  userName: string
+  currentUserName: string
   drugUrls: string[]
 }) {
   return (
@@ -31,7 +31,7 @@ export function PatientDrugFormField({
                   form={form}
                   file={url}
                   date={new Date()}
-                  userName={userName}
+                  userName={"userName"}
                 />
               ))}
 
@@ -42,7 +42,7 @@ export function PatientDrugFormField({
                   form={form}
                   file={file}
                   date={new Date()}
-                  userName={userName}
+                  userName={currentUserName}
                 />
               ))}
             <div className="relative">

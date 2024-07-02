@@ -44,11 +44,18 @@ export async function createPatient({
     const supabase = createClient()
 
     const { data } = await supabase.auth.getUser()
+    const userId = data?.user?.id
+
+    if (!userId) {
+      await deleteImage(faceImageIds, process.env.FACES_BUCKET ?? "")
+      await deleteFace(process.env.FACES_BUCKET ?? "", faceIds)
+      throw new Error("ユーザー情報の取得に失敗しました")
+    }
 
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("facility_id")
-      .eq("id", data.user?.id ?? "")
+      .eq("id", userId)
       .single()
 
     if (profileError) {
@@ -110,6 +117,7 @@ export async function createPatient({
       drugImageIds.map((drugImageId) => ({
         patient_id: patient.id,
         image_id: drugImageId,
+        user_id: userId,
       }))
     )
 

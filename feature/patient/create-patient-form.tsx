@@ -135,7 +135,8 @@ export function CreatePatientForm({ userName }: { userName: string }) {
         <PatientDrugFormField
           loading={loading}
           form={form}
-          userName={userName}
+          currentUserName={userName}
+          drugUrls={[]}
         />
         <div>
           <Button disabled={loading} className="block w-full">
