@@ -121,7 +121,11 @@ export function UpdatePatientForm({
             form={form}
             currentUserName={currentUserName}
           />
-          <div></div>
+          <div>
+            <Button disabled={loading} className="block w-full">
+              {loading ? "更新中" : "更新"}
+            </Button>
+          </div>
         </form>
       </Form>
       <DeletePatientDialog
@@ -129,8 +133,12 @@ export function UpdatePatientForm({
         faceImageIds={faceImageIds}
         drugImageIds={drugImageIds}
         trigger={
-          <Button disabled={loading} className="mt-6" variant={"destructive"}>
-            削除する
+          <Button
+            disabled={loading}
+            className="mt-10 block w-full"
+            variant={"ghost"}
+          >
+            利用者情報を削除
           </Button>
         }
       />
