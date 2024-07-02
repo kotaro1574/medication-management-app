@@ -110,7 +110,7 @@ export function CreatePatientForm({
         />
         <div>
           <Button disabled={loading} className="block w-full">
-            {loading ? "登録中..." : "登録する"}
+            {loading ? "登録中..." : "登録"}
           </Button>
         </div>
       </form>
