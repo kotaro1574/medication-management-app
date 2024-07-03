@@ -107,25 +107,24 @@ export async function createPatient({
       )
     }
 
-    if (drugImages.length === 0)
-      return { success: true, message: "患者が作成されました" }
-
     // 服薬画像の処理
-    const drugImageIds = await drugImagesUpload(drugImages)
+    if (drugImages.length > 0) {
+      const drugImageIds = await drugImagesUpload(drugImages)
 
-    const { error: drugsError } = await supabase.from("drugs").insert(
-      drugImageIds.map((drugImageId) => ({
-        patient_id: patient.id,
-        image_id: drugImageId,
-        user_id: userId,
-      }))
-    )
-
-    if (drugsError) {
-      await deleteImage(drugImageIds, process.env.DRUGS_BUCKET ?? "")
-      throw new Error(
-        `服薬画像の挿入時にエラーが発生しました: ${drugsError.message}`
+      const { error: drugsError } = await supabase.from("drugs").insert(
+        drugImageIds.map((drugImageId) => ({
+          patient_id: patient.id,
+          image_id: drugImageId,
+          user_id: userId,
+        }))
       )
+
+      if (drugsError) {
+        await deleteImage(drugImageIds, process.env.DRUGS_BUCKET ?? "")
+        throw new Error(
+          `服薬画像の挿入時にエラーが発生しました: ${drugsError.message}`
+        )
+      }
     }
   } catch (error) {
     if (error instanceof Error) {
