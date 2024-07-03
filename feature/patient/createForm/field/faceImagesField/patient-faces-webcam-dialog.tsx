@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useRef, useState } from "react"
-import { patientFormSchema } from "@/feature/patient/schema"
+import { createPatientFormSchema } from "@/feature/patient/createForm/schema"
 import { UseFormReturn } from "react-hook-form"
 import Webcam from "react-webcam"
 import { z } from "zod"
@@ -17,7 +17,7 @@ import { Progress } from "@/components/ui/progress"
 
 type Props = {
   trigger: ReactNode
-  form: UseFormReturn<z.infer<typeof patientFormSchema>>
+  form: UseFormReturn<z.infer<typeof createPatientFormSchema>>
 }
 
 const FACING_MODE_USER = "user"

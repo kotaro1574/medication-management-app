@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { updatePatient } from "@/actions/patients/update-patient"
-import { patientFormSchema } from "@/feature/patient/schema"
+import { createPatientFormSchema } from "@/feature/patient/createForm/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -14,10 +14,10 @@ import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { useToast } from "@/components/ui/use-toast"
 
+import { PatientDrugFormField } from "./createForm/field/drugField/patient-drug-form-field"
+import { PatientFaceImagesFormField } from "./createForm/field/faceImagesField/patient-face-images-form-field"
+import { PatientInfoFormField } from "./createForm/field/infoField/patient-info-form-field"
 import { DeletePatientDialog } from "./delete-patient-dialog"
-import { PatientDrugFormField } from "./patient-drug-form-field"
-import { PatientFaceImagesFormField } from "./patient-face-images-form-field"
-import { PatientInfoFormField } from "./patient-info-form-field"
 
 type Props = {
   faceImageIds: string[]
@@ -42,7 +42,7 @@ export function UpdatePatientForm({
   const { toast } = useToast()
 
   const { era, year, month, day } = extractBirthdayInfo(patient.birthday)
-  const form = useForm<z.infer<typeof patientFormSchema>>({
+  const form = useForm<z.infer<typeof createPatientFormSchema>>({
     defaultValues: {
       faceImages: [],
       lastName: patient.last_name,
@@ -56,7 +56,7 @@ export function UpdatePatientForm({
       gender: patient.gender,
       drugImages: [],
     },
-    resolver: zodResolver(patientFormSchema),
+    resolver: zodResolver(createPatientFormSchema),
   })
 
   const onSubmit = ({
@@ -71,7 +71,7 @@ export function UpdatePatientForm({
     groupId,
     drugImages,
     gender,
-  }: z.infer<typeof patientFormSchema>) => {
+  }: z.infer<typeof createPatientFormSchema>) => {
     const formData = new FormData()
     faceImages.forEach((file) => {
       formData.append("faceImages", file)

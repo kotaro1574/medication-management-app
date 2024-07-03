@@ -6,27 +6,20 @@ import { formatDate } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Icons } from "@/components/ui/icons"
 
-import { patientFormSchema } from "../patient/schema"
 import { DrugInfoDialog } from "./drug-info-dialog"
 
 export function DrugSelectedItem({
-  form,
+  onDelete,
   file,
   userName,
   date,
 }: {
-  form: UseFormReturn<z.infer<typeof patientFormSchema>>
+  onDelete: () => void
   file: File | string
   date: Date
   userName: string
 }) {
   const fileUrl = typeof file === "string" ? file : URL.createObjectURL(file)
-
-  const onDelete = () => {
-    const drugImages = form.getValues("drugImages") as File[]
-    const newDrugImages = drugImages.filter((_file) => _file !== file)
-    form.setValue("drugImages", newDrugImages)
-  }
 
   return (
     <div className="flex items-center gap-2 px-2 py-1">

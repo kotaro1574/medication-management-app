@@ -1,4 +1,4 @@
-import { CreatePatientForm } from "@/feature/patient/create-patient-form"
+import { CreatePatientForm } from "@/feature/patient/createForm/create-patient-form"
 
 import { createClient } from "@/lib/supabase/server"
 
