@@ -1,5 +1,7 @@
 "use server"
 
+import { SupabaseClient } from "@supabase/supabase-js"
+
 import { ActionResult } from "@/types/action"
 import { Database } from "@/types/schema.gen"
 import {
@@ -23,6 +25,148 @@ type Props = {
   deleteDrugIds: string[]
 }
 
+async function getUser(supabase: SupabaseClient<Database>): Promise<string> {
+  const { data } = await supabase.auth.getUser()
+  const userId = data?.user?.id
+  if (!userId) {
+    throw new Error("ユーザー情報の取得に失敗しました")
+  }
+  return userId
+}
+
+async function getProfile(
+  supabase: SupabaseClient<Database>,
+  userId: string
+): Promise<string> {
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("facility_id")
+    .eq("id", userId)
+    .single()
+  if (error) {
+    throw new Error("施設情報の取得に失敗しました")
+  }
+  return profile.facility_id
+}
+
+async function updatePatientInfo(
+  supabase: SupabaseClient<Database>,
+  patientId: string,
+  updates: Partial<Database["public"]["Tables"]["patients"]["Row"]>
+): Promise<void> {
+  const { error } = await supabase
+    .from("patients")
+    .update(updates)
+    .eq("id", patientId)
+  if (error) {
+    throw new Error("患者の更新に失敗しました")
+  }
+}
+
+async function handleFaceImages(
+  supabase: SupabaseClient<Database>,
+  patientId: string,
+  faceImages: File[]
+): Promise<void> {
+  const { data: faces, error: facesError } = await supabase
+    .from("faces")
+    .select("id, face_id, image_id")
+    .eq("patient_id", patientId)
+
+  if (facesError) {
+    throw new Error("顔情報の取得に失敗しました")
+  }
+
+  const faceIds = faces.map((face) => face.face_id)
+  const imageIds = faces.map((face) => face.image_id)
+
+  await deleteFace(process.env.FACES_BUCKET ?? "", faceIds)
+  await deleteImage(imageIds, process.env.FACES_BUCKET ?? "")
+
+  const { error } = await supabase
+    .from("faces")
+    .delete()
+    .in(
+      "id",
+      faces.map((face) => face.id)
+    )
+  if (error) {
+    throw new Error("顔情報の削除に失敗しました")
+  }
+
+  const faceImageIds = await uploadFaceImage(faceImages)
+  const newFaces = await IndexFaces(
+    faceImageIds,
+    process.env.FACES_BUCKET ?? ""
+  )
+  const newFaceIds = newFaces.map((face) => face.faceId)
+
+  await updatePatientInfo(supabase, patientId, {
+    image_id: faceImageIds[0],
+    face_ids: newFaceIds,
+  })
+
+  const { error: faceError } = await supabase.from("faces").insert(
+    newFaces.map((face) => ({
+      patient_id: patientId,
+      face_id: face.faceId,
+      image_id: face.imageId,
+    }))
+  )
+
+  if (faceError) {
+    await deleteImage(faceImageIds, process.env.FACES_BUCKET ?? "")
+    await deleteFace(process.env.FACES_BUCKET ?? "", newFaceIds)
+    throw new Error("新しい顔情報の挿入に失敗しました")
+  }
+}
+
+async function handleDrugImages(
+  supabase: SupabaseClient<Database>,
+  patientId: string,
+  userId: string,
+  drugImages: File[]
+): Promise<void> {
+  const drugImageIds = await drugImagesUpload(drugImages)
+  const { error } = await supabase.from("drugs").insert(
+    drugImageIds.map((drugImageId) => ({
+      patient_id: patientId,
+      image_id: drugImageId,
+      user_id: userId,
+    }))
+  )
+  if (error) {
+    await deleteImage(drugImageIds, process.env.DRUGS_BUCKET ?? "")
+    throw new Error(`服薬画像の挿入時にエラーが発生しました: ${error.message}`)
+  }
+}
+
+async function deleteDrugs(
+  supabase: SupabaseClient<Database>,
+  deleteDrugIds: string[]
+): Promise<void> {
+  const { data: drugs, error: drugsError } = await supabase
+    .from("drugs")
+    .select("image_id")
+    .in("id", deleteDrugIds)
+
+  if (drugsError) {
+    throw new Error("服用薬の取得に失敗しました")
+  }
+
+  const drugImageIds = drugs.map((drug) => drug.image_id)
+  await deleteImage(drugImageIds, process.env.DRUGS_BUCKET ?? "")
+
+  const { error: drugError } = await supabase
+    .from("drugs")
+    .delete()
+    .in("id", deleteDrugIds)
+
+  if (drugError) {
+    throw new Error("服用薬の削除に失敗しました")
+  }
+}
+
 export async function updatePatient({
   patientId,
   formData,
@@ -39,158 +183,29 @@ export async function updatePatient({
     const drugImages = formData.getAll("drugImages") as File[]
 
     const supabase = createClient()
+    const userId = await getUser(supabase)
+    const facilityId = await getProfile(supabase, userId)
 
-    const { data } = await supabase.auth.getUser()
-    const userId = data?.user?.id
-
-    if (!userId) {
-      throw new Error("ユーザー情報の取得に失敗しました")
-    }
-
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("facility_id")
-      .eq("id", userId)
-      .single()
-
-    if (profileError) {
-      throw new Error("施設情報の取得に失敗しました")
-    }
-
-    const { error: patientError } = await supabase
-      .from("patients")
-      .update({
-        last_name: lastName,
-        first_name: firstName,
-        birthday,
-        care_level: careLevel,
-        group_id: groupId,
-        facility_id: profile.facility_id,
-        gender,
-      })
-      .eq("id", patientId)
-
-    if (patientError) {
-      throw new Error("患者の更新に失敗しました")
-    }
+    await updatePatientInfo(supabase, patientId, {
+      last_name: lastName,
+      first_name: firstName,
+      birthday,
+      care_level: careLevel,
+      group_id: groupId,
+      facility_id: facilityId,
+      gender,
+    })
 
     if (faceImages.length > 0) {
-      // DBから既存の顔情報を削除
-      const { data: faces, error: facesError } = await supabase
-        .from("faces")
-        .select("id, face_id, image_id")
-        .eq("patient_id", patientId)
-
-      if (facesError) {
-        throw new Error("顔情報の取得に失敗しました")
-      }
-
-      const { error } = await supabase
-        .from("faces")
-        .delete()
-        .in(
-          "id",
-          faces.map((face) => face.id)
-        )
-
-      if (error) {
-        throw new Error("顔情報の削除に失敗しました")
-      }
-
-      const faceIds = faces.map((face) => face.face_id)
-      const imageIds = faces.map((face) => face.image_id)
-
-      // AWS Rekognition から既存の顔データを削除
-      await deleteFace(process.env.FACES_BUCKET ?? "", faceIds)
-      // s3 から既存の顔画像を削除
-      await deleteImage(imageIds, process.env.FACES_BUCKET ?? "")
-
-      const faceImageIds = await uploadFaceImage(faceImages)
-
-      const newFaces = await IndexFaces(
-        faceImageIds,
-        process.env.FACES_BUCKET ?? ""
-      )
-      const newFaceIds = newFaces.map((face) => face.faceId)
-
-      const { error: patientError } = await supabase
-        .from("patients")
-        .update({
-          last_name: lastName,
-          first_name: firstName,
-          image_id: faceImageIds[0],
-          face_ids: faceIds,
-          birthday,
-          care_level: careLevel,
-          group_id: groupId,
-          facility_id: profile.facility_id,
-          gender,
-        })
-        .eq("id", patientId)
-
-      if (patientError) {
-        await deleteImage(faceImageIds, process.env.FACES_BUCKET ?? "")
-        await deleteFace(process.env.FACES_BUCKET ?? "", newFaceIds)
-        throw new Error("患者の更新に失敗しました")
-      }
-
-      const { error: faceError } = await supabase.from("faces").insert(
-        newFaces.map((face) => ({
-          patient_id: patientId,
-          face_id: face.faceId,
-          image_id: face.imageId,
-        }))
-      )
-
-      if (faceError) {
-        await deleteImage(faceImageIds, process.env.FACES_BUCKET ?? "")
-        await deleteFace(process.env.FACES_BUCKET ?? "", newFaceIds)
-        throw new Error("新しい顔情報の挿入に失敗しました")
-      }
+      await handleFaceImages(supabase, patientId, faceImages)
     }
 
     if (drugImages.length > 0) {
-      const drugImageIds = await drugImagesUpload(drugImages)
-
-      const { error: drugsError } = await supabase.from("drugs").insert(
-        drugImageIds.map((drugImageId) => ({
-          patient_id: patientId,
-          image_id: drugImageId,
-          user_id: userId,
-        }))
-      )
-
-      if (drugsError) {
-        await deleteImage(drugImageIds, process.env.DRUGS_BUCKET ?? "")
-        throw new Error(
-          `服薬画像の挿入時にエラーが発生しました: ${drugsError.message}`
-        )
-      }
+      await handleDrugImages(supabase, patientId, userId, drugImages)
     }
 
     if (deleteDrugIds.length > 0) {
-      const { data: drugs, error: drugsError } = await supabase
-        .from("drugs")
-        .select("image_id")
-        .in("id", deleteDrugIds)
-
-      if (drugsError) {
-        throw new Error("服用薬の取得に失敗しました")
-      }
-
-      // S3の服用薬画像を削除
-      const drugImageIds = drugs.map((drug) => drug.image_id)
-      await deleteImage(drugImageIds, process.env.DRUGS_BUCKET ?? "")
-
-      // DBから服用薬を削除
-      const { error: drugError } = await supabase
-        .from("drugs")
-        .delete()
-        .in("id", deleteDrugIds)
-
-      if (drugError) {
-        throw new Error("服用薬の削除に失敗しました")
-      }
+      await deleteDrugs(supabase, deleteDrugIds)
     }
   } catch (error) {
     if (error instanceof Error) {
