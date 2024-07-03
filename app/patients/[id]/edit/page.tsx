@@ -1,5 +1,5 @@
 import { getS3Data } from "@/actions/s3/get-s3-data"
-import { UpdatePatientForm } from "@/feature/patient/update-patient-form"
+import { UpdatePatientForm } from "@/feature/patient/updateForm/update-patient-form"
 
 import { createClient } from "@/lib/supabase/server"
 
