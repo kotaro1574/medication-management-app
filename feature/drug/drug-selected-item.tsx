@@ -2,7 +2,7 @@ import Image from "next/image"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 
-import { formatDate } from "@/lib/utils"
+import { formatDate, placeholder } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Icons } from "@/components/ui/icons"
 
@@ -25,7 +25,12 @@ export function DrugSelectedItem({
     <div className="flex items-center gap-2 px-2 py-1">
       <div className="relative w-full max-w-[63px]">
         <AspectRatio ratio={63 / 73} className="w-full">
-          <Image src={fileUrl} fill alt="drug_image" />
+          <Image
+            src={fileUrl}
+            fill
+            alt="drug_image"
+            placeholder={placeholder({ w: 63, h: 73 })}
+          />
         </AspectRatio>
         <div className="absolute bottom-0 right-0">
           <DrugInfoDialog
