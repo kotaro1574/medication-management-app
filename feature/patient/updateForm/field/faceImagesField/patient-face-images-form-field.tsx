@@ -1,7 +1,6 @@
 "use client"
 
 import Image from "next/image"
-import { PatientFacesWebcamDialog } from "@/feature/patient/createForm/field/faceImagesField/patient-faces-webcam-dialog"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 
@@ -11,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/ui/icons"
 
 import { updatePatientFormSchema } from "../../schema"
+import { PatientFacesWebcamDialog } from "./patient-faces-webcam-dialog"
 
 export function PatientFaceImagesFormField({
   form,
