@@ -19,6 +19,7 @@ type Props = {
   groupId: string
   gender: Database["public"]["Enums"]["gender_enum"]
   patientId: string
+  deleteDrugIds: string[]
 }
 
 export async function updatePatient({
@@ -30,6 +31,7 @@ export async function updatePatient({
   careLevel,
   groupId,
   gender,
+  deleteDrugIds,
 }: Props): Promise<ActionResult> {
   try {
     const faceImages = formData.getAll("faceImages") as File[]
@@ -150,6 +152,18 @@ export async function updatePatient({
       // 薬の画像をアップロード
       // 画像のURLを取得
       // 画像のURLをDBに保存
+    }
+
+    if (deleteDrugIds.length > 0) {
+      await deleteImage(deleteDrugIds, process.env.DRUGS_BUCKET ?? "")
+      const { error: drugError } = await supabase
+        .from("drugs")
+        .delete()
+        .in("id", deleteDrugIds)
+
+      if (drugError) {
+        throw new Error("服用薬の削除に失敗しました")
+      }
     }
   } catch (error) {
     if (error instanceof Error) {

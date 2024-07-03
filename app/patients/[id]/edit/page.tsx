@@ -49,7 +49,7 @@ export default async function EditPatientPage({
 
   const { data: _drugs, error: drugsError } = await supabase
     .from("drugs")
-    .select("image_id, user_id")
+    .select("id ,image_id, user_id")
     .eq("patient_id", patient.id)
 
   if (drugsError) {
@@ -63,8 +63,8 @@ export default async function EditPatientPage({
     process.env.FACES_BUCKET ?? ""
   )
 
-  // 薬の画像のURLを取得
-  const drugs = await Promise.all(
+  // 登録済み薬の画像のURLを取得
+  const registeredDrugs = await Promise.all(
     _drugs.map(async (drug) => {
       const { url } = await getS3Data(
         drug.image_id,
@@ -77,7 +77,7 @@ export default async function EditPatientPage({
         .eq("id", drug.user_id)
         .single()
 
-      return { url, userName: data?.name ?? "" }
+      return { id: drug.id, url, userName: data?.name ?? "" }
     })
   )
 
@@ -92,7 +92,7 @@ export default async function EditPatientPage({
         drugImageIds={drugImageIds}
         patient={patient}
         faceUrl={faceUrl}
-        drugs={drugs}
+        registeredDrugs={registeredDrugs}
         currentUserName={profile.name}
       />
     </section>

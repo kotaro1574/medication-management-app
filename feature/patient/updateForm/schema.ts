@@ -21,4 +21,5 @@ export const updatePatientFormSchema = z.object({
   groupId: z.string(),
   gender: z.enum(["male", "female"]),
   drugImages: z.array(z.custom<File>()),
+  deleteDrugIds: z.array(z.string()),
 })

@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Controller, UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 
@@ -11,25 +12,37 @@ export function PatientDrugFormField({
   form,
   loading,
   currentUserName,
-  drugs,
+  registeredDrugs: _registeredDrugs,
 }: {
   form: UseFormReturn<z.infer<typeof updatePatientFormSchema>>
   loading: boolean
   currentUserName: string
-  drugs: { url: string; userName: string }[]
+  registeredDrugs: { id: string; url: string; userName: string }[]
 }) {
+  const [registeredDrugs, setRegisteredDrugs] =
+    useState<{ id: string; url: string; userName: string }[]>(_registeredDrugs)
+
   return (
     <div className="space-y-4">
       <h2 className="text-[20px] text-[#C2B37F]">お薬情報</h2>
       <Controller
         render={({ field: { onChange, value } }) => (
           <FormItem>
-            {drugs.length > 0 &&
-              drugs.map((drug) => (
+            {registeredDrugs.length > 0 &&
+              registeredDrugs.map((drug) => (
                 <DrugSelectedItem
                   key={drug.url}
                   file={drug.url}
-                  onDelete={() => {}}
+                  onDelete={() => {
+                    const drugs = registeredDrugs.filter(
+                      (_drug) => _drug !== drug
+                    )
+                    setRegisteredDrugs(drugs)
+                    form.setValue("deleteDrugIds", [
+                      ...form.getValues("deleteDrugIds"),
+                      drug.id,
+                    ])
+                  }}
                   date={new Date()}
                   userName={drug.userName}
                 />

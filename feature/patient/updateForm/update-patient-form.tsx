@@ -24,7 +24,7 @@ type Props = {
   drugImageIds: string[]
   patient: Database["public"]["Tables"]["patients"]["Row"]
   faceUrl: string
-  drugs: { url: string; userName: string }[]
+  registeredDrugs: { id: string; url: string; userName: string }[]
   currentUserName: string
 }
 
@@ -32,7 +32,7 @@ export function UpdatePatientForm({
   currentUserName,
   patient,
   faceUrl,
-  drugs,
+  registeredDrugs,
   faceImageIds,
   drugImageIds,
 }: Props) {
@@ -55,6 +55,7 @@ export function UpdatePatientForm({
       groupId: patient.group_id,
       gender: patient.gender,
       drugImages: [],
+      deleteDrugIds: [],
     },
     resolver: zodResolver(updatePatientFormSchema),
   })
@@ -71,6 +72,7 @@ export function UpdatePatientForm({
     groupId,
     drugImages,
     gender,
+    deleteDrugIds,
   }: z.infer<typeof updatePatientFormSchema>) => {
     const formData = new FormData()
     faceImages.forEach((file) => {
@@ -93,6 +95,7 @@ export function UpdatePatientForm({
           careLevel,
           groupId,
           gender,
+          deleteDrugIds,
         })
         if (response.success) {
           setError(null)
@@ -116,7 +119,7 @@ export function UpdatePatientForm({
           <PatientInfoFormField form={form} />
           <PatientFaceImagesFormField form={form} faceUrl={faceUrl} />
           <PatientDrugFormField
-            drugs={drugs}
+            registeredDrugs={registeredDrugs}
             loading={loading}
             form={form}
             currentUserName={currentUserName}
