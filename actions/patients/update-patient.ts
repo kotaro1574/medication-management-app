@@ -6,6 +6,7 @@ import {
   IndexFaces,
   deleteFace,
   deleteImage,
+  drugImagesUpload,
   uploadFaceImage,
 } from "@/lib/aws/utils"
 import { createClient } from "@/lib/supabase/server"
@@ -149,13 +150,39 @@ export async function updatePatient({
     }
 
     if (drugImages.length > 0) {
-      // 薬の画像をアップロード
-      // 画像のURLを取得
-      // 画像のURLをDBに保存
+      const drugImageIds = await drugImagesUpload(drugImages)
+
+      const { error: drugsError } = await supabase.from("drugs").insert(
+        drugImageIds.map((drugImageId) => ({
+          patient_id: patientId,
+          image_id: drugImageId,
+          user_id: userId,
+        }))
+      )
+
+      if (drugsError) {
+        await deleteImage(drugImageIds, process.env.DRUGS_BUCKET ?? "")
+        throw new Error(
+          `服薬画像の挿入時にエラーが発生しました: ${drugsError.message}`
+        )
+      }
     }
 
     if (deleteDrugIds.length > 0) {
-      await deleteImage(deleteDrugIds, process.env.DRUGS_BUCKET ?? "")
+      const { data: drugs, error: drugsError } = await supabase
+        .from("drugs")
+        .select("image_id")
+        .in("id", deleteDrugIds)
+
+      if (drugsError) {
+        throw new Error("服用薬の取得に失敗しました")
+      }
+
+      // S3の服用薬画像を削除
+      const drugImageIds = drugs.map((drug) => drug.image_id)
+      await deleteImage(drugImageIds, process.env.DRUGS_BUCKET ?? "")
+
+      // DBから服用薬を削除
       const { error: drugError } = await supabase
         .from("drugs")
         .delete()
