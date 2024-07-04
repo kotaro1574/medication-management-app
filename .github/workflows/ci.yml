@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: supabase/setup-cli@v1
         with:
-          version: 1.178.2 # ローカル環境のバージョンに固定
+          version: latest
 
       - run: supabase db start
 
@@ -48,7 +48,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: supabase/setup-cli@v1
         with:
-          version: 1.178.2
+          version: latest
 
       - run: supabase link --project-ref $SUPABASE_PROJECT_ID
       - run: supabase db push --dry-run
