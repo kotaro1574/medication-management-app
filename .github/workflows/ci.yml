@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: supabase/setup-cli@v1
         with:
-          version: 1.178.2
+          version: 1.178.1
 
       - run: supabase db start
       - run: supabase db lint
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: supabase/setup-cli@v1
         with:
-          version: 1.178.2
+          version: 1.178.1
 
       - run: supabase link --project-ref $SUPABASE_PROJECT_ID
       - run: supabase db push --dry-run
