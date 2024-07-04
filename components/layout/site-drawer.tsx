@@ -42,7 +42,7 @@ export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
                   メディネオ太郎
                 </Link>
               </DrawerTitle>
-              <div>
+              <div className="flex items-center">
                 <Icons.logout className="size-6" />
                 <Link
                   href="/api/auth/logout"
@@ -65,14 +65,14 @@ export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
             </div>
 
             <div className="grid gap-2 px-4 py-[22px] text-[20px] font-medium">
-              <div>
-                <Icons.users className="size-6" />
+              <div className="flex items-center">
+                <Icons.users className="mr-8 size-5" />
                 <Link href="/patients" passHref onClick={handleLinkClick}>
                   利用者一覧
                 </Link>
               </div>
-              <div>
-                <Icons.userBlack className="size-6" />
+              <div className="flex items-center">
+                <Icons.userBlack className="mr-8 size-5" />
                 <Link
                   href="/patients/create"
                   passHref
@@ -81,8 +81,8 @@ export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
                   利用者登録
                 </Link>
               </div>
-              <div>
-                <Icons.hamburger className="size-6" />
+              <div className="flex items-center">
+                <Icons.hamburger className="mr-8 size-5" />
                 <Link href="/groups" passHref onClick={handleLinkClick}>
                   グループ一覧
                 </Link>
