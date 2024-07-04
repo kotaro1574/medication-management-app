@@ -72,7 +72,7 @@ export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
                 </Link>
               </div>
               <div className="flex items-center">
-                <Icons.userBlack className="mr-8 size-5" />
+                <Icons.userHeader className="mr-8 size-5" />
                 <Link
                   href="/patients/create"
                   passHref
