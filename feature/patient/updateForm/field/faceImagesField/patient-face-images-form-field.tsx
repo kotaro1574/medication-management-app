@@ -1,21 +1,25 @@
 "use client"
 
 import Image from "next/image"
-import { PatientFacesWebcamDialog } from "@/feature/patient/patient-faces-webcam-dialog"
-import { createPatientFormSchema } from "@/feature/patient/schema"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 
+import { placeholder } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/ui/icons"
 
+import { updatePatientFormSchema } from "../../schema"
+import { PatientFacesWebcamDialog } from "./patient-faces-webcam-dialog"
+
 export function PatientFaceImagesFormField({
   form,
+  faceUrl,
 }: {
-  form: UseFormReturn<z.infer<typeof createPatientFormSchema>>
+  form: UseFormReturn<z.infer<typeof updatePatientFormSchema>>
+  faceUrl?: string
 }) {
-  const isFullFaceImages = form.watch("faceImages")?.length >= 5
+  const isFullFaceImages = form.watch("faceImages")?.length >= 5 || !!faceUrl
 
   return (
     <div className="space-y-4">
@@ -28,14 +32,21 @@ export function PatientFaceImagesFormField({
           <div className="relative w-full max-w-[150px]">
             <AspectRatio ratio={15 / 21}>
               <Image
-                src={URL.createObjectURL(form.watch("faceImages")[0])}
+                src={
+                  form.watch("faceImages").length
+                    ? URL.createObjectURL(form.watch("faceImages")[0])
+                    : !!faceUrl
+                    ? faceUrl
+                    : ""
+                }
                 alt="face image"
                 fill
+                placeholder={placeholder({ w: 150, h: 210 })}
                 className="rounded-[8px] object-cover"
               />
             </AspectRatio>
             <div className="absolute right-[-12px] top-[-12px]">
-              <Icons.faceImagesCheck />
+              <Icons.successCheck />
             </div>
           </div>
         </div>

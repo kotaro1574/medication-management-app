@@ -2,8 +2,8 @@
 
 import { GroupsSelect } from "@/feature/group/groups-select"
 import { CareLevelSelect } from "@/feature/patient/care-level-select"
+import { createPatientFormSchema } from "@/feature/patient/createForm/schema"
 import { GenderRadioGroup } from "@/feature/patient/gender-radio-group"
-import { createPatientFormSchema } from "@/feature/patient/schema"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 

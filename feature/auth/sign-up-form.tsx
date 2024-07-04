@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useTransition } from "react"
+import { useRouter } from "next/navigation"
+import { logout } from "@/actions/auth/logout"
 import { setLoginInfo } from "@/actions/cookie/set-login-info"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { v4 as uuidv4 } from "uuid"
 import { z } from "zod"
 
 import { createClient } from "@/lib/supabase/client"
@@ -17,46 +18,19 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form"
+import { Icons } from "@/components/ui/icons"
 import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { useToast } from "@/components/ui/use-toast"
 
 import { FacilitiesSelect } from "../facility/facilities-select"
-
-const allowedSpecialCharacters = "!@#$%^&*()_+-=[]{}|;:',.<>/?"
 
 const formSchema = z.object({
   email: z
     .string()
     .email({ message: "有効なメールアドレスを入力してください" }),
-  password: z
-    .string()
-    .min(8, {
-      message: "パスワードは8文字以上である必要があります。",
-    })
-    .regex(/^(?=.*[a-z])/, {
-      message:
-        "パスワードには少なくとも1つの小文字が含まれている必要があります。",
-    })
-    .regex(/^(?=.*[A-Z])/, {
-      message:
-        "パスワードには少なくとも1つの大文字が含まれている必要があります。",
-    })
-    .regex(/^(?=.*[0-9])/, {
-      message:
-        "パスワードには少なくとも1つの数字が含まれている必要があります。",
-    })
-    .regex(/^(?=.*[!@#$%^&*()_+\-=[\]{}|;:',.<>/?])/, {
-      message: `パスワードには少なくとも1つの特殊文字が含まれている必要があります。使用できる特殊文字: ${allowedSpecialCharacters}`,
-    }),
+  password: z.string().min(8, {
+    message: "パスワードは8文字以上である必要があります。",
+  }),
   userName: z.string().min(1, "所有者名を入力してください"),
   facilityId: z.string().min(1, "所属施設を選択してください"),
 })
@@ -68,6 +42,9 @@ const errorSchema = z.object({
 export function SignUpForm() {
   const supabase = createClient()
   const [loading, setLoading] = useState(false)
+  const [isConfirm, setIsConfirm] = useState(false)
+  const [logoutLoading, startTransaction] = useTransition()
+  const router = useRouter()
   const { toast } = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -121,7 +98,7 @@ export function SignUpForm() {
         })
       }
 
-      toast({ description: "登録完了メールを確認してください 📩" })
+      setIsConfirm(true)
     } catch (error) {
       const parseError = errorSchema.parse(error)
 
@@ -150,7 +127,29 @@ export function SignUpForm() {
     }
   }
 
-  return (
+  const onLogin = () => {
+    router.push("/")
+    toast({
+      title: "ログインしました",
+    })
+  }
+
+  const onReset = () => {
+    startTransaction(() => {
+      ;(async () => {
+        const response = await logout()
+        if (response.success) {
+          console.log(response.message)
+          form.reset()
+          setIsConfirm(false)
+        } else {
+          toast({ title: response.error, variant: "destructive" })
+        }
+      })()
+    })
+  }
+
+  return !isConfirm ? (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
@@ -235,5 +234,27 @@ export function SignUpForm() {
         </div>
       </form>
     </Form>
+  ) : (
+    <div className="space-y-6">
+      <div className="space-y-4 text-center">
+        <Icons.successCheck className="mx-auto size-20" />
+        <p className="font-semibold">ユーザー登録が完了しました</p>
+      </div>
+      <Button
+        className="block w-full"
+        disabled={logoutLoading}
+        onClick={onLogin}
+      >
+        ログインする
+      </Button>
+      <Button
+        className="block w-full"
+        disabled={logoutLoading}
+        variant={"ghost"}
+        onClick={onReset}
+      >
+        連続でユーザー登録をする
+      </Button>
+    </div>
   )
 }

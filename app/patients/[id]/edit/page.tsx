@@ -1,5 +1,5 @@
 import { getS3Data } from "@/actions/s3/get-s3-data"
-import { UpdatePatientForm } from "@/feature/patient/update-patient-form"
+import { UpdatePatientForm } from "@/feature/patient/updateForm/update-patient-form"
 
 import { createClient } from "@/lib/supabase/server"
 
@@ -9,6 +9,22 @@ export default async function EditPatientPage({
   params: { id: string }
 }) {
   const supabase = createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("name")
+    .eq("id", user?.id ?? "")
+    .single()
+
+  if (profileError) {
+    console.error(profileError)
+    return <div>Error</div>
+  }
+
   const { data: patient, error: patientError } = await supabase
     .from("patients")
     .select("*")
@@ -31,9 +47,9 @@ export default async function EditPatientPage({
     return <div>Error</div>
   }
 
-  const { data: drugs, error: drugsError } = await supabase
+  const { data: _drugs, error: drugsError } = await supabase
     .from("drugs")
-    .select("image_id")
+    .select("id ,image_id, user_id")
     .eq("patient_id", patient.id)
 
   if (drugsError) {
@@ -47,35 +63,38 @@ export default async function EditPatientPage({
     process.env.FACES_BUCKET ?? ""
   )
 
-  // 薬の画像のURLを取得
-  const drugUrls = await Promise.all(
-    drugs.map(async (drug) => {
+  // 登録済み薬の画像のURLを取得
+  const registeredDrugs = await Promise.all(
+    _drugs.map(async (drug) => {
       const { url } = await getS3Data(
         drug.image_id,
         process.env.DRUGS_BUCKET ?? ""
       )
-      return url
+
+      const { data } = await supabase
+        .from("profiles")
+        .select("name")
+        .eq("id", drug.user_id)
+        .single()
+
+      return { id: drug.id, url, userName: data?.name ?? "" }
     })
   )
 
+  // 削除のために画像IDを取得
   const faceImageIds = faces.map((face) => face.image_id)
-  const drugImageIds = drugs.map((drug) => drug.image_id)
+  const drugImageIds = _drugs.map((drug) => drug.image_id)
 
   return (
-    <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
-      <div className="mzax-w-[980px] flex flex-col items-start gap-2">
-        <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-          Edit Patient
-        </h1>
-
-        <UpdatePatientForm
-          faceImageIds={faceImageIds}
-          drugImageIds={drugImageIds}
-          patient={patient}
-          faceUrl={faceUrl}
-          drugUrls={drugUrls}
-        />
-      </div>
+    <section className="min-h-screen bg-[#F5F5F5] px-4 pb-8 pt-11">
+      <UpdatePatientForm
+        faceImageIds={faceImageIds}
+        drugImageIds={drugImageIds}
+        patient={patient}
+        faceUrl={faceUrl}
+        registeredDrugs={registeredDrugs}
+        currentUserName={profile.name}
+      />
     </section>
   )
 }

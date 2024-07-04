@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { createPatientFormSchema } from "@/feature/patient/schema"
+import { createPatientFormSchema } from "@/feature/patient/createForm/schema"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 

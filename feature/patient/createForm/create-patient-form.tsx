@@ -3,28 +3,24 @@
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { createPatient } from "@/actions/patients/create-patient"
-import { PatientDrugFormField } from "@/feature/patient/patient-drug-form-field"
-import { PatientFaceImagesFormField } from "@/feature/patient/patient-face-images-form-field"
-import { PatientInfoFormField } from "@/feature/patient/patient-info-form-field"
-import { createPatientFormSchema } from "@/feature/patient/schema"
+import { PatientDrugFormField } from "@/feature/patient/createForm/field/drugField/patient-drug-form-field"
+import { PatientFaceImagesFormField } from "@/feature/patient/createForm/field/faceImagesField/patient-face-images-form-field"
+import { PatientInfoFormField } from "@/feature/patient/createForm/field/infoField/patient-info-form-field"
+import { createPatientFormSchema } from "@/feature/patient/createForm/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { genBirthdayText } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { useToast } from "@/components/ui/use-toast"
 
-// 和暦を西暦に変換するマッピング
-const eraToGregorian: { [key: string]: number } = {
-  M: 1868, // 明治
-  T: 1912, // 大正
-  S: 1926, // 昭和
-  H: 1989, // 平成
-  R: 2019, // 令和
-}
-
-export function CreatePatientForm({ userName }: { userName: string }) {
+export function CreatePatientForm({
+  currentUserName,
+}: {
+  currentUserName: string
+}) {
   const [loading, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -45,30 +41,6 @@ export function CreatePatientForm({ userName }: { userName: string }) {
     },
     resolver: zodResolver(createPatientFormSchema),
   })
-
-  const calculateAge = (
-    era: string,
-    year: string,
-    month: string,
-    day: string
-  ) => {
-    const gregorianYear = eraToGregorian[era] + parseInt(year, 10) - 1
-    const birthDate = new Date(
-      `${gregorianYear}-${String(month).padStart(2, "0")}-${String(
-        day
-      ).padStart(2, "0")}`
-    )
-    const today = new Date()
-    let age = today.getFullYear() - birthDate.getFullYear()
-    const isBirthdayPassedThisYear =
-      today.getMonth() > birthDate.getMonth() ||
-      (today.getMonth() === birthDate.getMonth() &&
-        today.getDate() >= birthDate.getDate())
-    if (!isBirthdayPassedThisYear) {
-      age--
-    }
-    return age
-  }
 
   const onSubmit = ({
     faceImages,
@@ -93,9 +65,7 @@ export function CreatePatientForm({ userName }: { userName: string }) {
       formData.append("drugImages", file)
     })
 
-    const age = calculateAge(era, year, month, day)
-    const birthday = `${era}${year}.${month}.${day}生(${age}歳)`
-
+    const birthday = genBirthdayText(era, year, month, day)
     startTransition(() => {
       ;(async () => {
         const response = await createPatient({
@@ -135,11 +105,12 @@ export function CreatePatientForm({ userName }: { userName: string }) {
         <PatientDrugFormField
           loading={loading}
           form={form}
-          userName={userName}
+          currentUserName={currentUserName}
+          drugs={[]}
         />
         <div>
           <Button disabled={loading} className="block w-full">
-            {loading ? "登録中..." : "登録する"}
+            {loading ? "登録中..." : "登録"}
           </Button>
         </div>
       </form>

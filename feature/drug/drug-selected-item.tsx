@@ -2,35 +2,35 @@ import Image from "next/image"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 
-import { formatDate } from "@/lib/utils"
+import { formatDate, placeholder } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Icons } from "@/components/ui/icons"
 
-import { createPatientFormSchema } from "../patient/schema"
 import { DrugInfoDialog } from "./drug-info-dialog"
 
 export function DrugSelectedItem({
-  form,
+  onDelete,
   file,
   userName,
   date,
 }: {
-  form: UseFormReturn<z.infer<typeof createPatientFormSchema>>
-  file: File
+  onDelete: () => void
+  file: File | string
   date: Date
   userName: string
 }) {
-  const onDelete = () => {
-    const drugImages = form.getValues("drugImages") as File[]
-    const newDrugImages = drugImages.filter((_file) => _file !== file)
-    form.setValue("drugImages", newDrugImages)
-  }
+  const fileUrl = typeof file === "string" ? file : URL.createObjectURL(file)
 
   return (
     <div className="flex items-center gap-2 px-2 py-1">
       <div className="relative w-full max-w-[63px]">
         <AspectRatio ratio={63 / 73} className="w-full">
-          <Image src={URL.createObjectURL(file)} fill alt="drug_image" />
+          <Image
+            src={fileUrl}
+            fill
+            alt="drug_image"
+            placeholder={placeholder({ w: 63, h: 73 })}
+          />
         </AspectRatio>
         <div className="absolute bottom-0 right-0">
           <DrugInfoDialog

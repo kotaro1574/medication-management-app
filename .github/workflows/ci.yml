@@ -7,10 +7,6 @@ on:
       - reopened
       - synchronize
       - closed
-  push:
-    branches:
-      - main
-      - develop
   workflow_dispatch:
 
 jobs:
@@ -24,12 +20,17 @@ jobs:
           version: latest
 
       - run: supabase db start
+
       - run: supabase db lint
+
       - run: supabase test db
 
       - name: Verify generated types are checked in
         run: |
+          rm types/schema.gen.ts
           supabase gen types typescript --local > types/schema.gen.ts
+          echo "Generated types:"
+          cat types/schema.gen.ts
           if ! git diff --ignore-space-at-eol --exit-code --quiet types/schema.gen.ts; then
             echo "Detected uncommitted changes after build. See status below:"
             git diff

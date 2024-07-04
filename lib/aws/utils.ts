@@ -118,10 +118,9 @@ export async function getPresignedUrl(fileType: string, bucket: string) {
   })
   return { url, fields, key }
 }
-
 // 顔画像をS3にアップロードする関数
 export async function uploadFaceImage(faceImages: File[]): Promise<string[]> {
-  const imageIds: string[] = []
+  const imageIds: string[] = new Array(faceImages.length).fill("")
 
   const uploadPromises = faceImages.map(async (faceImage, index) => {
     const {
@@ -145,7 +144,7 @@ export async function uploadFaceImage(faceImages: File[]): Promise<string[]> {
       throw new Error(`S3への画像アップロードに失敗しました。Index: ${index}`)
     }
 
-    imageIds.push(imageId)
+    imageIds[index] = imageId // インデックスを使用して格納する
   })
 
   await Promise.all(uploadPromises)

@@ -12,10 +12,12 @@ import {
 
 type Props = {
   trigger: ReactNode
-  file: File
+  file: File | string
 }
 
 export function DrugInfoDialog({ trigger, file }: Props) {
+  const fileUrl = typeof file === "string" ? file : URL.createObjectURL(file)
+
   return (
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
@@ -31,7 +33,7 @@ export function DrugInfoDialog({ trigger, file }: Props) {
           <span className="sr-only">Close</span>
         </DialogClose>
         <AspectRatio ratio={340 / 400}>
-          <Image alt={file.name} src={URL.createObjectURL(file)} fill />
+          <Image alt={"drug-image"} src={fileUrl} fill />
         </AspectRatio>
       </DialogContent>
     </Dialog>
