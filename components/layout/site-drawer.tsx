@@ -82,7 +82,7 @@ export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
                 </Link>
               </div>
               <div className="flex items-center">
-                <Icons.hamburger className="mr-8 size-5" />
+                <Icons.groups className="mr-8 size-5" />
                 <Link href="/groups" passHref onClick={handleLinkClick}>
                   グループ一覧
                 </Link>
