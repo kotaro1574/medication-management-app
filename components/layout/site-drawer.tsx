@@ -16,7 +16,12 @@ import { Icons } from "@/components/ui/icons"
 
 import { useToast } from "../ui/use-toast"
 
-export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
+type Props = {
+  profileName: string
+  trigger: ReactNode
+}
+
+export function SiteDrawer({ profileName, trigger }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const { toast } = useToast()
   const router = useRouter()
@@ -51,7 +56,7 @@ export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
             <div className="bg-[url('/bg-hamburger.png')] px-4 pb-[14px] pt-[183px]">
               <DrawerTitle className="mb-2 text-[20px] font-semibold">
                 <Link href="/" passHref onClick={handleLinkClick}>
-                  メディネオ太郎
+                  {profileName}
                 </Link>
               </DrawerTitle>
               <button onClick={handleLogout} className="flex items-center">
