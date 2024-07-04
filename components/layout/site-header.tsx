@@ -13,7 +13,7 @@ export function SiteHeader({ profileName }: Props) {
           <Icons.fillUser />
           <div>{profileName}</div>
         </div>
-        <SiteDrawer trigger={<Icons.hamburger />} />
+        <SiteDrawer trigger={<Icons.hamburger />} profileName={profileName} />
       </div>
     </header>
   )
