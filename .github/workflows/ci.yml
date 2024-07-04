@@ -7,10 +7,6 @@ on:
       - reopened
       - synchronize
       - closed
-  push:
-    branches:
-      - main
-      - develop
   workflow_dispatch:
 
 jobs:
@@ -19,12 +15,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18.17.1" # ローカル環境と同じバージョンを指定
+
       - uses: supabase/setup-cli@v1
         with:
-          version: 1.178.1
+          version: 1.178.2 # ローカル環境のバージョンに固定
 
       - run: supabase db start
+
       - run: supabase db lint
+
       - run: supabase test db
 
       - name: Verify generated types are checked in
@@ -47,7 +50,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: supabase/setup-cli@v1
         with:
-          version: 1.178.1
+          version: 1.178.2
 
       - run: supabase link --project-ref $SUPABASE_PROJECT_ID
       - run: supabase db push --dry-run
