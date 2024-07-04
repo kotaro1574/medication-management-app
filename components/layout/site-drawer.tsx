@@ -72,7 +72,7 @@ export function SiteDrawer({ profileName, trigger }: Props) {
                 onClick={handleLinkClick}
                 className="flex items-center rounded-sm px-2 py-[6px] hover:bg-[#FFCA0E]/15 hover:text-[#FFCA0E]"
               >
-                <Icons.users className="mr-8 size-5" />
+                <Icons.users className="mr-8" />
                 <p>利用者一覧</p>
               </Link>
               <Link
@@ -81,7 +81,7 @@ export function SiteDrawer({ profileName, trigger }: Props) {
                 onClick={handleLinkClick}
                 className="flex items-center rounded-sm px-2 py-[6px] hover:bg-[#FFCA0E]/15 hover:text-[#FFCA0E]"
               >
-                <Icons.userHeader className="mr-8 size-5" />
+                <Icons.userHeader className="mr-8" />
                 <p>利用者登録</p>
               </Link>
               <Link
@@ -90,7 +90,7 @@ export function SiteDrawer({ profileName, trigger }: Props) {
                 onClick={handleLinkClick}
                 className="flex items-center rounded-sm px-2 py-[6px] hover:bg-[#FFCA0E]/15 hover:text-[#FFCA0E]"
               >
-                <Icons.groups className="mr-8 size-5" />
+                <Icons.groups className="mr-8" />
                 <p>グループ一覧</p>
               </Link>
             </div>
