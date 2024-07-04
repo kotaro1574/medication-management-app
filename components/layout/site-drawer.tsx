@@ -42,42 +42,45 @@ export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
                   メディネオ太郎
                 </Link>
               </DrawerTitle>
-              <div className="flex items-center">
+              <Link
+                href="/api/auth/logout"
+                passHref
+                onClick={() => toast({ description: "ログアウトしました" })}
+                className="flex items-center"
+              >
                 <Icons.logout className="size-6" />
-                <Link
-                  href="/api/auth/logout"
-                  passHref
-                  onClick={() => toast({ description: "ログアウトしました" })}
-                  className="text-[14px]"
-                >
-                  ログアウト
-                </Link>
-              </div>
+                <p className="text-[14px]">ログアウト</p>
+              </Link>
             </div>
 
-            <div className="grid gap-2 px-4 py-[22px] text-[20px] font-medium">
-              <div className="flex items-center">
+            <div className="grid gap-4 px-2 py-[22px] text-[20px] font-medium">
+              <Link
+                href="/patients"
+                passHref
+                onClick={handleLinkClick}
+                className="flex items-center rounded-sm px-2 py-[6px] hover:bg-[#FFCA0E]/15 hover:text-[#FFCA0E]"
+              >
                 <Icons.users className="mr-8 size-5" />
-                <Link href="/patients" passHref onClick={handleLinkClick}>
-                  利用者一覧
-                </Link>
-              </div>
-              <div className="flex items-center">
+                <p>利用者一覧</p>
+              </Link>
+              <Link
+                href="/patients/create"
+                passHref
+                onClick={handleLinkClick}
+                className="flex items-center rounded-sm px-2 py-[6px] hover:bg-[#FFCA0E]/15 hover:text-[#FFCA0E]"
+              >
                 <Icons.userHeader className="mr-8 size-5" />
-                <Link
-                  href="/patients/create"
-                  passHref
-                  onClick={handleLinkClick}
-                >
-                  利用者登録
-                </Link>
-              </div>
-              <div className="flex items-center">
+                <p>利用者登録</p>
+              </Link>
+              <Link
+                href="/groups"
+                passHref
+                onClick={handleLinkClick}
+                className="flex items-center rounded-sm px-2 py-[6px] hover:bg-[#FFCA0E]/15 hover:text-[#FFCA0E]"
+              >
                 <Icons.groups className="mr-8 size-5" />
-                <Link href="/groups" passHref onClick={handleLinkClick}>
-                  グループ一覧
-                </Link>
-              </div>
+                <p>グループ一覧</p>
+              </Link>
             </div>
           </DrawerHeader>
         </div>
