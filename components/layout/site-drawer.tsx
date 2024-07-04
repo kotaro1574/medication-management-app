@@ -11,8 +11,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import { Icons } from "@/components/ui/icons"
 
-import { Button } from "../ui/button"
 import { useToast } from "../ui/use-toast"
 
 export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
@@ -43,6 +43,7 @@ export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
                 </Link>
               </DrawerTitle>
               <div>
+                <Icons.logout className="size-6" />
                 <Link
                   href="/api/auth/logout"
                   passHref
@@ -65,11 +66,13 @@ export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
 
             <div className="grid gap-2 px-4 py-[22px] text-[20px] font-medium">
               <div>
+                <Icons.users className="size-6" />
                 <Link href="/patients" passHref onClick={handleLinkClick}>
                   利用者一覧
                 </Link>
               </div>
               <div>
+                <Icons.userBlack className="size-6" />
                 <Link
                   href="/patients/create"
                   passHref
@@ -79,6 +82,7 @@ export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
                 </Link>
               </div>
               <div>
+                <Icons.hamburger className="size-6" />
                 <Link href="/groups" passHref onClick={handleLinkClick}>
                   グループ一覧
                 </Link>
