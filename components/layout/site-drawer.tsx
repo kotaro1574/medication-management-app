@@ -34,40 +34,57 @@ export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
         <div onClick={() => setIsOpen(true)}>{trigger}</div>
       </DrawerTrigger>
       <DrawerContent className="left-auto right-0 top-0 mt-0 h-screen w-3/4 rounded-none">
-        <div className="mx-auto w-full p-5">
+        <div className="mx-auto w-full">
           <DrawerHeader>
-            <DrawerTitle>
-              <Link href="/" passHref onClick={handleLinkClick}>
-                メディネオ
-              </Link>
-            </DrawerTitle>
-          </DrawerHeader>
-          <div className="space-y-4 p-4 pb-0">
-            <div>
-              <Link href="/profile" passHref onClick={handleLinkClick}>
-                プロフィール
-              </Link>
-            </div>
-            <div>
-              <Link href="/patients" passHref onClick={handleLinkClick}>
-                利用者一覧
-              </Link>
-            </div>
-            <div>
-              <Link href="/patients/create" passHref onClick={handleLinkClick}>
-                利用者登録
-              </Link>
+            <div className="bg-slate-400 px-4 pb-[14px] pt-[183px]">
+              <DrawerTitle className="mb-2 text-[20px] font-medium">
+                <Link href="/" passHref onClick={handleLinkClick}>
+                  メディネオ太郎
+                </Link>
+              </DrawerTitle>
+              <div>
+                <Link
+                  href="/api/auth/logout"
+                  passHref
+                  onClick={() => toast({ description: "ログアウトしました" })}
+                  className="text-[14px]"
+                >
+                  ログアウト
+                </Link>
+              </div>
+              {/* <div>
+              <form action="/api/auth/logout" method="post">
+                <Button
+                  type="submit"
+                  onClick={() => toast({ description: "ログアウトしました" })}
+                >
+                  ログアウト
+                </Button>
+              </form> */}
             </div>
 
-            <form action="/api/auth/logout" method="post">
-              <Button
-                type="submit"
-                onClick={() => toast({ description: "ログアウトしました" })}
-              >
-                ログアウト
-              </Button>
-            </form>
-          </div>
+            <div className="grid gap-2 px-4 py-[22px] text-[20px] font-medium">
+              <div>
+                <Link href="/patients" passHref onClick={handleLinkClick}>
+                  利用者一覧
+                </Link>
+              </div>
+              <div>
+                <Link
+                  href="/patients/create"
+                  passHref
+                  onClick={handleLinkClick}
+                >
+                  利用者登録
+                </Link>
+              </div>
+              <div>
+                <Link href="/groups" passHref onClick={handleLinkClick}>
+                  グループ一覧
+                </Link>
+              </div>
+            </div>
+          </DrawerHeader>
         </div>
       </DrawerContent>
     </Drawer>
