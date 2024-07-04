@@ -32,7 +32,10 @@ jobs:
 
       - name: Verify generated types are checked in
         run: |
+          rm types/schema.gen.ts
           supabase gen types typescript --local > types/schema.gen.ts
+          echo "Generated types:"
+          cat types/schema.gen.ts
           if ! git diff --ignore-space-at-eol --exit-code --quiet types/schema.gen.ts; then
             echo "Detected uncommitted changes after build. See status below:"
             git diff
