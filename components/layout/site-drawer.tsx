@@ -37,7 +37,7 @@ export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
         <div className="mx-auto w-full">
           <DrawerHeader>
             <div className="bg-slate-400 px-4 pb-[14px] pt-[183px]">
-              <DrawerTitle className="mb-2 text-[20px] font-medium">
+              <DrawerTitle className="mb-2 text-[20px] font-semibold">
                 <Link href="/" passHref onClick={handleLinkClick}>
                   メディネオ太郎
                 </Link>
@@ -53,15 +53,6 @@ export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
                   ログアウト
                 </Link>
               </div>
-              {/* <div>
-              <form action="/api/auth/logout" method="post">
-                <Button
-                  type="submit"
-                  onClick={() => toast({ description: "ログアウトしました" })}
-                >
-                  ログアウト
-                </Button>
-              </form> */}
             </div>
 
             <div className="grid gap-2 px-4 py-[22px] text-[20px] font-medium">
