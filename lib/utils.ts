@@ -114,3 +114,56 @@ export const formatCareLevel = (
       return "不明"
   }
 }
+
+// 和暦を西暦に変換するマッピング
+const eraToGregorian: { [key: string]: number } = {
+  M: 1868, // 明治
+  T: 1912, // 大正
+  S: 1926, // 昭和
+  H: 1989, // 平成
+  R: 2019, // 令和
+}
+
+export const genBirthdayText = (
+  era: string,
+  year: string,
+  month: string,
+  day: string
+) => {
+  const gregorianYear = eraToGregorian[era] + parseInt(year, 10) - 1
+  const birthDate = new Date(
+    `${gregorianYear}-${String(month).padStart(2, "0")}-${String(day).padStart(
+      2,
+      "0"
+    )}`
+  )
+  const today = new Date()
+  let age = today.getFullYear() - birthDate.getFullYear()
+  const isBirthdayPassedThisYear =
+    today.getMonth() > birthDate.getMonth() ||
+    (today.getMonth() === birthDate.getMonth() &&
+      today.getDate() >= birthDate.getDate())
+  if (!isBirthdayPassedThisYear) {
+    age--
+  }
+
+  return `${era}${year}.${month}.${day}生(${age}歳)`
+}
+
+export const extractBirthdayInfo = (input_str: string) => {
+  const pattern = /([A-Z])(\d+)\.(\d+)\.(\d+)生\(\d+歳\)/
+  const match = input_str.match(pattern)
+
+  if (match) {
+    const [_, era, year, month, day] = match
+
+    return { era, year, month, day }
+  } else {
+    return {
+      era: "",
+      year: "",
+      month: "",
+      day: "",
+    }
+  }
+}

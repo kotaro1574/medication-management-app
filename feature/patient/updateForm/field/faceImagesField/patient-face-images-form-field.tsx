@@ -1,8 +1,6 @@
 "use client"
 
 import Image from "next/image"
-import { PatientFacesWebcamDialog } from "@/feature/patient/patient-faces-webcam-dialog"
-import { patientFormSchema } from "@/feature/patient/schema"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 
@@ -11,11 +9,14 @@ import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/ui/icons"
 
+import { updatePatientFormSchema } from "../../schema"
+import { PatientFacesWebcamDialog } from "./patient-faces-webcam-dialog"
+
 export function PatientFaceImagesFormField({
   form,
   faceUrl,
 }: {
-  form: UseFormReturn<z.infer<typeof patientFormSchema>>
+  form: UseFormReturn<z.infer<typeof updatePatientFormSchema>>
   faceUrl?: string
 }) {
   const isFullFaceImages = form.watch("faceImages")?.length >= 5 || !!faceUrl

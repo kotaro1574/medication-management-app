@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-export const patientFormSchema = z.object({
+export const createPatientFormSchema = z.object({
   faceImages: z
     .array(z.custom<File>())
     .min(5, { message: "5枚の画像が必要です。" }),

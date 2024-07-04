@@ -1,0 +1,2 @@
+ALTER TABLE drugs
+ADD COLUMN user_id UUID NOT NULL;

@@ -4,17 +4,19 @@ import { z } from "zod"
 import { buttonVariants } from "@/components/ui/button"
 import { FormItem } from "@/components/ui/form"
 
-import { DrugSelectedItem } from "../drug/drug-selected-item"
-import { patientFormSchema } from "./schema"
+import { DrugSelectedItem } from "../../../../drug/drug-selected-item"
+import { createPatientFormSchema } from "../../schema"
 
 export function PatientDrugFormField({
   form,
   loading,
-  userName,
+  currentUserName,
+  drugs,
 }: {
-  form: UseFormReturn<z.infer<typeof patientFormSchema>>
+  form: UseFormReturn<z.infer<typeof createPatientFormSchema>>
   loading: boolean
-  userName: string
+  currentUserName: string
+  drugs: { url: string; userName: string }[]
 }) {
   return (
     <div className="space-y-4">
@@ -22,14 +24,31 @@ export function PatientDrugFormField({
       <Controller
         render={({ field: { onChange, value } }) => (
           <FormItem>
+            {drugs.length > 0 &&
+              drugs.map((drug) => (
+                <DrugSelectedItem
+                  key={drug.url}
+                  file={drug.url}
+                  onDelete={() => {}}
+                  date={new Date()}
+                  userName={drug.userName}
+                />
+              ))}
+
             {value.length > 0 &&
               value.map((file) => (
                 <DrugSelectedItem
                   key={file.name}
-                  form={form}
+                  onDelete={() => {
+                    const drugImages = form.getValues("drugImages") as File[]
+                    const newDrugImages = drugImages.filter(
+                      (_file) => _file !== file
+                    )
+                    form.setValue("drugImages", newDrugImages)
+                  }}
                   file={file}
                   date={new Date()}
-                  userName={userName}
+                  userName={currentUserName}
                 />
               ))}
             <div className="relative">
