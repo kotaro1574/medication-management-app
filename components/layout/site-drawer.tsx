@@ -3,6 +3,7 @@
 import { ReactNode, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { logout } from "@/actions/auth/logout"
 
 import {
   Drawer,
@@ -28,6 +29,17 @@ export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
     setIsOpen(false)
   }
 
+  const handleLogout = async () => {
+    await logout()
+    const response = await logout()
+    if (response.success) {
+      toast({ title: response.message })
+      router.push("/login")
+    } else {
+      toast({ title: response.error, variant: "destructive" })
+    }
+  }
+
   return (
     <Drawer open={isOpen} onOpenChange={handleOpenChange} direction="right">
       <DrawerTrigger asChild className="cursor-pointer">
@@ -36,21 +48,16 @@ export function SiteDrawer({ trigger }: { trigger: ReactNode }) {
       <DrawerContent className="left-auto right-0 top-0 mt-0 h-screen w-3/4 rounded-none">
         <div className="mx-auto w-full">
           <DrawerHeader>
-            <div className="bg-slate-400 px-4 pb-[14px] pt-[183px]">
+            <div className="bg-[url('/bg-hamburger.png')] px-4 pb-[14px] pt-[183px]">
               <DrawerTitle className="mb-2 text-[20px] font-semibold">
                 <Link href="/" passHref onClick={handleLinkClick}>
                   メディネオ太郎
                 </Link>
               </DrawerTitle>
-              <Link
-                href="/api/auth/logout"
-                passHref
-                onClick={() => toast({ description: "ログアウトしました" })}
-                className="flex items-center"
-              >
+              <button onClick={handleLogout} className="flex items-center">
                 <Icons.logout className="size-6" />
                 <p className="text-[14px]">ログアウト</p>
-              </Link>
+              </button>
             </div>
 
             <div className="grid gap-4 px-2 py-[22px] text-[20px] font-medium">
