@@ -15,11 +15,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "18.17.1" # ローカル環境と同じバージョンを指定
-
       - uses: supabase/setup-cli@v1
         with:
           version: 1.178.2 # ローカル環境のバージョンに固定
