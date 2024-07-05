@@ -1,6 +1,4 @@
 import Image from "next/image"
-import { UseFormReturn } from "react-hook-form"
-import { z } from "zod"
 
 import { formatDate, placeholder } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
@@ -13,16 +11,18 @@ export function DrugSelectedItem({
   file,
   userName,
   date,
+  isLast = false,
 }: {
   onDelete: () => void
   file: File | string
   date: Date
   userName: string
+  isLast?: boolean
 }) {
   const fileUrl = typeof file === "string" ? file : URL.createObjectURL(file)
 
   return (
-    <div className="flex items-center gap-2 px-2 py-1">
+    <div className={`flex items-center gap-2 px-2 py-1 ${isLast && "pb-4"}`}>
       <div className="relative w-full max-w-[63px]">
         <AspectRatio ratio={63 / 73} className="w-full">
           <Image
@@ -43,7 +43,11 @@ export function DrugSelectedItem({
           />
         </div>
       </div>
-      <div className="flex w-full items-center justify-between border-t border-[#A4A4A4] px-2 py-[15.5px] text-[#A4A4A4]">
+      <div
+        className={`flex w-full items-center justify-between border-t border-[#A4A4A4] px-2 py-[15.5px] text-[#A4A4A4] ${
+          isLast && "border-b"
+        }`}
+      >
         <div>
           <div className="text-sm font-semibold">
             {formatDate(date, "yyyy/MM/dd")}
