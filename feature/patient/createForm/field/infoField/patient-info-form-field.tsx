@@ -32,7 +32,11 @@ export function PatientInfoFormField({
             control={form.control}
             name="lastName"
             render={({ field }) => (
-              <FormItem className="max-w-[150px] space-y-0">
+              <FormItem
+                className={`max-w-[150px] space-y-0 ${
+                  form.formState.errors.firstName && "mb-4"
+                }`}
+              >
                 <FormLabel className="text-[11px]">名字</FormLabel>
                 <FormControl>
                   <Input
@@ -52,7 +56,11 @@ export function PatientInfoFormField({
             control={form.control}
             name="firstName"
             render={({ field }) => (
-              <FormItem className="max-w-[150px] space-y-0">
+              <FormItem
+                className={`max-w-[150px] space-y-0 ${
+                  form.formState.errors.lastName && "mb-4"
+                }`}
+              >
                 <FormLabel className="text-[11px]">名前</FormLabel>
                 <FormControl>
                   <Input
