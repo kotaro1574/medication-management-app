@@ -2,9 +2,21 @@
 
 import Link from "next/link"
 import { PatientAvatar } from "@/feature/patient/patient-avatar"
+import { formatDate } from "date-fns"
 
+import { Database } from "@/types/schema.gen"
 import { Icons } from "@/components/ui/icons"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+type drugHistoryWithName =
+  Database["public"]["Tables"]["drug_histories"]["Row"] & {
+    user_name: string
+  }
 
 type props = {
   items: {
@@ -13,6 +25,7 @@ type props = {
       id: string
       name: string
       url: string
+      drugHistoryWithNames: drugHistoryWithName[]
     }[]
   }[]
 }
@@ -35,32 +48,36 @@ export function GroupTabs({ items }: props) {
           className="space-y-2 px-4 py-8"
         >
           {item.contents.map((content) => (
-            <Link
+            <div
               key={`content-item-${content.name}`}
-              href={`/patients/${content.id}`}
-              className="block"
+              className="flex items-center gap-8 rounded-2xl bg-white px-2 py-1.5 shadow-shadow"
             >
-              <div className="rounded-[16px] bg-white px-[9px] py-[12px] shadow-shadow">
-                <div className="flex justify-between">
-                  <div className="flex w-full max-w-[60px] flex-col items-center">
-                    <PatientAvatar size={40} src={content.url} />
-                    <p className="mt-[2px] line-clamp-1 text-[10px]">
-                      {content.name}
-                    </p>
-                  </div>
-                  <div className="flex w-full items-center justify-around">
-                    <div className="text-center">
-                      <Icons.drugHistory />
-                      <div className="mt-px text-[11px]">7:30</div>
-                    </div>
-                    <div className="text-center">
-                      <Icons.drugHistory />
-                      <div className="mt-px text-[11px]">7:30</div>
-                    </div>
-                  </div>
+              <Link href={`/patients/${content.id}`} className="block">
+                <div className="flex w-full max-w-[60px] flex-col items-center">
+                  <PatientAvatar size={40} src={content.url} />
+                  <p className="mt-[2px] line-clamp-1 text-[10px]">
+                    {content.name}
+                  </p>
                 </div>
-              </div>
-            </Link>
+              </Link>
+              {content.drugHistoryWithNames.map((drugHistory, i) => (
+                <Popover key={drugHistory.id}>
+                  <PopoverTrigger>
+                    <div className="text-center">
+                      <Icons.drugHistory />
+                      <div className="mt-1 text-[11px]">
+                        {formatDate(new Date(drugHistory.created_at), "H:mm")}
+                      </div>
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <div className="text-sm font-semibold">
+                      担当者：{drugHistory.user_name}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              ))}
+            </div>
           ))}
         </TabsContent>
       ))}
