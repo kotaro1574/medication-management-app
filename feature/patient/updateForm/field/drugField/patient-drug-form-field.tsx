@@ -45,6 +45,10 @@ export function PatientDrugFormField({
                   }}
                   date={new Date()}
                   userName={drug.userName}
+                  isLast={
+                    value.length === 0 &&
+                    registeredDrugs.indexOf(drug) === registeredDrugs.length - 1
+                  }
                 />
               ))}
 
@@ -62,6 +66,7 @@ export function PatientDrugFormField({
                   file={file}
                   date={new Date()}
                   userName={currentUserName}
+                  isLast={value.indexOf(file) === value.length - 1}
                 />
               ))}
             <div className="relative">

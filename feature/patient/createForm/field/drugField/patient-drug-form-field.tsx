@@ -11,12 +11,10 @@ export function PatientDrugFormField({
   form,
   loading,
   currentUserName,
-  drugs,
 }: {
   form: UseFormReturn<z.infer<typeof createPatientFormSchema>>
   loading: boolean
   currentUserName: string
-  drugs: { url: string; userName: string }[]
 }) {
   return (
     <div className="space-y-4">
@@ -24,17 +22,6 @@ export function PatientDrugFormField({
       <Controller
         render={({ field: { onChange, value } }) => (
           <FormItem>
-            {drugs.length > 0 &&
-              drugs.map((drug) => (
-                <DrugSelectedItem
-                  key={drug.url}
-                  file={drug.url}
-                  onDelete={() => {}}
-                  date={new Date()}
-                  userName={drug.userName}
-                />
-              ))}
-
             {value.length > 0 &&
               value.map((file) => (
                 <DrugSelectedItem
@@ -49,6 +36,7 @@ export function PatientDrugFormField({
                   file={file}
                   date={new Date()}
                   userName={currentUserName}
+                  isLast={value.indexOf(file) === value.length - 1}
                 />
               ))}
             <div className="relative">
@@ -56,7 +44,7 @@ export function PatientDrugFormField({
                 className={`${buttonVariants({
                   variant: "secondary",
                   size: "secondary",
-                })} block w-full`}
+                })} block w-full `}
                 htmlFor="multi-drug"
               >
                 お薬情報を追加

@@ -1,14 +1,18 @@
 "use client"
 
+import error from "next/error"
 import Image from "next/image"
 import { PatientFacesWebcamDialog } from "@/feature/patient/createForm/field/faceImagesField/patient-faces-webcam-dialog"
 import { createPatientFormSchema } from "@/feature/patient/createForm/schema"
+import { AlertCircle } from "lucide-react"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 
 import { placeholder } from "@/lib/utils"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
+import { FormDescription } from "@/components/ui/form"
 import { Icons } from "@/components/ui/icons"
 
 export function PatientFaceImagesFormField({
@@ -49,6 +53,15 @@ export function PatientFaceImagesFormField({
             </div>
           </div>
         </div>
+      )}
+      {form.formState.errors.faceImages && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="size-4" />
+          <AlertTitle>エラー</AlertTitle>
+          <AlertDescription>
+            {form.formState.errors.faceImages.message}
+          </AlertDescription>
+        </Alert>
       )}
       <PatientFacesWebcamDialog
         form={form}

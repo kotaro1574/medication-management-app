@@ -60,159 +60,165 @@ export function BirthdaySelect({
   }, [form, selectedMonth])
 
   return (
-    <div className="flex items-end gap-1">
-      <FormField
-        control={form.control}
-        name="era"
-        render={({ field }) => (
-          <FormItem className="w-full max-w-[60px] space-y-0">
-            <FormLabel className="text-[11px]">生年月日</FormLabel>
-            <FormControl>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger isError={!!form.formState.errors.era}>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent className="min-w-[60px]">
-                  {eras.map((era) => (
-                    <SelectItem
-                      isShowIndicator={false}
-                      className="pl-5"
-                      key={era}
-                      value={era}
-                    >
-                      {era}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormControl>
-            {form.formState.errors.era && (
-              <FormDescription>
-                {form.formState.errors.era.message}
-              </FormDescription>
-            )}
-          </FormItem>
+    <div>
+      <div className="flex items-end gap-1">
+        <FormField
+          control={form.control}
+          name="era"
+          render={({ field }) => (
+            <FormItem className="w-full max-w-[60px] space-y-0">
+              <FormLabel className="text-[11px]">生年月日</FormLabel>
+              <FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger isError={!!form.formState.errors.era}>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="min-w-[60px]">
+                    {eras.map((era) => (
+                      <SelectItem
+                        isShowIndicator={false}
+                        className="pl-5"
+                        key={era}
+                        value={era}
+                      >
+                        {era}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="year"
+          render={({ field }) => (
+            <FormItem className="w-full max-w-[60px] space-y-0">
+              <FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  disabled={!selectedEra}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger isError={!!form.formState.errors.year}>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="min-w-[60px]">
+                    {years.map((year) => (
+                      <SelectItem
+                        isShowIndicator={false}
+                        key={year}
+                        className="pl-5"
+                        value={`${year}`}
+                      >
+                        {year}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <div className="text-sm">年</div>
+        <FormField
+          control={form.control}
+          name="month"
+          render={({ field }) => (
+            <FormItem className="w-full max-w-[60px] space-y-0">
+              <FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  disabled={!selectedEra}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger isError={!!form.formState.errors.month}>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="min-w-[60px]">
+                    {Array.from({ length: 12 }, (_, i) => i + 1).map(
+                      (month) => (
+                        <SelectItem
+                          isShowIndicator={false}
+                          key={month}
+                          className="pl-5"
+                          value={`${month}`}
+                        >
+                          {month}
+                        </SelectItem>
+                      )
+                    )}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <div className="text-sm">月</div>
+        <FormField
+          control={form.control}
+          name="day"
+          render={({ field }) => (
+            <FormItem className="w-full max-w-[60px] space-y-0">
+              <FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  disabled={!selectedMonth}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger isError={!!form.formState.errors.day}>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="min-w-[60px]">
+                    {days.map((day) => (
+                      <SelectItem
+                        isShowIndicator={false}
+                        key={day}
+                        className="pl-5"
+                        value={`${day}`}
+                      >
+                        {day}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <div className="text-sm">日</div>
+      </div>
+      {form.formState.errors.era && (
+        <FormDescription>{form.formState.errors.era.message}</FormDescription>
+      )}
+      {!form.formState.errors.era && form.formState.errors.year && (
+        <FormDescription>{form.formState.errors.year.message}</FormDescription>
+      )}
+      {!form.formState.errors.era &&
+        !form.formState.errors.year &&
+        form.formState.errors.month && (
+          <FormDescription>
+            {form.formState.errors.month.message}
+          </FormDescription>
         )}
-      />
-      <FormField
-        control={form.control}
-        name="year"
-        render={({ field }) => (
-          <FormItem className="w-full max-w-[60px] space-y-0">
-            <FormControl>
-              <Select
-                onValueChange={field.onChange}
-                disabled={!selectedEra}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger isError={!!form.formState.errors.year}>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent className="min-w-[60px]">
-                  {years.map((year) => (
-                    <SelectItem
-                      isShowIndicator={false}
-                      key={year}
-                      className="pl-5"
-                      value={`${year}`}
-                    >
-                      {year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormControl>
-            {form.formState.errors.year && (
-              <FormDescription>
-                {form.formState.errors.year.message}
-              </FormDescription>
-            )}
-          </FormItem>
+      {!form.formState.errors.era &&
+        !form.formState.errors.year &&
+        !form.formState.errors.month &&
+        form.formState.errors.day && (
+          <FormDescription>{form.formState.errors.day.message}</FormDescription>
         )}
-      />
-      <div className="text-sm">年</div>
-      <FormField
-        control={form.control}
-        name="month"
-        render={({ field }) => (
-          <FormItem className="w-full max-w-[60px] space-y-0">
-            <FormControl>
-              <Select
-                onValueChange={field.onChange}
-                disabled={!selectedEra}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger isError={!!form.formState.errors.month}>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent className="min-w-[60px]">
-                  {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
-                    <SelectItem
-                      isShowIndicator={false}
-                      key={month}
-                      className="pl-5"
-                      value={`${month}`}
-                    >
-                      {month}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormControl>
-            {form.formState.errors.month && (
-              <FormDescription>
-                {form.formState.errors.month.message}
-              </FormDescription>
-            )}
-          </FormItem>
-        )}
-      />
-      <div className="text-sm">月</div>
-      <FormField
-        control={form.control}
-        name="day"
-        render={({ field }) => (
-          <FormItem className="w-full max-w-[60px] space-y-0">
-            <FormControl>
-              <Select
-                onValueChange={field.onChange}
-                disabled={!selectedMonth}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger isError={!!form.formState.errors.day}>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent className="min-w-[60px]">
-                  {days.map((day) => (
-                    <SelectItem
-                      isShowIndicator={false}
-                      key={day}
-                      className="pl-5"
-                      value={`${day}`}
-                    >
-                      {day}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormControl>
-            {form.formState.errors.day && (
-              <FormDescription>
-                {form.formState.errors.day.message}
-              </FormDescription>
-            )}
-          </FormItem>
-        )}
-      />
-      <div className="text-sm">日</div>
     </div>
   )
 }

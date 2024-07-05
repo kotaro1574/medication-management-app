@@ -1,15 +1,14 @@
 import { getS3Data } from "@/actions/s3/get-s3-data"
 import { GroupTabs } from "@/feature/group/group-tabs"
-import { id } from "date-fns/locale"
 
 import { createClient } from "@/lib/supabase/server"
 import { formatDate } from "@/lib/utils"
 
 export default async function PatientsPage() {
+  const today = new Date()
   const supabase = createClient()
   const {
     data: { user },
-    error: userError,
   } = await supabase.auth.getUser()
 
   if (!user) {
@@ -44,42 +43,76 @@ export default async function PatientsPage() {
     return <div>error</div>
   }
 
-  const patientsWithUrl = await Promise.all(
+  const patientsData = await Promise.all(
     patients.map(async (patient) => {
       const { url } = await getS3Data(
         patient.image_id,
         process.env.FACES_BUCKET ?? ""
       )
-      return { ...patient, url }
+
+      const todayStart = new Date(today.setHours(0, 0, 0, 0))
+      const todayEnd = new Date(today.setHours(23, 59, 59, 999))
+
+      const { data: drugHistory, error: drugHistoryError } = await supabase
+        .from("drug_histories")
+        .select("*")
+        .eq("patent_id", patient.id)
+        .gte("created_at", todayStart.toISOString())
+        .lte("created_at", todayEnd.toISOString())
+
+      console.log(drugHistoryError)
+      if (drugHistoryError) {
+        return { ...patient, url, drugHistory: [] }
+      }
+
+      const userIds = drugHistory.map((dh) => dh.user_id)
+      const { data: profiles, error: profileError } = await supabase
+        .from("profiles")
+        .select("id, name")
+        .in("id", userIds)
+
+      if (profileError) {
+        return { ...patient, url, drugHistory: [] }
+      }
+
+      return {
+        ...patient,
+        url,
+        drugHistory: drugHistory.map((dh) => {
+          const profile = profiles.find((p) => p.id === dh.user_id)
+          return { ...dh, user_name: profile?.name ?? "" }
+        }),
+      }
     })
   )
 
   const tabs = [
     {
       value: "全て",
-      contents: patientsWithUrl.map((patient) => {
+      contents: patientsData.map((patient) => {
         return {
           name: `${patient.last_name} ${patient.first_name}`,
           url: patient.url,
           id: patient.id,
+          drugHistoryWithNames: patient.drugHistory,
         }
       }),
     },
     ...groups.map((group) => ({
       value: group.name,
-      contents: patientsWithUrl
+      contents: patientsData
         .filter((patient) => patient.group_id === group.id)
         .map((patient) => {
           return {
             name: `${patient.last_name} ${patient.first_name}`,
             url: patient.url,
             id: patient.id,
+            drugHistoryWithNames: patient.drugHistory,
           }
         }),
     })),
   ]
 
-  const today = new Date()
   return (
     <section className="min-h-screen bg-[#F5F5F5]">
       <div className="mx-auto">
