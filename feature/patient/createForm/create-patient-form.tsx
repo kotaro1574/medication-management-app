@@ -106,7 +106,6 @@ export function CreatePatientForm({
           loading={loading}
           form={form}
           currentUserName={currentUserName}
-          drugs={[]}
         />
         <div>
           <Button disabled={loading} className="block w-full">
