@@ -3,7 +3,7 @@ import { z } from "zod"
 export const createPatientFormSchema = z.object({
   faceImages: z
     .array(z.custom<File>())
-    .min(5, { message: "5枚の画像が必要です。" }),
+    .min(5, { message: "顔画像を登録してください。" }),
   lastName: z.string().min(1, { message: "姓を入力してください。" }),
   firstName: z.string().min(1, { message: "名を入力してください。" }),
   era: z.string().min(1, { message: "生年月日を選択してください。" }),
