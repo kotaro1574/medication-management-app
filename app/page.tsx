@@ -4,7 +4,8 @@ import { useCallback, useRef, useState, useTransition } from "react"
 import dynamic from "next/dynamic"
 import { patentsDrugRecognition } from "@/actions/patients/patents-drug-recognition"
 import { patentsFaceRecognition } from "@/actions/patients/patents-face-recognition"
-import Webcam from "react-webcam"
+import { CameraType } from "react-camera-pro"
+import { FacingMode } from "react-camera-pro/dist/components/Camera/types"
 
 import { Database } from "@/types/schema.gen"
 import { Icons } from "@/components/ui/icons"
@@ -32,13 +33,9 @@ export default function TopPage() {
     "id" | "last_name" | "first_name"
   > | null>(null)
   const [isDrugRecognition, setIsDrugRecognition] = useState<boolean>(false)
-  const webcamRef = useRef<Webcam>(null)
-  const [facingMode, setFacingMode] = useState(FACING_MODE_USER)
+  const cameraRef = useRef<CameraType>(null)
+  const [facingMode, setFacingMode] = useState<FacingMode>(FACING_MODE_USER)
   const { toast } = useToast()
-
-  let videoConstraints: MediaTrackConstraints = {
-    facingMode: facingMode,
-  }
 
   const onReset = useCallback(() => {
     setPatent(null)
@@ -55,8 +52,12 @@ export default function TopPage() {
   }, [])
 
   const onRecognition = useCallback(() => {
-    const imageSrc = webcamRef.current?.getScreenshot()?.split(",")[1] ?? ""
-    if (!imageSrc) return
+    if (!cameraRef.current) return
+    const imageSrc = cameraRef.current.takePhoto()
+
+    if (typeof imageSrc !== "string") return
+
+    const base64Data = imageSrc.split(",")[1]
 
     const successSound = new Audio("/success-sound.mp3")
     const errorSound = new Audio("/error-sound.mp3")
@@ -64,7 +65,9 @@ export default function TopPage() {
     startTransaction(() => {
       ;(async () => {
         if (!patent) {
-          const response = await patentsFaceRecognition({ imageSrc })
+          const response = await patentsFaceRecognition({
+            imageSrc: base64Data,
+          })
           if (response.success) {
             setPatent(response.data)
             setError(null)
@@ -75,7 +78,7 @@ export default function TopPage() {
           }
         } else {
           const response = await patentsDrugRecognition({
-            imageSrc,
+            imageSrc: base64Data,
             patent: patent,
           })
           if (response.success) {
@@ -101,8 +104,8 @@ export default function TopPage() {
     <section className="px-4 py-[60px]">
       <div className="mx-auto w-full sm:max-w-[500px] md:max-w-[600px]">
         <DynamicPatientFaceAndDrugRecognitionWebcam
-          videoConstraints={videoConstraints}
-          webcamRef={webcamRef}
+          facingMode={facingMode}
+          cameraRef={cameraRef}
           lastName={patent?.last_name ?? ""}
           firstName={patent?.first_name ?? ""}
           isFaceRecognition={!!patent}

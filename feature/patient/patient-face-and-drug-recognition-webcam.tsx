@@ -1,13 +1,14 @@
 "use client"
 
 import { RefObject } from "react"
-import Webcam from "react-webcam"
+import { Camera, CameraType } from "react-camera-pro"
+import { FacingMode } from "react-camera-pro/dist/components/Camera/types"
 
 import { Icons } from "@/components/ui/icons"
 
 type Props = {
-  videoConstraints: MediaTrackConstraints
-  webcamRef: RefObject<Webcam>
+  facingMode: FacingMode
+  cameraRef: RefObject<CameraType>
   lastName: string
   firstName: string
   isFaceRecognition: boolean
@@ -17,8 +18,8 @@ type Props = {
 }
 
 export default function PatientFaceAndDrugRecognitionWebcam({
-  videoConstraints,
-  webcamRef,
+  facingMode,
+  cameraRef,
   lastName,
   firstName,
   isFaceRecognition,
@@ -46,19 +47,25 @@ export default function PatientFaceAndDrugRecognitionWebcam({
 
   return (
     <div className="relative">
-      <Webcam
-        className="rounded-[24px]"
+      <div
+        className="relative overflow-hidden rounded-[24px]"
         style={{
           height: "calc(100vh - 120px - 44px)",
           width: "100%",
-          objectFit: "cover",
         }}
-        audio={false}
-        ref={webcamRef}
-        screenshotFormat="image/jpeg"
-        videoConstraints={videoConstraints}
-        screenshotQuality={1}
-      />
+      >
+        <Camera
+          ref={cameraRef}
+          facingMode={facingMode}
+          aspectRatio="cover"
+          errorMessages={{
+            noCameraAccessible: "カメラが利用できません",
+            permissionDenied: "カメラの使用が許可されていません",
+            switchCamera: "カメラの切り替えはサポートされていません",
+            canvas: "Canvas がサポートされていません",
+          }}
+        />
+      </div>
 
       <p className="text-md absolute top-[24px] w-full text-center font-semibold">
         {loading ? "認証中..." : recognitionDescription}
