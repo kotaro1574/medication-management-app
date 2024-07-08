@@ -1,7 +1,10 @@
 import { ReactNode, useCallback, useRef, useState } from "react"
-import { createPatientFormSchema } from "@/feature/patient/createForm/schema"
+import dynamic from "next/dynamic"
+import {
+  CameraType,
+  FacingMode,
+} from "react-camera-pro/dist/components/Camera/types"
 import { UseFormReturn } from "react-hook-form"
-import Webcam from "react-webcam"
 import { z } from "zod"
 
 import { convertBase64ToFile } from "@/lib/utils"
@@ -14,6 +17,16 @@ import {
 } from "@/components/ui/dialog"
 import { Icons } from "@/components/ui/icons"
 import { Progress } from "@/components/ui/progress"
+import { Skeleton } from "@/components/ui/skeleton"
+
+import { createPatientFormSchema } from "../../schema"
+
+const DynamicCamera = dynamic(() => import("@/components/ui/camera"), {
+  loading: () => (
+    <Skeleton className="h-[calc(100vh_-_300px)]  w-full rounded-[24px] sm:max-w-[500px] md:max-w-[600px]" />
+  ),
+  ssr: false,
+})
 
 type Props = {
   trigger: ReactNode
@@ -23,15 +36,20 @@ type Props = {
 const FACING_MODE_USER = "user"
 const FACING_MODE_ENVIRONMENT = "environment"
 
-export function PatientFacesWebcamDialog({ trigger, form }: Props) {
-  const webcamRef = useRef<Webcam>(null)
-  const [facingMode, setFacingMode] = useState(FACING_MODE_USER)
+export function PatientFacesCameraDialog({ trigger, form }: Props) {
+  const cameraRef = useRef<CameraType>(null)
+  const [facingMode, setFacingMode] = useState<FacingMode>(FACING_MODE_USER)
   const [progress, setProgress] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
 
   const onGetFaceImages = useCallback(() => {
-    const imageSrc = webcamRef.current?.getScreenshot()
-    if (!imageSrc) return
+    if (!cameraRef.current) return
+    const imageSrc = cameraRef.current.takePhoto()
+
+    if (typeof imageSrc !== "string") return
+
+    const base64Data = imageSrc.split(",")[1]
+
     const description =
       progress === 0
         ? "center"
@@ -45,7 +63,10 @@ export function PatientFacesWebcamDialog({ trigger, form }: Props) {
         ? "down"
         : ""
 
-    const file = convertBase64ToFile(imageSrc, `faceImage_${description}.jpeg`)
+    const file = convertBase64ToFile(
+      base64Data,
+      `faceImage_${description}.jpeg`
+    )
     const currentFaceImages = form.getValues("faceImages")
     form.setValue("faceImages", [...currentFaceImages, file])
     setProgress((prevState) => {
@@ -56,10 +77,6 @@ export function PatientFacesWebcamDialog({ trigger, form }: Props) {
       return newProgress
     })
   }, [form, progress])
-
-  let videoConstraints: MediaTrackConstraints = {
-    facingMode: facingMode,
-  }
 
   const onSwitch = useCallback(() => {
     setFacingMode((prevState) =>
@@ -108,19 +125,7 @@ export function PatientFacesWebcamDialog({ trigger, form }: Props) {
           <Progress value={progress} />
         </DialogHeader>
         <div>
-          <Webcam
-            className="rounded-[24px]"
-            style={{
-              height: "calc(100vh - 300px)",
-              width: "100%",
-              objectFit: "cover",
-            }}
-            audio={false}
-            videoConstraints={videoConstraints}
-            ref={webcamRef}
-            screenshotFormat="image/jpeg"
-            screenshotQuality={1}
-          />
+          <DynamicCamera facingMode={facingMode} cameraRef={cameraRef} />
           <div className="relative mt-4 flex w-full items-center justify-center">
             <button
               onClick={onGetFaceImages}

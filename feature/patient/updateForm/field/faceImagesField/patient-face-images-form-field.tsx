@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/ui/icons"
 
 import { updatePatientFormSchema } from "../../schema"
-import { PatientFacesWebcamDialog } from "./patient-faces-webcam-dialog"
+import { PatientFacesCameraDialog } from "./patient-faces-camera-dialog"
 
 export function PatientFaceImagesFormField({
   form,
@@ -51,7 +51,7 @@ export function PatientFaceImagesFormField({
           </div>
         </div>
       )}
-      <PatientFacesWebcamDialog
+      <PatientFacesCameraDialog
         form={form}
         trigger={
           <Button variant="secondary" size="secondary" className="block w-full">
