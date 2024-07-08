@@ -60,7 +60,6 @@ export default async function PatientsPage() {
         .gte("created_at", todayStart.toISOString())
         .lte("created_at", todayEnd.toISOString())
 
-      console.log(drugHistoryError)
       if (drugHistoryError) {
         return { ...patient, url, drugHistory: [] }
       }
