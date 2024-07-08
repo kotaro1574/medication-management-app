@@ -1,10 +1,19 @@
 "use client"
 
 import { RefObject } from "react"
-import { Camera, CameraType } from "react-camera-pro"
+import dynamic from "next/dynamic"
+import { CameraType } from "react-camera-pro"
 import { FacingMode } from "react-camera-pro/dist/components/Camera/types"
 
 import { Icons } from "@/components/ui/icons"
+import { Skeleton } from "@/components/ui/skeleton"
+
+const DynamicCamera = dynamic(() => import("@/components/ui/camera"), {
+  loading: () => (
+    <Skeleton className="h-[calc(100vh_-_300px)]  w-full rounded-[24px] sm:max-w-[500px] md:max-w-[600px]" />
+  ),
+  ssr: false,
+})
 
 type Props = {
   facingMode: FacingMode
@@ -17,7 +26,7 @@ type Props = {
   error: string | null
 }
 
-export default function PatientFaceAndDrugRecognitionWebcam({
+export function PatientFaceAndDrugRecognitionCamera({
   facingMode,
   cameraRef,
   lastName,
@@ -47,25 +56,7 @@ export default function PatientFaceAndDrugRecognitionWebcam({
 
   return (
     <div className="relative">
-      <div
-        className="relative overflow-hidden rounded-[24px]"
-        style={{
-          height: "calc(100vh - 120px - 44px)",
-          width: "100%",
-        }}
-      >
-        <Camera
-          ref={cameraRef}
-          facingMode={facingMode}
-          aspectRatio="cover"
-          errorMessages={{
-            noCameraAccessible: "カメラが利用できません",
-            permissionDenied: "カメラの使用が許可されていません",
-            switchCamera: "カメラの切り替えはサポートされていません",
-            canvas: "Canvas がサポートされていません",
-          }}
-        />
-      </div>
+      <DynamicCamera facingMode={facingMode} cameraRef={cameraRef} />
 
       <p className="text-md absolute top-[24px] w-full text-center font-semibold">
         {loading ? "認証中..." : recognitionDescription}

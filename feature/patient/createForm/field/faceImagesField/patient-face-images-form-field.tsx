@@ -1,8 +1,7 @@
 "use client"
 
-import error from "next/error"
 import Image from "next/image"
-import { PatientFacesWebcamDialog } from "@/feature/patient/createForm/field/faceImagesField/patient-faces-webcam-dialog"
+import { PatientFacesCameraDialog } from "@/feature/patient/createForm/field/faceImagesField/patient-faces-camera-dialog"
 import { createPatientFormSchema } from "@/feature/patient/createForm/schema"
 import { AlertCircle } from "lucide-react"
 import { UseFormReturn } from "react-hook-form"
@@ -12,7 +11,6 @@ import { placeholder } from "@/lib/utils"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
-import { FormDescription } from "@/components/ui/form"
 import { Icons } from "@/components/ui/icons"
 
 export function PatientFaceImagesFormField({
@@ -63,7 +61,7 @@ export function PatientFaceImagesFormField({
           </AlertDescription>
         </Alert>
       )}
-      <PatientFacesWebcamDialog
+      <PatientFacesCameraDialog
         form={form}
         trigger={
           <Button variant="secondary" size="secondary" className="block w-full">

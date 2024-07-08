@@ -1,26 +1,15 @@
 "use client"
 
 import { useCallback, useRef, useState, useTransition } from "react"
-import dynamic from "next/dynamic"
 import { patentsDrugRecognition } from "@/actions/patients/patents-drug-recognition"
 import { patentsFaceRecognition } from "@/actions/patients/patents-face-recognition"
+import { PatientFaceAndDrugRecognitionCamera } from "@/feature/patient/patient-face-and-drug-recognition-camera"
 import { CameraType } from "react-camera-pro"
 import { FacingMode } from "react-camera-pro/dist/components/Camera/types"
 
 import { Database } from "@/types/schema.gen"
 import { Icons } from "@/components/ui/icons"
-import { Skeleton } from "@/components/ui/skeleton"
 import { useToast } from "@/components/ui/use-toast"
-
-const DynamicPatientFaceAndDrugRecognitionWebcam = dynamic(
-  () => import("@/feature/patient/patient-face-and-drug-recognition-webcam"),
-  {
-    loading: () => (
-      <Skeleton className="h-[calc(100vh_-_120px_-_44px)]  w-full rounded-[24px] sm:max-w-[500px] md:max-w-[600px]" />
-    ),
-    ssr: false,
-  }
-)
 
 const FACING_MODE_USER = "user"
 const FACING_MODE_ENVIRONMENT = "environment"
@@ -103,7 +92,7 @@ export default function TopPage() {
   return (
     <section className="px-4 py-[60px]">
       <div className="mx-auto w-full sm:max-w-[500px] md:max-w-[600px]">
-        <DynamicPatientFaceAndDrugRecognitionWebcam
+        <PatientFaceAndDrugRecognitionCamera
           facingMode={facingMode}
           cameraRef={cameraRef}
           lastName={patent?.last_name ?? ""}
