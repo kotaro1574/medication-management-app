@@ -69,7 +69,7 @@ export default async function PatientPage({
   const { data: drugHistories, error: drugHistoryError } = await supabase
     .from("drug_histories")
     .select("*")
-    .eq("patent_id", params.id)
+    .eq("patient_id", params.id)
     .gte("created_at", sunday.toISOString())
     .lte("created_at", saturday.toISOString())
 
