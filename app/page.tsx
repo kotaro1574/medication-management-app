@@ -5,14 +5,10 @@ import { patentsDrugRecognition } from "@/actions/patients/patents-drug-recognit
 import { patentsFaceRecognition } from "@/actions/patients/patents-face-recognition"
 import { PatientFaceAndDrugRecognitionCamera } from "@/feature/patient/patient-face-and-drug-recognition-camera"
 import { CameraType } from "react-camera-pro"
-import { FacingMode } from "react-camera-pro/dist/components/Camera/types"
 
 import { Database } from "@/types/schema.gen"
 import { Icons } from "@/components/ui/icons"
 import { useToast } from "@/components/ui/use-toast"
-
-const FACING_MODE_USER = "user"
-const FACING_MODE_ENVIRONMENT = "environment"
 
 export default function TopPage() {
   const [loading, startTransaction] = useTransition()
@@ -23,21 +19,12 @@ export default function TopPage() {
   > | null>(null)
   const [isDrugRecognition, setIsDrugRecognition] = useState<boolean>(false)
   const cameraRef = useRef<CameraType>(null)
-  const [facingMode, setFacingMode] = useState<FacingMode>(FACING_MODE_USER)
   const { toast } = useToast()
 
   const onReset = useCallback(() => {
     setPatent(null)
     setIsDrugRecognition(false)
     setError(null)
-  }, [])
-
-  const handleClick = useCallback(() => {
-    setFacingMode((prevState) =>
-      prevState === FACING_MODE_USER
-        ? FACING_MODE_ENVIRONMENT
-        : FACING_MODE_USER
-    )
   }, [])
 
   const onRecognition = useCallback(() => {
@@ -89,11 +76,16 @@ export default function TopPage() {
     })
   }, [patent, toast])
 
+  const onSwitchCamera = useCallback(() => {
+    if (cameraRef.current) {
+      cameraRef.current.switchCamera()
+    }
+  }, [])
+
   return (
     <section className="px-4 py-[60px]">
       <div className="mx-auto w-full sm:max-w-[500px] md:max-w-[600px]">
         <PatientFaceAndDrugRecognitionCamera
-          facingMode={facingMode}
           cameraRef={cameraRef}
           lastName={patent?.last_name ?? ""}
           firstName={patent?.first_name ?? ""}
@@ -120,7 +112,7 @@ export default function TopPage() {
           </button>
           <button
             className="absolute right-2 top-0 text-[#A4A4A4] hover:text-[#A4A4A4]/60"
-            onClick={handleClick}
+            onClick={onSwitchCamera}
           >
             <Icons.switch />
           </button>
