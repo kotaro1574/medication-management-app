@@ -4,13 +4,7 @@ import { SupabaseClient } from "@supabase/supabase-js"
 
 import { ActionResult } from "@/types/action"
 import { Database } from "@/types/schema.gen"
-import {
-  IndexFaces,
-  deleteFace,
-  deleteImage,
-  drugImagesUpload,
-  uploadFaceImage,
-} from "@/lib/aws/utils"
+import { IndexFaces, drugImagesUpload, uploadFaceImage } from "@/lib/aws/utils"
 import { createClient } from "@/lib/supabase/server"
 
 type Props = {

@@ -1,6 +1,8 @@
 "use client"
 
 import { useTransition } from "react"
+import { useRouter } from "next/navigation"
+import { createGroup } from "@/actions/groups/create-group"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -15,13 +17,16 @@ import {
   FormLabel,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { useToast } from "@/components/ui/use-toast"
 
 const schema = z.object({
   name: z.string().min(1),
 })
 
-export function CreateGroupForm() {
+export function CreateGroupForm({ facilityId }: { facilityId: string }) {
   const [loading, startTransition] = useTransition()
+  const router = useRouter()
+  const { toast } = useToast()
   const form = useForm<z.infer<typeof schema>>({
     defaultValues: {
       name: "",
@@ -32,7 +37,13 @@ export function CreateGroupForm() {
   const onSubmit = ({ name }: z.infer<typeof schema>) => {
     startTransition(() => {
       ;(async () => {
-        console.log(name)
+        const response = await createGroup({ name, facilityId })
+        if (response.success) {
+          toast({ title: response.message })
+          router.push("/groups")
+        } else {
+          form.setError("name", { message: response.error })
+        }
       })()
     })
   }
