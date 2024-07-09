@@ -22,7 +22,7 @@ export default async function EditPatientPage({
 
   if (profileError) {
     console.error(profileError)
-    return <div>Error</div>
+    return <div>profileError</div>
   }
 
   const { data: patient, error: patientError } = await supabase
@@ -33,7 +33,7 @@ export default async function EditPatientPage({
 
   if (patientError) {
     console.error(patientError)
-    return <div>Error</div>
+    return <div>patientError</div>
   }
 
   // 患者の服用薬の画像IDを取得
@@ -44,7 +44,7 @@ export default async function EditPatientPage({
 
   if (facesError) {
     console.error(facesError)
-    return <div>Error</div>
+    return <div>faceError</div>
   }
 
   const { data: _drugs, error: drugsError } = await supabase
@@ -54,7 +54,7 @@ export default async function EditPatientPage({
 
   if (drugsError) {
     console.error(drugsError)
-    return <div>Error</div>
+    return <div>drugError</div>
   }
 
   // 患者の顔画像のURLを取得
