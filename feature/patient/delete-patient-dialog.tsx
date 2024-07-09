@@ -58,12 +58,17 @@ export function DeletePatientDialog({
   return (
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        style={{
+          width: "calc(100% - 32px)",
+        }}
+        className="bg-[#F5F5F5]"
+      >
         <DialogHeader>
           <DialogTitle>患者を削除しますか？</DialogTitle>
           <DialogDescription>{`${patient.last_name} ${patient.first_name}のデータは完全に削除されます。`}</DialogDescription>
         </DialogHeader>
-        <DialogFooter className="sm:justify-start">
+        <DialogFooter>
           <DialogClose asChild>
             <Button type="button" variant="secondary">
               閉じる
