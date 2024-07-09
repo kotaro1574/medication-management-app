@@ -1,7 +1,6 @@
 import { ReactNode, useCallback, useRef, useState } from "react"
 import dynamic from "next/dynamic"
 import { CameraType } from "react-camera-pro"
-import { FacingMode } from "react-camera-pro/dist/components/Camera/types"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 
@@ -31,12 +30,8 @@ type Props = {
   form: UseFormReturn<z.infer<typeof updatePatientFormSchema>>
 }
 
-const FACING_MODE_USER = "user"
-const FACING_MODE_ENVIRONMENT = "environment"
-
 export function PatientFacesCameraDialog({ trigger, form }: Props) {
   const cameraRef = useRef<CameraType>(null)
-  const [facingMode, setFacingMode] = useState<FacingMode>(FACING_MODE_USER)
   const [progress, setProgress] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
 
@@ -76,12 +71,9 @@ export function PatientFacesCameraDialog({ trigger, form }: Props) {
     })
   }, [form, progress])
 
-  const onSwitch = useCallback(() => {
-    setFacingMode((prevState) =>
-      prevState === FACING_MODE_USER
-        ? FACING_MODE_ENVIRONMENT
-        : FACING_MODE_USER
-    )
+  const onSwitchCamera = useCallback(() => {
+    if (!cameraRef.current) return
+    cameraRef.current.switchCamera()
   }, [])
 
   const description =
@@ -123,7 +115,13 @@ export function PatientFacesCameraDialog({ trigger, form }: Props) {
           <Progress value={progress} />
         </DialogHeader>
         <div>
-          <DynamicCamera facingMode={facingMode} cameraRef={cameraRef} />
+          <div
+            style={{
+              height: "calc(100vh - 300px)",
+            }}
+          >
+            <DynamicCamera cameraRef={cameraRef} />
+          </div>
           <div className="relative mt-4 flex w-full items-center justify-center">
             <button
               onClick={onGetFaceImages}
@@ -134,7 +132,7 @@ export function PatientFacesCameraDialog({ trigger, form }: Props) {
             </button>
             <button
               className="absolute right-2 top-0 text-[#D9D9D9] hover:text-[#D9D9D9]/90"
-              onClick={onSwitch}
+              onClick={onSwitchCamera}
             >
               <Icons.switch />
             </button>
