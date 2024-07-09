@@ -1,4 +1,7 @@
+import Link from "next/link"
+
 import { createClient } from "@/lib/supabase/server"
+import { buttonVariants } from "@/components/ui/button"
 
 export default async function GroupsPage() {
   const supabase = createClient()
@@ -37,6 +40,12 @@ export default async function GroupsPage() {
           <li key={group.id}>{group.name}</li>
         ))}
       </ul>
+      <Link
+        className={`${buttonVariants()} block w-full`}
+        href="/groups/create"
+      >
+        追加
+      </Link>
     </section>
   )
 }
