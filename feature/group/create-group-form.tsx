@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 
 const schema = z.object({
-  name: z.string().min(1),
+  name: z.string().min(1, { message: "グループ名を入力してください" }),
 })
 
 export function CreateGroupForm({ facilityId }: { facilityId: string }) {
