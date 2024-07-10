@@ -1,16 +1,11 @@
 "use server"
 
+import { revalidatePath } from "next/cache"
 import { SupabaseClient } from "@supabase/supabase-js"
 
 import { ActionResult } from "@/types/action"
 import { Database } from "@/types/schema.gen"
-import {
-  IndexFaces,
-  deleteFace,
-  deleteImage,
-  drugImagesUpload,
-  uploadFaceImage,
-} from "@/lib/aws/utils"
+import { IndexFaces, drugImagesUpload, uploadFaceImage } from "@/lib/aws/utils"
 import { createClient } from "@/lib/supabase/server"
 
 type Props = {
@@ -141,6 +136,8 @@ export async function createPatient({
       const drugImageIds = await drugImagesUpload(drugImages)
       await insertDrugs(supabase, drugImageIds, patientId, userId)
     }
+
+    revalidatePath("/patients", "page")
   } catch (error) {
     if (error instanceof Error) {
       return { success: false, error: error.message }

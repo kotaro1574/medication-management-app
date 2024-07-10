@@ -1,6 +1,8 @@
-import { ReactNode, useTransition } from "react"
+"use client"
+
+import { useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { deletePatient } from "@/actions/patients/delete-patients"
+import { deleteGroup } from "@/actions/groups/delete-group"
 
 import { Database } from "@/types/schema.gen"
 import { Button } from "@/components/ui/button"
@@ -17,40 +19,28 @@ import {
 import { toast } from "@/components/ui/use-toast"
 
 type Props = {
-  faceImageIds: string[]
-  drugImageIds: string[]
-  trigger: ReactNode
-  patient: Database["public"]["Tables"]["patients"]["Row"]
+  trigger: React.ReactNode
+  group: Database["public"]["Tables"]["groups"]["Row"]
 }
 
-export function DeletePatientDialog({
-  trigger,
-  patient,
-  faceImageIds,
-  drugImageIds,
-}: Props) {
+export function DeleteGroupDialog({ trigger, group }: Props) {
   const [loading, startTransaction] = useTransition()
   const router = useRouter()
 
   const onDelete = () => {
     startTransaction(() => {
       ;(async () => {
-        const response = await deletePatient({
-          id: patient.id,
-          drugImageIds: drugImageIds,
-          faceData: {
-            faceIds: patient.face_ids,
-            imageIds: faceImageIds,
-          },
+        const response = await deleteGroup({
+          id: group.id,
         })
         if (response.success) {
-          router.push("/patients")
+          router.push("/groups")
           router.refresh()
           toast({
             title: response.message,
           })
         } else {
-          toast({ title: response.error })
+          toast({ title: response.error, variant: "destructive" })
         }
       })()
     })
@@ -65,9 +55,10 @@ export function DeletePatientDialog({
         className="bg-[#F5F5F5]"
       >
         <DialogHeader>
-          <DialogTitle>患者を削除しますか？</DialogTitle>
-          <DialogDescription>{`${patient.last_name} ${patient.first_name}のデータは完全に削除されます。`}</DialogDescription>
+          <DialogTitle>グループを削除しますか？</DialogTitle>
+          <DialogDescription>{`${group.name}のデータは完全に削除されます。`}</DialogDescription>
         </DialogHeader>
+
         <DialogFooter>
           <DialogClose asChild>
             <Button type="button" variant="secondary">

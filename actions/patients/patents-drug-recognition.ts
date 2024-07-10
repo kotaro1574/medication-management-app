@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidatePath } from "next/cache"
 import Vision from "@google-cloud/vision"
 
 import { ActionResult } from "@/types/action"
@@ -51,13 +52,16 @@ export async function patentsDrugRecognition({
     }
 
     const { error } = await supabase.from("drug_histories").insert({
-      patent_id: patent.id,
+      patient_id: patent.id,
       user_id: user.id,
     })
 
     if (error) {
-      throw error
+      throw error.message
     }
+
+    revalidatePath("/patients", "page")
+    revalidatePath("/patients/[id]", "page")
   } catch (error) {
     return {
       success: false,

@@ -45,7 +45,7 @@ export function DrugHistory({ drugHistoriesWithNames, id }: Props) {
       const { data: drugHistories, error: drugError } = await supabase
         .from("drug_histories")
         .select("*")
-        .eq("patent_id", id)
+        .eq("patient_id", id)
         .gte("created_at", sunday.toISOString())
         .lte("created_at", saturday.toISOString())
 
