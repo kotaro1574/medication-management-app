@@ -2,6 +2,7 @@ import Link from "next/link"
 
 import { createClient } from "@/lib/supabase/server"
 import { buttonVariants } from "@/components/ui/button"
+import { Icons } from "@/components/ui/icons"
 
 export default async function GroupsPage() {
   const supabase = createClient()
@@ -37,11 +38,17 @@ export default async function GroupsPage() {
       <h1>Groups</h1>
       <ul>
         {groups.map((group) => (
-          <li key={group.id}>{group.name}</li>
+          <li key={group.id} className="flex items-center justify-between">
+            <div>{group.name}</div>
+            <div className="flex items-center gap-2">
+              <Icons.edit />
+              <Icons.trash className="size-6" />
+            </div>
+          </li>
         ))}
       </ul>
       <Link
-        className={`${buttonVariants()} block w-full`}
+        className={`${buttonVariants()} mt-4 block w-full`}
         href="/groups/create"
       >
         追加
