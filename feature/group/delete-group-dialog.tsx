@@ -40,7 +40,7 @@ export function DeleteGroupDialog({ trigger, group }: Props) {
             title: response.message,
           })
         } else {
-          toast({ title: response.error })
+          toast({ title: response.error, variant: "destructive" })
         }
       })()
     })

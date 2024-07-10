@@ -1,6 +1,8 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { PostgrestError } from "@supabase/supabase-js"
+import { th } from "date-fns/locale"
 
 import { ActionResult } from "@/types/action"
 import { createClient } from "@/lib/supabase/server"
@@ -15,6 +17,12 @@ export async function deleteGroup({
     const { error } = await supabase.from("groups").delete().eq("id", id)
 
     if (error) {
+      if (
+        error.message ===
+        `update or delete on table "groups" violates foreign key constraint "fk_group" on table "patients"`
+      ) {
+        throw new Error("グループに所属している患者がいるため削除できません")
+      }
       throw new Error(error.message)
     }
 
