@@ -2,6 +2,7 @@
 
 import { useTransition } from "react"
 import { useRouter } from "next/navigation"
+import { updateGroup } from "@/actions/groups/update-group"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -40,7 +41,15 @@ export function UpdateGroupForm({
 
   const onSubmit = ({ name }: z.infer<typeof schema>) => {
     startTransition(() => {
-      ;(async () => {})()
+      ;(async () => {
+        const response = await updateGroup({ name, id: group.id })
+        if (response.success) {
+          toast({ title: response.message })
+          router.push("/groups")
+        } else {
+          form.setError("name", { message: response.error })
+        }
+      })()
     })
   }
   return (
