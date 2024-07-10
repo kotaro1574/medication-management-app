@@ -2,6 +2,7 @@
 
 import { useTransition } from "react"
 import { useRouter } from "next/navigation"
+import { deleteGroup } from "@/actions/groups/delete-group"
 
 import { Database } from "@/types/schema.gen"
 import { Button } from "@/components/ui/button"
@@ -29,18 +30,18 @@ export function DeleteGroupDialog({ trigger, group }: Props) {
   const onDelete = () => {
     startTransaction(() => {
       ;(async () => {
-        // const response = await deleteGroup({
-        //   id: group.id,
-        // })
-        // if (response.success) {
-        //   router.push("/groups")
-        //   router.refresh()
-        //   toast({
-        //     title: response.message,
-        //   })
-        // } else {
-        //   toast({ title: response.error })
-        // }
+        const response = await deleteGroup({
+          id: group.id,
+        })
+        if (response.success) {
+          router.push("/groups")
+          router.refresh()
+          toast({
+            title: response.message,
+          })
+        } else {
+          toast({ title: response.error })
+        }
       })()
     })
   }
