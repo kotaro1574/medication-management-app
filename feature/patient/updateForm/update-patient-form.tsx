@@ -126,7 +126,7 @@ export function UpdatePatientForm({
           />
           <div>
             <Button disabled={loading} className="block w-full">
-              {loading ? "更新中" : "更新"}
+              {loading ? "更新中..." : "更新"}
             </Button>
           </div>
         </form>

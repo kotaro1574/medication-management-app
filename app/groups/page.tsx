@@ -41,7 +41,9 @@ export default async function GroupsPage() {
           <li key={group.id} className="flex items-center justify-between">
             <div>{group.name}</div>
             <div className="flex items-center gap-2">
-              <Icons.edit />
+              <Link href={`/groups/${group.id}`}>
+                <Icons.edit />
+              </Link>
               <Icons.trash className="size-6" />
             </div>
           </li>

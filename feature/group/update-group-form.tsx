@@ -2,11 +2,11 @@
 
 import { useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { createGroup } from "@/actions/groups/create-group"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { Database } from "@/types/schema.gen"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -23,28 +23,24 @@ const schema = z.object({
   name: z.string().min(1, { message: "グループ名を入力してください" }),
 })
 
-export function CreateGroupForm({ facilityId }: { facilityId: string }) {
+export function UpdateGroupForm({
+  group,
+}: {
+  group: Database["public"]["Tables"]["groups"]["Row"]
+}) {
   const [loading, startTransition] = useTransition()
   const router = useRouter()
   const { toast } = useToast()
   const form = useForm<z.infer<typeof schema>>({
     defaultValues: {
-      name: "",
+      name: group.name,
     },
     resolver: zodResolver(schema),
   })
 
   const onSubmit = ({ name }: z.infer<typeof schema>) => {
     startTransition(() => {
-      ;(async () => {
-        const response = await createGroup({ name, facilityId })
-        if (response.success) {
-          toast({ title: response.message })
-          router.push("/groups")
-        } else {
-          form.setError("name", { message: response.error })
-        }
-      })()
+      ;(async () => {})()
     })
   }
   return (
@@ -69,7 +65,7 @@ export function CreateGroupForm({ facilityId }: { facilityId: string }) {
         />
         <div>
           <Button disabled={loading} className="block w-full">
-            {loading ? "登録中..." : "登録"}
+            {loading ? "更新中..." : "更新"}
           </Button>
         </div>
       </form>
