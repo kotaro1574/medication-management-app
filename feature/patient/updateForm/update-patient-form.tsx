@@ -100,7 +100,6 @@ export function UpdatePatientForm({
         if (response.success) {
           setError(null)
           router.push("/patients")
-          router.refresh()
           toast({
             title: response.message,
           })

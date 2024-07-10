@@ -19,26 +19,32 @@ export function DrugInfo({ drugs }: Props) {
     <div className="space-y-4">
       <h2 className="text-[20px] text-[#C2B37F]">処方薬情報</h2>
 
-      {drugs.map((drug, i) => (
-        <div key={drug.id} className="mx-auto max-w-md">
-          <div className="flex items-center justify-between text-[11px]">
-            <div>
-              登録日：{formatDate(new Date(drug.created_at), "yyyy/MM/dd")}
+      {drugs.length > 0 ? (
+        drugs.map((drug, i) => (
+          <div key={drug.id} className="mx-auto max-w-md">
+            <div className="flex items-center justify-between text-[11px]">
+              <div>
+                登録日：{formatDate(new Date(drug.created_at), "yyyy/MM/dd")}
+              </div>
+              <div>
+                {i + 1}/{drugs.length}
+              </div>
             </div>
-            <div>
-              {i + 1}/{drugs.length}
-            </div>
+            <AspectRatio className="mt-1" ratio={340 / 400}>
+              <Image
+                alt={drug.id}
+                src={drug.url}
+                fill
+                placeholder={placeholder({ w: 340, h: 400 })}
+              />
+            </AspectRatio>
           </div>
-          <AspectRatio className="mt-1" ratio={340 / 400}>
-            <Image
-              alt={drug.id}
-              src={drug.url}
-              fill
-              placeholder={placeholder({ w: 340, h: 400 })}
-            />
-          </AspectRatio>
-        </div>
-      ))}
+        ))
+      ) : (
+        <p className="text-sm text-[#A4A4A4]">
+          処方薬情報が登録されていません。
+        </p>
+      )}
     </div>
   )
 }

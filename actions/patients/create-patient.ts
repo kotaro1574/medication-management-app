@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidatePath } from "next/cache"
 import { SupabaseClient } from "@supabase/supabase-js"
 
 import { ActionResult } from "@/types/action"
@@ -134,6 +135,8 @@ export async function createPatient({
       const drugImageIds = await drugImagesUpload(drugImages)
       await insertDrugs(supabase, drugImageIds, patientId, userId)
     }
+
+    revalidatePath("/patients", "page")
   } catch (error) {
     if (error instanceof Error) {
       return { success: false, error: error.message }

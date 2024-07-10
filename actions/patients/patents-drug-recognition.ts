@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidatePath } from "next/cache"
 import Vision from "@google-cloud/vision"
 
 import { ActionResult } from "@/types/action"
@@ -56,8 +57,11 @@ export async function patentsDrugRecognition({
     })
 
     if (error) {
-      throw error
+      throw error.message
     }
+
+    revalidatePath("/patients", "page")
+    revalidatePath("/patients/[id]", "page")
   } catch (error) {
     return {
       success: false,
