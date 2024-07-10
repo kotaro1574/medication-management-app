@@ -1,4 +1,7 @@
 import Link from "next/link"
+import { DeleteGroupDialog } from "@/feature/group/delete-group-dialog"
+import { GroupItem } from "@/feature/group/group-item"
+import { Delete } from "lucide-react"
 
 import { createClient } from "@/lib/supabase/server"
 import { buttonVariants } from "@/components/ui/button"
@@ -36,19 +39,11 @@ export default async function GroupsPage() {
   return (
     <section className="px-4 py-[60px]">
       <h1>Groups</h1>
-      <ul>
+      <div>
         {groups.map((group) => (
-          <li key={group.id} className="flex items-center justify-between">
-            <div>{group.name}</div>
-            <div className="flex items-center gap-2">
-              <Link href={`/groups/${group.id}`}>
-                <Icons.edit />
-              </Link>
-              <Icons.trash className="size-6" />
-            </div>
-          </li>
+          <GroupItem key={group.id} group={group} />
         ))}
-      </ul>
+      </div>
       <Link
         className={`${buttonVariants()} mt-4 block w-full`}
         href="/groups/create"
