@@ -55,7 +55,6 @@ export function CreateGroupForm({ facilityId }: { facilityId: string }) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>グループ名</FormLabel>
               <FormControl>
                 <Input {...field} isError={!!form.formState.errors.name} />
               </FormControl>

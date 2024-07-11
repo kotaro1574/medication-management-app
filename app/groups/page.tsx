@@ -38,8 +38,8 @@ export default async function GroupsPage() {
 
   return (
     <section className="px-4 py-[52px]">
-      <h2 className="text-xl text-[#C2B37F]">グループ一覧</h2>
-      <div className="pt-[60px]">
+      <h2 className="mb-[60px] text-xl text-[#C2B37F]">グループ一覧</h2>
+      <div>
         <h3 className="text-base">施設名</h3>
         <div className="pt-[34px]">
           {groups.map((group) => (
