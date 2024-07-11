@@ -22,8 +22,8 @@ export default async function CreateGroupPage() {
     return <div>error</div>
   }
   return (
-    <section className="px-4 py-[60px]">
-      <h1>Create Group</h1>
+    <section className="px-4 py-[52px]">
+      <h2 className="mb-[60px] text-xl text-[#C2B37F]">グループ追加</h2>
       <CreateGroupForm facilityId={profile.facility_id} />
     </section>
   )
