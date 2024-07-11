@@ -11,9 +11,9 @@ type Props = {
 
 export function GroupItem({ group }: Props) {
   return (
-    <div className="flex items-center justify-between">
+    <div className="mb-[26px] flex items-center justify-between border-b-[0.5px] border-[#A4A4A4] pb-[14px]">
       <div>{group.name}</div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-4">
         <Link href={`/groups/${group.id}`}>
           <Icons.edit />
         </Link>

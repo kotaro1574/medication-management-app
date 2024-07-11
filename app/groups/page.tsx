@@ -37,15 +37,18 @@ export default async function GroupsPage() {
   }
 
   return (
-    <section className="px-4 py-[60px]">
-      <h1>Groups</h1>
-      <div>
-        {groups.map((group) => (
-          <GroupItem key={group.id} group={group} />
-        ))}
+    <section className="px-4 py-[52px]">
+      <h2 className="text-xl text-[#C2B37F]">グループ一覧</h2>
+      <div className="pt-[60px]">
+        <h3 className="text-base">施設名</h3>
+        <div className="pt-[34px]">
+          {groups.map((group) => (
+            <GroupItem key={group.id} group={group} />
+          ))}
+        </div>
       </div>
       <Link
-        className={`${buttonVariants()} mt-4 block w-full`}
+        className={`${buttonVariants()} mt-[6px] block w-full`}
         href="/groups/create"
       >
         追加
