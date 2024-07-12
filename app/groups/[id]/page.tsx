@@ -20,8 +20,8 @@ export default async function EditGroupPage({
   }
 
   return (
-    <section className="px-4 py-[60px]">
-      <h1>Edit Group</h1>
+    <section className="px-4 py-[52px]">
+      <h2 className="mb-[60px] text-xl text-[#C2B37F]">グループ編集</h2>
       <UpdateGroupForm group={group} />
     </section>
   )

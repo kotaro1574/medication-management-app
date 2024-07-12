@@ -53,7 +53,7 @@ export function SiteDrawer({ profileName, trigger }: Props) {
       <DrawerContent className="left-auto right-0 top-0 mt-0 h-screen w-3/4 rounded-none">
         <div className="mx-auto w-full">
           <DrawerHeader>
-            <div className="bg-[url('/bg-hamburger.png')] px-4 pb-[14px] pt-[183px]">
+            <div className="bg-[url('/bg-hamburger.png')] bg-cover bg-no-repeat px-4 pb-[14px] pt-[183px]">
               <DrawerTitle className="mb-2 text-[20px] font-semibold">
                 <Link href="/" passHref onClick={handleLinkClick}>
                   {profileName}
