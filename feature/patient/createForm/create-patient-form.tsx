@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { createDrug } from "@/actions/drug/create-drug"
 import { createPatient } from "@/actions/patients/create-patient"
@@ -23,8 +23,8 @@ export function CreatePatientForm({
 }: {
   currentUserName: string
 }) {
-  const [loading, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
   const form = useForm<z.infer<typeof createPatientFormSchema>>({
@@ -44,7 +44,7 @@ export function CreatePatientForm({
     resolver: zodResolver(createPatientFormSchema),
   })
 
-  const onSubmit = ({
+  const onSubmit = async ({
     faceImages,
     lastName,
     firstName,
@@ -57,54 +57,58 @@ export function CreatePatientForm({
     drugImages,
     gender,
   }: z.infer<typeof createPatientFormSchema>) => {
-    if (!faceImages || faceImages.length === 0) return
-    const formData = new FormData()
-    faceImages.forEach((file) => {
-      formData.append("faceImages", file)
-    })
+    setIsLoading(true)
+    try {
+      const formData = new FormData()
+      faceImages.forEach((file) => {
+        formData.append("faceImages", file)
+      })
 
-    const birthday = genBirthdayText(era, year, month, day)
-    startTransition(() => {
-      ;(async () => {
-        const patientResponse = await createPatient({
-          formData,
-          firstName,
-          lastName,
-          birthday,
-          careLevel,
-          groupId,
-          gender,
+      const birthday = genBirthdayText(era, year, month, day)
+
+      const patientResponse = await createPatient({
+        formData,
+        firstName,
+        lastName,
+        birthday,
+        careLevel,
+        groupId,
+        gender,
+      })
+
+      if (patientResponse.success && drugImages.length > 0) {
+        const drugImageIds = await drugImagesUpload(drugImages)
+
+        const drugResponse = await createDrug({
+          drugImageIds,
+          patientId: patientResponse.patientId,
         })
 
-        if (patientResponse.success && drugImages.length > 0) {
-          // クライアントから画像ファイルを直接アップロード(https://vercel.com/guides/how-to-bypass-vercel-body-size-limit-serverless-functions)
-          const drugImageIds = await drugImagesUpload(drugImages)
-
-          const drugResponse = await createDrug({
-            drugImageIds,
-            patientId: patientResponse.patientId,
-          })
-
-          if (drugResponse.success) {
-            setError(null)
-            router.push("/patients")
-            toast({
-              title: patientResponse.message,
-            })
-          } else {
-            setError(drugResponse.error)
-          }
-        } else if (patientResponse.success) {
+        if (drugResponse.success) {
           setError(null)
           router.push("/patients")
           toast({
             title: patientResponse.message,
           })
         } else {
-          setError(patientResponse.error)
+          throw new Error(drugResponse.error)
         }
-      })()
-    })
+      } else if (patientResponse.success) {
+        setError(null)
+        router.push("/patients")
+        toast({
+          title: patientResponse.message,
+        })
+      } else {
+        throw new Error(patientResponse.error)
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message)
+      }
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -112,20 +116,14 @@ export function CreatePatientForm({
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
         <PatientInfoFormField form={form} />
         <PatientFaceImagesFormField form={form} />
-        {/* <div className="space-y-4">
-          <h2 className="text-[20px] text-[#C2B37F]">アラートタイマー</h2>
-          <Button variant="secondary" size="secondary" className="block w-full">
-            アラートタイマー追加
-          </Button>
-        </div> */}
         <PatientDrugFormField
-          loading={loading}
+          loading={isLoading}
           form={form}
           currentUserName={currentUserName}
         />
         <div>
-          <Button disabled={loading} className="block w-full">
-            {loading ? "登録中..." : "登録"}
+          <Button disabled={isLoading} className="block w-full">
+            {isLoading ? "登録中..." : "登録"}
           </Button>
         </div>
       </form>
