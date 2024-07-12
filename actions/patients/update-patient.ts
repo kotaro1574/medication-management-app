@@ -8,7 +8,6 @@ import {
   IndexFaces,
   deleteFace,
   deleteImage,
-  drugImagesUpload,
   uploadFaceImage,
 } from "@/lib/aws/utils"
 import { createClient } from "@/lib/supabase/server"
@@ -121,26 +120,6 @@ async function handleFaceImages(
   }
 }
 
-async function handleDrugImages(
-  supabase: SupabaseClient<Database>,
-  patientId: string,
-  userId: string,
-  drugImages: File[]
-): Promise<void> {
-  const drugImageIds = await drugImagesUpload(drugImages)
-  const { error } = await supabase.from("drugs").insert(
-    drugImageIds.map((drugImageId) => ({
-      patient_id: patientId,
-      image_id: drugImageId,
-      user_id: userId,
-    }))
-  )
-  if (error) {
-    await deleteImage(drugImageIds, process.env.DRUGS_BUCKET ?? "")
-    throw new Error(`服薬画像の挿入時にエラーが発生しました: ${error.message}`)
-  }
-}
-
 async function deleteDrugs(
   supabase: SupabaseClient<Database>,
   deleteDrugIds: string[]
@@ -180,7 +159,6 @@ export async function updatePatient({
 }: Props): Promise<ActionResult> {
   try {
     const faceImages = formData.getAll("faceImages") as File[]
-    const drugImages = formData.getAll("drugImages") as File[]
 
     const supabase = createClient()
     const userId = await getUser(supabase)
@@ -198,10 +176,6 @@ export async function updatePatient({
 
     if (faceImages.length > 0) {
       await handleFaceImages(supabase, patientId, faceImages)
-    }
-
-    if (drugImages.length > 0) {
-      await handleDrugImages(supabase, patientId, userId, drugImages)
     }
 
     if (deleteDrugIds.length > 0) {
