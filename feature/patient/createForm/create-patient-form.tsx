@@ -23,7 +23,6 @@ export function CreatePatientForm({
 }: {
   currentUserName: string
 }) {
-  const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
@@ -77,6 +76,7 @@ export function CreatePatientForm({
       })
 
       if (patientResponse.success && drugImages.length > 0) {
+        // クライアントから画像ファイルを直接アップロード(https://vercel.com/guides/how-to-bypass-vercel-body-size-limit-serverless-functions)
         const drugImageIds = await drugImagesUpload(drugImages)
 
         const drugResponse = await createDrug({
@@ -85,7 +85,6 @@ export function CreatePatientForm({
         })
 
         if (drugResponse.success) {
-          setError(null)
           router.push("/patients")
           toast({
             title: patientResponse.message,
@@ -94,7 +93,6 @@ export function CreatePatientForm({
           throw new Error(drugResponse.error)
         }
       } else if (patientResponse.success) {
-        setError(null)
         router.push("/patients")
         toast({
           title: patientResponse.message,
@@ -104,7 +102,10 @@ export function CreatePatientForm({
       }
     } catch (error) {
       if (error instanceof Error) {
-        setError(error.message)
+        toast({
+          title: error.message,
+          variant: "destructive",
+        })
       }
     } finally {
       setIsLoading(false)
