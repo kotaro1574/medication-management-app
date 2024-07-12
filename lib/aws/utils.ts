@@ -1,11 +1,10 @@
+import { getPresignedUrl } from "@/actions/s3/get-presigned-url"
 import {
   DeleteFacesCommand,
   IndexFacesCommand,
   SearchFacesByImageCommand,
 } from "@aws-sdk/client-rekognition"
 import { DeleteObjectCommand } from "@aws-sdk/client-s3"
-import { createPresignedPost } from "@aws-sdk/s3-presigned-post"
-import { v4 as uuidv4 } from "uuid"
 
 import { rekognitionClient, s3Client } from "@/lib/aws/aws-clients"
 
@@ -101,23 +100,6 @@ export async function deleteImage(faceImageIds: string[], bucket: string) {
   }
 }
 
-// 画像をS3にアップロードするためのプリサインドURLを取得する関数
-export async function getPresignedUrl(fileType: string, bucket: string) {
-  const key = uuidv4()
-
-  const { url, fields } = await createPresignedPost(s3Client, {
-    Bucket: bucket,
-    Key: key,
-    Conditions: [
-      ["content-length-range", 0, 104857600], // 最大10MB
-      ["starts-with", "$Content-Type", fileType],
-    ],
-    Fields: {
-      "Content-Type": fileType,
-    },
-  })
-  return { url, fields, key }
-}
 // 顔画像をS3にアップロードする関数
 export async function uploadFaceImage(faceImages: File[]): Promise<string[]> {
   const imageIds: string[] = new Array(faceImages.length).fill("")
@@ -161,7 +143,10 @@ export async function drugImagesUpload(drugImages: File[]): Promise<string[]> {
       url: drugUrl,
       fields: drugFields,
       key: imageId,
-    } = await getPresignedUrl(drugImage.type, process.env.DRUGS_BUCKET ?? "")
+    } = await getPresignedUrl(
+      drugImage.type,
+      process.env.NEXT_PUBLIC_DRUGS_BUCKET ?? ""
+    )
 
     const drugFormData = new FormData()
     Object.entries(drugFields).forEach(([key, value]) => {
