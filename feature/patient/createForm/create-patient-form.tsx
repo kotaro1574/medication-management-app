@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
+import { createDrug } from "@/actions/drug/create-drug"
 import { createPatient } from "@/actions/patients/create-patient"
 import { PatientDrugFormField } from "@/feature/patient/createForm/field/drugField/patient-drug-form-field"
 import { PatientFaceImagesFormField } from "@/feature/patient/createForm/field/faceImagesField/patient-face-images-form-field"
@@ -11,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { drugImagesUpload } from "@/lib/aws/utils"
 import { genBirthdayText } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
@@ -61,14 +63,10 @@ export function CreatePatientForm({
       formData.append("faceImages", file)
     })
 
-    drugImages.forEach((file) => {
-      formData.append("drugImages", file)
-    })
-
     const birthday = genBirthdayText(era, year, month, day)
     startTransition(() => {
       ;(async () => {
-        const response = await createPatient({
+        const patientResponse = await createPatient({
           formData,
           firstName,
           lastName,
@@ -77,14 +75,33 @@ export function CreatePatientForm({
           groupId,
           gender,
         })
-        if (response.success) {
+
+        if (patientResponse.success && drugImages.length > 0) {
+          // クライアントから画像ファイルを直接アップロード(https://vercel.com/guides/how-to-bypass-vercel-body-size-limit-serverless-functions)
+          const drugImageIds = await drugImagesUpload(drugImages)
+
+          const drugResponse = await createDrug({
+            drugImageIds,
+            patientId: patientResponse.patientId,
+          })
+
+          if (drugResponse.success) {
+            setError(null)
+            router.push("/patients")
+            toast({
+              title: patientResponse.message,
+            })
+          } else {
+            setError(drugResponse.error)
+          }
+        } else if (patientResponse.success) {
           setError(null)
           router.push("/patients")
           toast({
-            title: response.message,
+            title: patientResponse.message,
           })
         } else {
-          setError(response.error)
+          setError(patientResponse.error)
         }
       })()
     })
