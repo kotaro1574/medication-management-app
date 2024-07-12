@@ -3,9 +3,8 @@
 import { revalidatePath } from "next/cache"
 import { SupabaseClient } from "@supabase/supabase-js"
 
-import { ActionResult } from "@/types/action"
 import { Database } from "@/types/schema.gen"
-import { IndexFaces, drugImagesUpload, uploadFaceImage } from "@/lib/aws/utils"
+import { IndexFaces, uploadFaceImage } from "@/lib/aws/utils"
 import { createClient } from "@/lib/supabase/server"
 
 type Props = {
@@ -78,23 +77,16 @@ async function insertFaces(
   }
 }
 
-async function insertDrugs(
-  supabase: SupabaseClient<Database>,
-  drugImageIds: string[],
-  patientId: string,
-  userId: string
-): Promise<void> {
-  const { error } = await supabase.from("drugs").insert(
-    drugImageIds.map((drugImageId) => ({
-      patient_id: patientId,
-      image_id: drugImageId,
-      user_id: userId,
-    }))
-  )
-  if (error) {
-    throw new Error(`服薬画像の挿入時にエラーが発生しました: ${error.message}`)
-  }
-}
+type Result =
+  | {
+      success: true
+      message: string
+      patientId: string
+    }
+  | {
+      success: false
+      error: string
+    }
 
 export async function createPatient({
   formData,
@@ -104,10 +96,9 @@ export async function createPatient({
   careLevel,
   groupId,
   gender,
-}: Props): Promise<ActionResult> {
+}: Props): Promise<Result> {
   try {
     const faceImages = formData.getAll("faceImages") as File[]
-    const drugImages = formData.getAll("drugImages") as File[]
 
     const faceImageIds = await uploadFaceImage(faceImages)
     const faces = await IndexFaces(faceImageIds, process.env.FACES_BUCKET ?? "")
@@ -131,16 +122,13 @@ export async function createPatient({
 
     await insertFaces(supabase, faces, patientId)
 
-    if (drugImages.length > 0) {
-      const drugImageIds = await drugImagesUpload(drugImages)
-      await insertDrugs(supabase, drugImageIds, patientId, userId)
-    }
-
     revalidatePath("/patients", "page")
+    return { success: true, message: "患者が作成されました", patientId }
   } catch (error) {
     if (error instanceof Error) {
       return { success: false, error: error.message }
     }
+    // その他のエラーケースに対応
+    return { success: false, error: "不明なエラーが発生しました。" }
   }
-  return { success: true, message: "患者が作成されました" }
 }
