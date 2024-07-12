@@ -2,12 +2,14 @@
 
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
+import { createDrug } from "@/actions/drug/create-drug"
 import { updatePatient } from "@/actions/patients/update-patient"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { Database } from "@/types/schema.gen"
+import { drugImagesUpload } from "@/lib/aws/utils"
 import { extractBirthdayInfo, genBirthdayText } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
@@ -36,8 +38,7 @@ export function UpdatePatientForm({
   faceImageIds,
   drugImageIds,
 }: Props) {
-  const [loading, startTransaction] = useTransition()
-  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
 
@@ -60,7 +61,7 @@ export function UpdatePatientForm({
     resolver: zodResolver(updatePatientFormSchema),
   })
 
-  const onSubmit = ({
+  const onSubmit = async ({
     faceImages,
     lastName,
     firstName,
@@ -74,58 +75,79 @@ export function UpdatePatientForm({
     gender,
     deleteDrugIds,
   }: z.infer<typeof updatePatientFormSchema>) => {
-    const formData = new FormData()
-    faceImages.forEach((file) => {
-      formData.append("faceImages", file)
-    })
+    setIsLoading(true)
+    try {
+      const formData = new FormData()
+      faceImages.forEach((file) => {
+        formData.append("faceImages", file)
+      })
 
-    drugImages.forEach((file) => {
-      formData.append("drugImages", file)
-    })
+      const birthday = genBirthdayText(era, year, month, day)
 
-    const birthday = genBirthdayText(era, year, month, day)
-    startTransaction(() => {
-      ;(async () => {
-        const response = await updatePatient({
+      const patientResponse = await updatePatient({
+        patientId: patient.id,
+        formData,
+        firstName,
+        lastName,
+        birthday,
+        careLevel,
+        groupId,
+        gender,
+        deleteDrugIds,
+      })
+
+      if (patientResponse.success && drugImages.length > 0) {
+        // クライアントから画像ファイルを直接アップロード(https://vercel.com/guides/how-to-bypass-vercel-body-size-limit-serverless-functions)
+        const drugImageIds = await drugImagesUpload(drugImages)
+
+        const drugResponse = await createDrug({
+          drugImageIds,
           patientId: patient.id,
-          formData,
-          firstName,
-          lastName,
-          birthday,
-          careLevel,
-          groupId,
-          gender,
-          deleteDrugIds,
         })
-        if (response.success) {
-          setError(null)
+
+        if (drugResponse.success) {
           router.push("/patients")
           toast({
-            title: response.message,
+            title: patientResponse.message,
           })
         } else {
-          setError(response.error)
+          throw new Error(drugResponse.error)
         }
-      })()
-    })
+      } else if (patientResponse.success) {
+        router.push("/patients")
+        toast({
+          title: patientResponse.message,
+        })
+      } else {
+        throw new Error(patientResponse.error)
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          title: error.message,
+          variant: "destructive",
+        })
+      }
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
     <div>
-      <div>{error}</div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
           <PatientInfoFormField form={form} />
           <PatientFaceImagesFormField form={form} faceUrl={faceUrl} />
           <PatientDrugFormField
             registeredDrugs={registeredDrugs}
-            loading={loading}
+            loading={isLoading}
             form={form}
             currentUserName={currentUserName}
           />
           <div>
-            <Button disabled={loading} className="block w-full">
-              {loading ? "更新中..." : "更新"}
+            <Button disabled={isLoading} className="block w-full">
+              {isLoading ? "更新中..." : "更新"}
             </Button>
           </div>
         </form>
@@ -136,7 +158,7 @@ export function UpdatePatientForm({
         drugImageIds={drugImageIds}
         trigger={
           <Button
-            disabled={loading}
+            disabled={isLoading}
             className="mt-10 block w-full"
             variant={"ghost"}
           >
