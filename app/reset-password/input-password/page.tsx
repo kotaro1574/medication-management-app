@@ -56,8 +56,9 @@ export default function InputPasswordForReset() {
         throw error
       }
 
-      router.push("/login")
-      toast({ description: "パスワードを更新しました" })
+      router.push("/")
+      router.refresh()
+      toast({ title: "パスワードを更新し、ログインしました！" })
     } catch (error) {
       console.log(error)
     }
