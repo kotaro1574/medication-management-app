@@ -15,7 +15,7 @@ export default async function EditUserPage() {
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("name")
+    .select("id, name")
     .eq("id", user.id)
     .single()
 
@@ -25,7 +25,7 @@ export default async function EditUserPage() {
   return (
     <section className="px-4 py-[52px]">
       <h2 className="mb-[60px] text-xl text-[#C2B37F]">アカウント情報編集</h2>
-      <EditUserForm name={profile.name} />
+      <EditUserForm profile={profile} />
     </section>
   )
 }

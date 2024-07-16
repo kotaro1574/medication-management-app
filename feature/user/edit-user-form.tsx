@@ -2,10 +2,12 @@
 
 import { useTransition } from "react"
 import { useRouter } from "next/navigation"
+import { updateUser } from "@/actions/user/update-user"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { Database } from "@/types/schema.gen"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -22,22 +24,34 @@ const schema = z.object({
 })
 
 type Props = {
-  name: string
+  profile: Pick<Database["public"]["Tables"]["profiles"]["Row"], "id" | "name">
 }
 
-export function EditUserForm({ name }: Props) {
+export function EditUserForm({ profile }: Props) {
   const [loading, startTransition] = useTransition()
   const router = useRouter()
   const { toast } = useToast()
 
   const form = useForm<z.infer<typeof schema>>({
     defaultValues: {
-      name,
+      name: profile.name,
     },
     resolver: zodResolver(schema),
   })
 
-  const onSubmit = ({ name }: z.infer<typeof schema>) => {}
+  const onSubmit = ({ name }: z.infer<typeof schema>) => {
+    startTransition(() => {
+      ;(async () => {
+        const response = await updateUser({ id: profile.id, name })
+        if (response.success) {
+          toast({ title: response.message })
+          router.push("/user")
+        } else {
+          toast({ title: response.error, variant: "destructive" })
+        }
+      })()
+    })
+  }
 
   return (
     <Form {...form}>
