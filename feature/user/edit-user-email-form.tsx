@@ -2,6 +2,7 @@
 
 import { useTransition } from "react"
 import { useRouter } from "next/navigation"
+import { updateUserEmail } from "@/actions/user/update-user-email"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -21,19 +22,14 @@ const schema = z.object({
   email: z.string().email({ message: "メールアドレスを入力してください" }),
 })
 
-type Props = {
-  id: string
-  email: string
-}
-
-export function EditUserEmailForm({ id, email }: Props) {
+export function EditUserEmailForm() {
   const [loading, startTransition] = useTransition()
   const router = useRouter()
   const { toast } = useToast()
 
   const form = useForm<z.infer<typeof schema>>({
     defaultValues: {
-      email,
+      email: "",
     },
     resolver: zodResolver(schema),
   })
@@ -41,13 +37,13 @@ export function EditUserEmailForm({ id, email }: Props) {
   const onSubmit = ({ email }: z.infer<typeof schema>) => {
     startTransition(() => {
       ;(async () => {
-        // const response = await updateUser({ id, email })
-        // if (response.success) {
-        // toast({ title: response.message })
-        // router.push("/user")
-        // } else {
-        // toast({ title: response.error, variant: "destructive" })
-        // }
+        const response = await updateUserEmail({ email })
+        if (response.success) {
+          toast({ title: response.message })
+          router.push("/user")
+        } else {
+          toast({ title: response.error, variant: "destructive" })
+        }
       })()
     })
   }
@@ -72,7 +68,7 @@ export function EditUserEmailForm({ id, email }: Props) {
           )}
         />
         <Button type="submit" disabled={loading} className="block w-full">
-          {loading ? "更新中..." : "更新"}
+          {loading ? "送信中..." : "送信"}
         </Button>
       </form>
     </Form>
