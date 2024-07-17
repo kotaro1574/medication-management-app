@@ -10,7 +10,10 @@ type Props = {
 export async function updateUserEmail({ email }: Props): Promise<ActionResult> {
   const supabase = createClient()
 
-  const { error } = await supabase.auth.updateUser({ email })
+  const { error } = await supabase.auth.updateUser(
+    { email },
+    { emailRedirectTo: "/user" }
+  )
 
   if (error) {
     return { success: false, error: error.message }
