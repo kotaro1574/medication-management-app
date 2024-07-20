@@ -57,7 +57,7 @@ export function EditUserEmailForm() {
         <div className="mx-auto max-w-[255px] space-y-4">
           <Icons.successCheck className="mx-auto size-20" />
           <p className="max-w-[255px] font-semibold">
-            メールアドレス変更のURLをご入力のメールアドレスに送信しました。
+            メールアドレス変更用のURLをご入力のメールアドレスに送信しました。
             <br />
             記載された内容に従って、メールアドレス変更を行なってください。
           </p>

@@ -12,7 +12,7 @@ export async function updateUserEmail({ email }: Props): Promise<ActionResult> {
 
   const { error } = await supabase.auth.updateUser(
     { email },
-    { emailRedirectTo: "/user" }
+    { emailRedirectTo: process.env.NEXT_PUBLIC_URL + "/user" }
   )
 
   if (error) {
