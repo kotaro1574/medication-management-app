@@ -1,8 +1,7 @@
-import Link from "next/link"
+import { EditUserForm } from "@/feature/user/edit-user-form"
 import { EmailChangeConfirmToast } from "@/feature/user/email-change-confirm-toast"
 
 import { createClient } from "@/lib/supabase/server"
-import { Icons } from "@/components/ui/icons"
 
 export default async function UserPage() {
   const supabase = createClient()
@@ -17,7 +16,7 @@ export default async function UserPage() {
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("name")
+    .select("id, name")
     .eq("id", user.id)
     .single()
 
@@ -30,7 +29,8 @@ export default async function UserPage() {
     <>
       <EmailChangeConfirmToast />
       <section className="min-h-screen bg-[#F5F5F5] px-4 pb-8 pt-11">
-        <h1 className="text-[20px] text-[#C2B37F]">アカウント情報</h1>
+        <EditUserForm profile={profile} email={user.email ?? ""} />
+        {/* <h1 className="text-[20px] text-[#C2B37F]">アカウント情報</h1>
         <div className="mt-4 space-y-4 rounded-2xl bg-white p-4">
           <div className="flex items-end justify-between">
             <div className="space-y-px">
@@ -56,7 +56,7 @@ export default async function UserPage() {
               </div>
             </Link>
           </div>
-        </div>
+        </div> */}
       </section>
     </>
   )
