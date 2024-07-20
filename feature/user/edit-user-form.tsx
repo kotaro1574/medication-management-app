@@ -2,11 +2,12 @@
 
 import { useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { createGroup } from "@/actions/groups/create-group"
+import { updateUser } from "@/actions/user/update-user"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { Database } from "@/types/schema.gen"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -19,16 +20,21 @@ import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 
 const schema = z.object({
-  name: z.string().min(1, { message: "グループ名を入力してください" }),
+  name: z.string().min(1, { message: "名前を入力してください" }),
 })
 
-export function CreateGroupForm({ facilityId }: { facilityId: string }) {
+type Props = {
+  profile: Pick<Database["public"]["Tables"]["profiles"]["Row"], "id" | "name">
+}
+
+export function EditUserForm({ profile }: Props) {
   const [loading, startTransition] = useTransition()
   const router = useRouter()
   const { toast } = useToast()
+
   const form = useForm<z.infer<typeof schema>>({
     defaultValues: {
-      name: "",
+      name: profile.name,
     },
     resolver: zodResolver(schema),
   })
@@ -36,16 +42,17 @@ export function CreateGroupForm({ facilityId }: { facilityId: string }) {
   const onSubmit = ({ name }: z.infer<typeof schema>) => {
     startTransition(() => {
       ;(async () => {
-        const response = await createGroup({ name, facilityId })
+        const response = await updateUser({ id: profile.id, name })
         if (response.success) {
           toast({ title: response.message })
-          router.push("/groups")
+          router.push("/user")
         } else {
-          form.setError("name", { message: response.error })
+          toast({ title: response.error, variant: "destructive" })
         }
       })()
     })
   }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -65,11 +72,9 @@ export function CreateGroupForm({ facilityId }: { facilityId: string }) {
             </FormItem>
           )}
         />
-        <div>
-          <Button disabled={loading} className="block w-full">
-            {loading ? "登録中..." : "登録"}
-          </Button>
-        </div>
+        <Button type="submit" disabled={loading} className="block w-full">
+          {loading ? "更新中..." : "更新"}
+        </Button>
       </form>
     </Form>
   )

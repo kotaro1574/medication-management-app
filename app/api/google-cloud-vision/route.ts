@@ -14,8 +14,6 @@ export async function POST(req: NextRequest) {
     })
     const detectedText = result.textAnnotations?.[0]?.description
 
-    console.log(detectedText)
-
     return NextResponse.json(
       { response: detectedText || "Text could not be detected." },
       { status: 200 }
