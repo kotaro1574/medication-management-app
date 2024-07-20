@@ -17,7 +17,6 @@ export function EmailChangeConfirmToast() {
 
   useEffect(() => {
     if (code && mounted) {
-      console.log(code)
       toast({ title: "メールアドレスを更新しました" })
     }
   }, [code, mounted, toast])
