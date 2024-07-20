@@ -25,7 +25,7 @@ export default async function EditUserPage() {
   return (
     <section className="px-4 py-[52px]">
       <h2 className="mb-[60px] text-xl text-[#C2B37F]">アカウント情報編集</h2>
-      <EditUserForm profile={profile} />
+      {/* <EditUserForm profile={profile} /> */}
     </section>
   )
 }
