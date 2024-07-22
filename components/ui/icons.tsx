@@ -1,6 +1,7 @@
 import {
   LucideProps,
   Moon,
+  Settings,
   SunMedium,
   Twitter,
   type Icon as LucideIcon,
@@ -11,6 +12,7 @@ export type Icon = LucideIcon
 export const Icons = {
   sun: SunMedium,
   moon: Moon,
+  settings: Settings,
   edit: (props: LucideProps) => (
     <svg
       width="24"
