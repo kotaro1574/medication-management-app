@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidatePath } from "next/cache"
 import { SupabaseClient } from "@supabase/supabase-js"
 
 import { ActionResult } from "@/types/action"
@@ -18,6 +19,7 @@ type Props = {
   firstName: string
   birthday: string
   careLevel: Database["public"]["Enums"]["care_level_enum"]
+  disabilityClassification: Database["public"]["Enums"]["disability_classification_enum"]
   groupId: string
   gender: Database["public"]["Enums"]["gender_enum"]
   patientId: string
@@ -153,6 +155,7 @@ export async function updatePatient({
   firstName,
   birthday,
   careLevel,
+  disabilityClassification,
   groupId,
   gender,
   deleteDrugIds,
@@ -169,6 +172,7 @@ export async function updatePatient({
       first_name: firstName,
       birthday,
       care_level: careLevel,
+      disability_classification: disabilityClassification,
       group_id: groupId,
       facility_id: facilityId,
       gender,
@@ -181,6 +185,10 @@ export async function updatePatient({
     if (deleteDrugIds.length > 0) {
       await deleteDrugs(supabase, deleteDrugIds)
     }
+
+    revalidatePath("/patients", "page")
+    revalidatePath("/patients/[id]", "page")
+    revalidatePath("/patients/[id]/edit", "page")
   } catch (error) {
     if (error instanceof Error) {
       return { success: false, error: error.message }
