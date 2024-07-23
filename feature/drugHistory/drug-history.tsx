@@ -1,12 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { DrugHistoryItem } from "@/feature/drugHistory/drug-history-item"
-import { addDays, format, startOfWeek } from "date-fns"
+import { addDays, format, startOfWeek, subMonths } from "date-fns"
 import { ja } from "date-fns/locale"
 
 import { Database } from "@/types/schema.gen"
-import { createClient } from "@/lib/supabase/client"
 import { Icons } from "@/components/ui/icons"
 
 export type drugHistoryWithName =
@@ -16,16 +15,15 @@ export type drugHistoryWithName =
 
 type Props = {
   drugHistoriesWithNames: drugHistoryWithName[]
-  id: string
 }
 
-export function DrugHistory({ drugHistoriesWithNames, id }: Props) {
-  const [drugHistories, setDrugHistories] = useState(drugHistoriesWithNames)
+export function DrugHistory({ drugHistoriesWithNames }: Props) {
   const [currentWeekStartDate, setCurrentWeekStartDate] = useState(
     startOfWeek(new Date(), { locale: ja })
   )
 
-  const supabase = createClient()
+  const today = new Date()
+  const threeMonthsAgo = startOfWeek(subMonths(new Date(), 3), { locale: ja })
 
   const handlePrevWeek = () => {
     setCurrentWeekStartDate(addDays(currentWeekStartDate, -7))
@@ -35,47 +33,8 @@ export function DrugHistory({ drugHistoriesWithNames, id }: Props) {
     setCurrentWeekStartDate(addDays(currentWeekStartDate, 7))
   }
 
-  useEffect(() => {
-    const handleGetDrugHistories = async () => {
-      const sunday = currentWeekStartDate
-      sunday.setHours(0, 0, 0, 0)
-      const saturday = addDays(currentWeekStartDate, 6)
-      saturday.setHours(23, 59, 59, 999)
-
-      const { data: drugHistories, error: drugError } = await supabase
-        .from("drug_histories")
-        .select("*")
-        .eq("patient_id", id)
-        .gte("created_at", sunday.toISOString())
-        .lte("created_at", saturday.toISOString())
-
-      if (drugError) {
-        return console.error(drugError)
-      }
-
-      const userIds = drugHistories.map((dh) => dh.user_id)
-      const { data: profiles, error: profileError } = await supabase
-        .from("profiles")
-        .select("id, name")
-        .in("id", userIds)
-
-      if (profileError) {
-        return console.error(profileError)
-      }
-
-      const drugHistoriesWithNames = drugHistories.map((dh) => {
-        const profile = profiles.find((p) => p.id === dh.user_id)
-        return { ...dh, user_name: profile?.name ?? "" }
-      })
-
-      setDrugHistories(drugHistoriesWithNames ?? [])
-    }
-
-    handleGetDrugHistories()
-  }, [currentWeekStartDate, id, supabase])
-
   const filterDrugHistoriesByDate = (date: Date) => {
-    return drugHistories.filter((drugHistory) => {
+    return drugHistoriesWithNames.filter((drugHistory) => {
       const historyDate = new Date(drugHistory.created_at)
       return (
         historyDate.getDate() === date.getDate() &&
@@ -111,15 +70,23 @@ export function DrugHistory({ drugHistoriesWithNames, id }: Props) {
         ))}
       </div>
       <div className="mx-auto flex items-center justify-center gap-4 px-4 pt-6">
-        <button onClick={handlePrevWeek} className="text-xl">
-          <Icons.chevronLeft />
-        </button>
-        <span>
+        {currentWeekStartDate > threeMonthsAgo ? (
+          <button onClick={handlePrevWeek} className="text-xl">
+            <Icons.chevronLeft />
+          </button>
+        ) : (
+          <div className="size-[30px]" />
+        )}
+        <div className="w-full max-w-28 text-center">
           {weekRangeStart}〜{weekRangeEnd}
-        </span>
-        <button onClick={handleNextWeek} className="text-xl">
-          <Icons.chevronRight />
-        </button>
+        </div>
+        {addDays(currentWeekStartDate, 7) <= today ? (
+          <button onClick={handleNextWeek} className="text-xl">
+            <Icons.chevronRight />
+          </button>
+        ) : (
+          <div className="size-[30px]" />
+        )}
       </div>
     </div>
   )
