@@ -13,6 +13,7 @@ type Props = {
   firstName: string
   birthday: string
   careLevel: Database["public"]["Enums"]["care_level_enum"]
+  disabilityClassification: Database["public"]["Enums"]["disability_classification_enum"]
   groupId: string
   gender: Database["public"]["Enums"]["gender_enum"]
 }
@@ -94,6 +95,7 @@ export async function createPatient({
   firstName,
   birthday,
   careLevel,
+  disabilityClassification,
   groupId,
   gender,
 }: Props): Promise<Result> {
@@ -115,6 +117,7 @@ export async function createPatient({
       face_ids: faceIds,
       birthday,
       care_level: careLevel,
+      disability_classification: disabilityClassification,
       group_id: groupId,
       facility_id: facilityId,
       gender,

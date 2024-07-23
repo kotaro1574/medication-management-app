@@ -36,6 +36,7 @@ export function CreatePatientForm({
       month: "",
       day: "",
       careLevel: undefined,
+      disabilityClassification: undefined,
       groupId: "",
       gender: undefined,
       drugImages: [],
@@ -52,6 +53,7 @@ export function CreatePatientForm({
     month,
     day,
     careLevel,
+    disabilityClassification,
     groupId,
     drugImages,
     gender,
@@ -71,6 +73,7 @@ export function CreatePatientForm({
         lastName,
         birthday,
         careLevel,
+        disabilityClassification,
         groupId,
         gender,
       })
