@@ -5,7 +5,11 @@ import { DrugInfo } from "@/feature/drugHistory/drug-info"
 import { PatientAvatar } from "@/feature/patient/patient-avatar"
 
 import { createClient } from "@/lib/supabase/server"
-import { formatCareLevel, formatGender } from "@/lib/utils"
+import {
+  formatCareLevel,
+  formatDisabilityClassification,
+  formatGender,
+} from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 
 export default async function PatientPage({
@@ -116,7 +120,10 @@ export default async function PatientPage({
             </h2>
             <div>
               {patients.birthday} / {formatGender(patients.gender)} /{" "}
-              {formatCareLevel(patients.care_level)}
+              {formatCareLevel(patients.care_level)} /{" "}
+              {formatDisabilityClassification(
+                patients.disability_classification
+              )}
             </div>
           </div>
         </div>

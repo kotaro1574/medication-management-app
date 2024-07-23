@@ -180,6 +180,7 @@ export type Database = {
           birthday: string
           care_level: Database["public"]["Enums"]["care_level_enum"]
           created_at: string
+          disability_classification: Database["public"]["Enums"]["disability_classification_enum"]
           face_ids: string[]
           facility_id: string
           first_name: string
@@ -194,6 +195,7 @@ export type Database = {
           birthday: string
           care_level: Database["public"]["Enums"]["care_level_enum"]
           created_at?: string
+          disability_classification: Database["public"]["Enums"]["disability_classification_enum"]
           face_ids: string[]
           facility_id: string
           first_name: string
@@ -208,6 +210,7 @@ export type Database = {
           birthday?: string
           care_level?: Database["public"]["Enums"]["care_level_enum"]
           created_at?: string
+          disability_classification?: Database["public"]["Enums"]["disability_classification_enum"]
           face_ids?: string[]
           facility_id?: string
           first_name?: string
@@ -284,6 +287,14 @@ export type Database = {
         | "needs_nursing_care_3"
         | "needs_nursing_care_4"
         | "needs_nursing_care_5"
+      disability_classification_enum:
+        | "independence"
+        | "disability_level_1"
+        | "disability_level_2"
+        | "disability_level_3"
+        | "disability_level_4"
+        | "disability_level_5"
+        | "disability_level_6"
       gender_enum: "male" | "female"
     }
     CompositeTypes: {

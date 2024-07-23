@@ -115,6 +115,29 @@ export const formatCareLevel = (
   }
 }
 
+export const formatDisabilityClassification = (
+  classification: Database["public"]["Enums"]["disability_classification_enum"]
+) => {
+  switch (classification) {
+    case "independence":
+      return "自立"
+    case "disability_level_1":
+      return "障害区分1"
+    case "disability_level_2":
+      return "障害区分2"
+    case "disability_level_3":
+      return "障害区分3"
+    case "disability_level_4":
+      return "障害区分4"
+    case "disability_level_5":
+      return "障害区分5"
+    case "disability_level_6":
+      return "障害区分6"
+    default:
+      return "不明"
+  }
+}
+
 // 和暦を西暦に変換するマッピング
 const eraToGregorian: { [key: string]: number } = {
   M: 1868, // 明治
