@@ -60,18 +60,20 @@ export default async function PatientPage({
 
   const today = new Date()
 
-  const sunday = new Date(today.setDate(today.getDate() - today.getDay()))
-  sunday.setHours(0, 0, 0, 0) // 日付を0時0分0秒に設定
+  const threeMonthsAgo = new Date(today)
+  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3)
+  threeMonthsAgo.setHours(0, 0, 0, 0) // 時間を00:00:00に設定
 
-  const saturday = new Date(today.setDate(sunday.getDate() + 6))
-  saturday.setHours(23, 59, 59, 999) // 日付を23時59分59秒に設定
+  const dayOfWeek = threeMonthsAgo.getDay()
+  const daysToSunday = dayOfWeek === 0 ? 0 : dayOfWeek
+  threeMonthsAgo.setDate(threeMonthsAgo.getDate() - daysToSunday)
 
   const { data: drugHistories, error: drugHistoryError } = await supabase
     .from("drug_histories")
     .select("*")
     .eq("patient_id", params.id)
-    .gte("created_at", sunday.toISOString())
-    .lte("created_at", saturday.toISOString())
+    .gte("created_at", threeMonthsAgo.toISOString())
+    .lte("created_at", today.toISOString())
 
   if (drugHistoryError) {
     return (
@@ -128,10 +130,7 @@ export default async function PatientPage({
         </div>
       </div>
       <div className="space-y-[38px] px-4 py-8">
-        <DrugHistory
-          drugHistoriesWithNames={drugHistoriesWithNames}
-          id={params.id}
-        />
+        <DrugHistory drugHistoriesWithNames={drugHistoriesWithNames} />
         <DrugInfo drugs={drugWithUrls} />
       </div>
     </section>
