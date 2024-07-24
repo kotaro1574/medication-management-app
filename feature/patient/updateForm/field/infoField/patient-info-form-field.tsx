@@ -2,6 +2,7 @@
 
 import { GroupsSelect } from "@/feature/group/groups-select"
 import { CareLevelSelect } from "@/feature/patient/care-level-select"
+import { DisabilityClassificationSelect } from "@/feature/patient/disability-classification-select"
 import { GenderRadioGroup } from "@/feature/patient/gender-radio-group"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
@@ -95,6 +96,25 @@ export function PatientInfoFormField({
               {form.formState.errors.careLevel && (
                 <FormDescription>
                   {form.formState.errors.careLevel.message}
+                </FormDescription>
+              )}
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="disabilityClassification"
+          render={({ field }) => (
+            <FormItem className="max-w-[200px] space-y-0">
+              <FormLabel className="text-[11px]">障害区分</FormLabel>
+              <DisabilityClassificationSelect
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                isError={!!form.formState.errors.disabilityClassification}
+              />
+              {form.formState.errors.disabilityClassification && (
+                <FormDescription>
+                  {form.formState.errors.disabilityClassification.message}
                 </FormDescription>
               )}
             </FormItem>

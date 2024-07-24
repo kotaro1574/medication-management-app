@@ -49,7 +49,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           )}
         >
           <ToasterProvider>
-            <div className="relative flex min-h-screen flex-col">
+            <div className="relative mx-auto flex min-h-screen max-w-3xl flex-col bg-white shadow-lg">
               {profile && <SiteHeader profileName={profile?.name ?? ""} />}
               <div className="flex-1">{children}</div>
             </div>

@@ -21,6 +21,18 @@ export const updatePatientFormSchema = z.object({
     ],
     { message: "介護度を選択してください" }
   ),
+  disabilityClassification: z.enum(
+    [
+      "independence",
+      "disability_level_1",
+      "disability_level_2",
+      "disability_level_3",
+      "disability_level_4",
+      "disability_level_5",
+      "disability_level_6",
+    ],
+    { message: "障害区分を選択してください" }
+  ),
   groupId: z.string().min(1, { message: "グループを選択してください。" }),
   gender: z.enum(["male", "female"], { message: "性別を選択してください。" }),
   drugImages: z.array(z.custom<File>()),
