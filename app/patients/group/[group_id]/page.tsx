@@ -5,7 +5,11 @@ import { Database } from "@/types/schema.gen"
 import { createClient } from "@/lib/supabase/server"
 import { formatDate } from "@/lib/utils"
 
-export default async function PatientsPage() {
+export default async function PatientsGroupPage({
+  params,
+}: {
+  params: { group_id: string }
+}) {
   const today = new Date()
   const supabase = createClient()
   const {
@@ -39,6 +43,7 @@ export default async function PatientsPage() {
     .from("patients")
     .select("*")
     .eq("facility_id", profile.facility_id)
+    .eq("group_id", params.group_id)
     .range(0, 9)
 
   if (patientsError) {
@@ -87,6 +92,9 @@ export default async function PatientsPage() {
     })
   )
 
+  const currentGroup =
+    groups.find((group) => group.id === params.group_id)?.name ?? "全て"
+
   return (
     <section className="min-h-screen bg-[#F5F5F5]">
       <div className="mx-auto">
@@ -94,7 +102,7 @@ export default async function PatientsPage() {
           {formatDate(today, "M/d(EEE)")}
         </h2>
         <GroupTabs
-          currentGroup="全て"
+          currentGroup={currentGroup}
           patientsData={patientsData}
           groups={groups}
           userId={user.id}
