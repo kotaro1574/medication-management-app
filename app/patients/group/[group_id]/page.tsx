@@ -1,17 +1,24 @@
 import { getS3Data } from "@/actions/s3/get-s3-data"
 import { GroupTabs } from "@/feature/group/group-tabs"
 
-import { Database } from "@/types/schema.gen"
 import { createClient } from "@/lib/supabase/server"
 import { formatDate } from "@/lib/utils"
 
+const PAGE_SIZE = 2
+
 export default async function PatientsGroupPage({
   params,
+  searchParams,
 }: {
   params: { group_id: string }
+  searchParams?: {
+    page?: string
+  }
 }) {
   const today = new Date()
   const supabase = createClient()
+  const currentPage = Number(searchParams?.page ?? 1)
+
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -39,16 +46,22 @@ export default async function PatientsGroupPage({
     return <div>error</div>
   }
 
-  const { data: patients, error: patientsError } = await supabase
+  const {
+    data: patients,
+    error: patientsError,
+    count,
+  } = await supabase
     .from("patients")
-    .select("*")
+    .select("*", { count: "exact" })
     .eq("facility_id", profile.facility_id)
     .eq("group_id", params.group_id)
-    .range(0, 9)
+    .range((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE - 1)
 
   if (patientsError) {
     return <div>error</div>
   }
+
+  const totalPatients = count || 0
 
   const patientsData = await Promise.all(
     patients.map(async (patient) => {
@@ -102,6 +115,7 @@ export default async function PatientsGroupPage({
           {formatDate(today, "M/d(EEE)")}
         </h2>
         <GroupTabs
+          totalPatients={totalPatients}
           currentGroup={currentGroup}
           patientsData={patientsData}
           groups={groups}
