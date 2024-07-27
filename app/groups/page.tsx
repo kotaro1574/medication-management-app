@@ -1,11 +1,8 @@
 import Link from "next/link"
-import { DeleteGroupDialog } from "@/feature/group/delete-group-dialog"
 import { GroupItem } from "@/feature/group/group-item"
-import { Delete } from "lucide-react"
 
 import { createClient } from "@/lib/supabase/server"
 import { buttonVariants } from "@/components/ui/button"
-import { Icons } from "@/components/ui/icons"
 
 export default async function GroupsPage() {
   const supabase = createClient()
@@ -38,17 +35,27 @@ export default async function GroupsPage() {
 
   return (
     <section className="px-4 py-[52px]">
-      <h2 className="mb-[60px] text-xl text-[#C2B37F]">グループ一覧</h2>
+      <h2 className=" text-xl text-[#C2B37F]">グループ一覧</h2>
       <div>
-        <h3 className="text-base">施設名</h3>
-        <div className="pt-[34px]">
-          {groups.map((group) => (
-            <GroupItem key={group.id} group={group} />
-          ))}
-        </div>
+        {groups.length === 0 ? (
+          <p className="mt-4 text-sm text-[#A4A4A4]">
+            グループが登録されていません。
+          </p>
+        ) : (
+          <div className="mt-[60px]">
+            <h3 className="text-base">施設名</h3>
+            <div className="pt-[34px]">
+              {groups.map((group) => (
+                <GroupItem key={group.id} group={group} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
       <Link
-        className={`${buttonVariants()} mt-[6px] block w-full`}
+        className={`${buttonVariants()} ${
+          groups.length === 0 ? "mt-4" : "mt-[6px]"
+        } block w-full`}
         href="/groups/create"
       >
         追加

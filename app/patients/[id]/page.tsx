@@ -119,7 +119,9 @@ export default async function PatientPage({
               {patients.last_name} {patients.first_name}
             </h2>
             <div>
-              {patients.birthday} / {formatGender(patients.gender)} /{" "}
+              {patients.birthday} / {formatGender(patients.gender)}{" "}
+              <span className="hidden sm:inline">/ </span>
+              <br className="inline sm:hidden" />
               {formatCareLevel(patients.care_level)} /{" "}
               {formatDisabilityClassification(
                 patients.disability_classification
