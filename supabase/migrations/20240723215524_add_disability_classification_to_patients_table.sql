@@ -13,6 +13,15 @@ DO $$ BEGIN
     END IF;
 END $$;
 
--- テーブルの変更
+-- 新しい列をNULL許可で追加
 ALTER TABLE patients
-ADD COLUMN disability_classification disability_classification_enum NOT NULL;
+ADD COLUMN disability_classification disability_classification_enum;
+
+-- 既存のデータをデフォルト値でアップデート
+UPDATE patients
+SET disability_classification = 'independence'
+WHERE disability_classification IS NULL;
+
+-- NOT NULL制約を追加
+ALTER TABLE patients
+ALTER COLUMN disability_classification SET NOT NULL;
