@@ -39,7 +39,7 @@ export function GroupTabs({ items }: props) {
       <TabsList className="hidden-scrollbar overflow-x-scroll rounded-b-lg bg-white px-4 shadow-shadow">
         {items.map((item) => (
           <TabsTrigger key={`trigger-${item.value}`} value={item.value}>
-            <p className="line-clamp-1">{item.value}</p>
+            <p>{item.value}</p>
           </TabsTrigger>
         ))}
       </TabsList>
