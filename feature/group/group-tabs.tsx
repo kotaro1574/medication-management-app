@@ -92,7 +92,7 @@ export function GroupTabs({ items }: props) {
                   <Popover key={drugHistory.id}>
                     <PopoverTrigger>
                       <div className="text-center">
-                        <Icons.drugHistory />
+                        <Icons.drugHistory className="text-[#4ECB71]" />
                         <div className="mt-1 text-[11px]">
                           {formatDate(new Date(drugHistory.created_at), "H:mm")}
                         </div>

@@ -54,6 +54,7 @@ export async function patentsDrugRecognition({
     const { error } = await supabase.from("drug_histories").insert({
       patient_id: patent.id,
       user_id: user.id,
+      medication_auth_result: "success",
     })
 
     if (error) {
