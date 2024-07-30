@@ -138,6 +138,19 @@ export const formatDisabilityClassification = (
   }
 }
 
+export const getDrugHistoryColor = (
+  medicationAuthResult: Database["public"]["Enums"]["medication_auth_result_enum"]
+) => {
+  switch (medicationAuthResult) {
+    case "success":
+      return "text-[#4ECB71]"
+    case "failure":
+      return "text-[#F24E1E]"
+    default:
+      return "text-[#A4A4A4]"
+  }
+}
+
 // 和暦を西暦に変換するマッピング
 const eraToGregorian: { [key: string]: number } = {
   M: 1868, // 明治

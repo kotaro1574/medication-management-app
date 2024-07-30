@@ -5,6 +5,7 @@ import { PatientAvatar } from "@/feature/patient/patient-avatar"
 import { formatDate } from "date-fns"
 
 import { Database } from "@/types/schema.gen"
+import { getDrugHistoryColor } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { Icons } from "@/components/ui/icons"
 import {
@@ -92,7 +93,11 @@ export function GroupTabs({ items }: props) {
                   <Popover key={drugHistory.id}>
                     <PopoverTrigger>
                       <div className="text-center">
-                        <Icons.drugHistory />
+                        <Icons.drugHistory
+                          className={`${getDrugHistoryColor(
+                            drugHistory.medication_auth_result
+                          )}`}
+                        />
                         <div className="mt-1 text-[11px]">
                           {formatDate(new Date(drugHistory.created_at), "H:mm")}
                         </div>
