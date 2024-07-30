@@ -1,4 +1,4 @@
-import { formatDate } from "@/lib/utils"
+import { formatDate, getDrugHistoryColor } from "@/lib/utils"
 import { Icons } from "@/components/ui/icons"
 import {
   Popover,
@@ -30,7 +30,11 @@ export function DrugHistoryItem({
         <Popover key={drugHistory.id}>
           <PopoverTrigger>
             <div className="text-center">
-              <Icons.drugHistory />
+              <Icons.drugHistory
+                className={`${getDrugHistoryColor(
+                  drugHistory.medication_auth_result
+                )}`}
+              />
               <div className="mt-1 text-[11px]">
                 {formatDate(new Date(drugHistory.created_at), "H:mm")}
               </div>

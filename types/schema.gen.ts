@@ -38,18 +38,21 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          medication_auth_result: Database["public"]["Enums"]["medication_auth_result_enum"]
           patient_id: string
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
+          medication_auth_result: Database["public"]["Enums"]["medication_auth_result_enum"]
           patient_id: string
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
+          medication_auth_result?: Database["public"]["Enums"]["medication_auth_result_enum"]
           patient_id?: string
           user_id?: string
         }
@@ -296,6 +299,7 @@ export type Database = {
         | "disability_level_5"
         | "disability_level_6"
       gender_enum: "male" | "female"
+      medication_auth_result_enum: "success" | "failure"
     }
     CompositeTypes: {
       [_ in never]: never
