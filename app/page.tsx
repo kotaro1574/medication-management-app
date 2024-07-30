@@ -1,6 +1,7 @@
 "use client"
 
-import { useCallback, useRef, useState, useTransition } from "react"
+import { useCallback, useEffect, useRef, useState, useTransition } from "react"
+import { createDrugHistory } from "@/actions/drugHistory/create-drug-history"
 import { patentsDrugRecognition } from "@/actions/patients/patents-drug-recognition"
 import { patentsFaceRecognition } from "@/actions/patients/patents-face-recognition"
 import { PatientFaceAndDrugRecognitionCamera } from "@/feature/patient/patient-face-and-drug-recognition-camera"
@@ -18,6 +19,7 @@ export default function TopPage() {
     "id" | "last_name" | "first_name"
   > | null>(null)
   const [isDrugRecognition, setIsDrugRecognition] = useState<boolean>(false)
+  const [errorCount, setErrorCount] = useState<number>(0)
   const cameraRef = useRef<CameraType>(null)
   const { toast } = useToast()
 
@@ -61,7 +63,7 @@ export default function TopPage() {
             setIsDrugRecognition(true)
             setError(null)
             successSound.play()
-            toast({ description: response.message })
+            toast({ title: response.message })
 
             setTimeout(() => {
               setPatent(null)
@@ -69,6 +71,7 @@ export default function TopPage() {
             }, 5000)
           } else {
             setError(response.error)
+            setErrorCount((prev) => prev + 1)
             errorSound.play()
           }
         }
@@ -81,6 +84,29 @@ export default function TopPage() {
       cameraRef.current.switchCamera()
     }
   }, [])
+
+  useEffect(() => {
+    if (errorCount === 5 && patent?.id) {
+      ;(async () => {
+        const response = await createDrugHistory({
+          patientId: patent.id,
+          medicationAuthResult: "failure",
+        })
+        if (response.success) {
+          setError(response.message)
+        } else {
+          setError(response.error)
+        }
+
+        setTimeout(() => {
+          setPatent(null)
+          setError(null)
+          setIsDrugRecognition(false)
+          setErrorCount(0)
+        }, 8000)
+      })()
+    }
+  }, [errorCount, patent?.id, toast])
 
   return (
     <section className="px-4 py-[60px]">
