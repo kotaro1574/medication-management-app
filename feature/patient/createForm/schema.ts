@@ -5,6 +5,7 @@ const alertObj = z.object({
   minute: z.number(),
   repeatStetting: z.string(),
   date: z.string(),
+  isAlertEnabled: z.boolean(),
 })
 
 export const createPatientFormSchema = z.object({
