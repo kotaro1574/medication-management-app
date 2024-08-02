@@ -1,17 +1,26 @@
 import { HourSelect } from "@/feature/patient/hour-select"
 import { MinuteSelect } from "@/feature/patient/minute-select"
 import { RepeatStettingSelect } from "@/feature/patient/repeat-stetting-select"
+import { format } from "date-fns"
+import { CalendarIcon } from "lucide-react"
 import { UseFormReturn, useFieldArray } from "react-hook-form"
 import { z } from "zod"
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import { Icons } from "@/components/ui/icons"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { Switch } from "@/components/ui/switch"
 
 import { createPatientFormSchema } from "../../schema"
@@ -32,7 +41,7 @@ export function PatientAlertFormField({
       {fields.map((field, index) => (
         <div
           key={field.id}
-          className="mt-4 space-y-4 rounded-2xl bg-white p-4 shadow-shadow"
+          className="mt-4 rounded-2xl bg-white p-4 shadow-shadow"
         >
           <div className="flex items-center justify-between">
             <p className="text-xl text-[#A4A4A4]">{`アラートタイマー${
@@ -111,16 +120,42 @@ export function PatientAlertFormField({
               )}
             />
           </div>
-          <div className="flex items-center justify-between border-b-[0.5px] border-[#A4A4A4] px-1 py-2">
+          <div className="flex items-center justify-between border-b-[0.5px] border-[#A4A4A4] px-1 py-4">
             <FormLabel className="text-[11px]">日付</FormLabel>
             <FormField
               control={form.control}
               name={`alert.${index}.date`}
               render={({ field }) => (
-                <FormItem className="max-w-[200px] space-y-0">
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
+                <FormItem className="flex max-w-[200px] items-center space-y-0">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        {!field.value ? (
+                          <button>
+                            <Icons.circlePlus />
+                          </button>
+                        ) : (
+                          <button className="inline-flex items-center gap-4">
+                            <p className="text-[10px] font-bold text-[#A4A4A4]">
+                              {format(field.value, "yyyy月M月d日")}
+                            </p>
+                            <Icons.circleMinus />
+                          </button>
+                        )}
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value ?? undefined}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date < new Date(new Date().setHours(0, 0, 0, 0))
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </FormItem>
               )}
             />
@@ -146,7 +181,7 @@ export function PatientAlertFormField({
             hour: 0,
             minute: 0,
             repeatStetting: "",
-            date: "",
+            date: null,
             isAlertEnabled: true,
           })
         }

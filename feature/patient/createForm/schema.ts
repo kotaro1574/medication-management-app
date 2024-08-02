@@ -4,7 +4,7 @@ const alertObj = z.object({
   hour: z.number(),
   minute: z.number(),
   repeatStetting: z.string(),
-  date: z.string(),
+  date: z.date().nullable(),
   isAlertEnabled: z.boolean(),
 })
 
