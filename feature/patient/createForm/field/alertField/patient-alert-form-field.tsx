@@ -1,5 +1,6 @@
 import { HourSelect } from "@/feature/patient/hour-select"
 import { MinuteSelect } from "@/feature/patient/minute-select"
+import { RepeatStettingSelect } from "@/feature/patient/repeat-stetting-select"
 import { UseFormReturn, useFieldArray } from "react-hook-form"
 import { z } from "zod"
 
@@ -11,7 +12,6 @@ import {
   FormLabel,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 
 import { createPatientFormSchema } from "../../schema"
@@ -97,9 +97,15 @@ export function PatientAlertFormField({
               control={form.control}
               name={`alert.${index}.repeatStetting`}
               render={({ field }) => (
-                <FormItem className="max-w-[200px] space-y-0">
+                <FormItem className="w-full max-w-[180px] space-y-0">
                   <FormControl>
-                    <Input {...field} />
+                    <RepeatStettingSelect
+                      onValueChange={field.onChange}
+                      defaultValue={String(field.value)}
+                      isError={
+                        !!form.formState.errors?.alert?.[index]?.repeatStetting
+                      }
+                    />
                   </FormControl>
                 </FormItem>
               )}
