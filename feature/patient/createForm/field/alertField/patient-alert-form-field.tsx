@@ -29,7 +29,7 @@ export function PatientAlertFormField({
   form: UseFormReturn<z.infer<typeof createPatientFormSchema>>
 }) {
   const { fields, append, remove } = useFieldArray({
-    name: "alert",
+    name: "alerts",
     control: form.control,
   })
 
@@ -47,7 +47,7 @@ export function PatientAlertFormField({
             }`}</p>
             <FormField
               control={form.control}
-              name={`alert.${index}.isAlertEnabled`}
+              name={`alerts.${index}.isAlertEnabled`}
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -65,14 +65,14 @@ export function PatientAlertFormField({
             <div className="flex w-auto flex-1 items-center gap-2">
               <FormField
                 control={form.control}
-                name={`alert.${index}.hour`}
+                name={`alerts.${index}.hour`}
                 render={({ field }) => (
                   <FormItem className="w-[80px] space-y-0">
                     <FormControl>
                       <HourSelect
                         onValueChange={field.onChange}
                         defaultValue={String(field.value)}
-                        isError={!!form.formState.errors?.alert?.[index]?.hour}
+                        isError={!!form.formState.errors?.alerts?.[index]?.hour}
                       />
                     </FormControl>
                   </FormItem>
@@ -81,7 +81,7 @@ export function PatientAlertFormField({
               <div>:</div>
               <FormField
                 control={form.control}
-                name={`alert.${index}.minute`}
+                name={`alerts.${index}.minute`}
                 render={({ field }) => (
                   <FormItem className="w-[80px] space-y-0">
                     <FormControl>
@@ -89,7 +89,7 @@ export function PatientAlertFormField({
                         onValueChange={field.onChange}
                         defaultValue={String(field.value)}
                         isError={
-                          !!form.formState.errors?.alert?.[index]?.minute
+                          !!form.formState.errors?.alerts?.[index]?.minute
                         }
                       />
                     </FormControl>
@@ -102,16 +102,16 @@ export function PatientAlertFormField({
             <FormLabel className="text-[11px]">繰り返し設定</FormLabel>
             <FormField
               control={form.control}
-              name={`alert.${index}.repeatStetting`}
+              name={`alerts.${index}.repeatStetting`}
               render={({ field }) => (
                 <FormItem className="w-full max-w-[180px] space-y-0">
                   <FormControl>
                     <RepeatStettingSelect
                       onValueChange={field.onChange}
                       defaultValue={String(field.value)}
-                      disabled={form.watch("alert")[index].date !== null}
+                      disabled={form.watch("alerts")[index].date !== null}
                       isError={
-                        !!form.formState.errors?.alert?.[index]?.repeatStetting
+                        !!form.formState.errors?.alerts?.[index]?.repeatStetting
                       }
                     />
                   </FormControl>
@@ -123,7 +123,7 @@ export function PatientAlertFormField({
             <FormLabel className="text-[11px]">日付</FormLabel>
             <FormField
               control={form.control}
-              name={`alert.${index}.date`}
+              name={`alerts.${index}.date`}
               render={({ field }) => (
                 <FormItem className="flex max-w-[200px] items-center space-y-0">
                   {!field.value ? (
@@ -132,7 +132,8 @@ export function PatientAlertFormField({
                         <FormControl>
                           <button
                             disabled={
-                              form.watch("alert")[index].repeatStetting !== null
+                              form.watch("alerts")[index].repeatStetting !==
+                              null
                             }
                             className={
                               "disabled:cursor-not-allowed disabled:opacity-30"
@@ -193,8 +194,8 @@ export function PatientAlertFormField({
         className="block w-full"
         onClick={() =>
           append({
-            hour: 0,
-            minute: 0,
+            hour: "0",
+            minute: "0",
             repeatStetting: null,
             date: null,
             isAlertEnabled: true,

@@ -16,6 +16,13 @@ type Props = {
   disabilityClassification: Database["public"]["Enums"]["disability_classification_enum"]
   groupId: string
   gender: Database["public"]["Enums"]["gender_enum"]
+  alerts: {
+    hour: string
+    minute: string
+    repeatStetting: string | null
+    date: Date | null
+    isAlertEnabled: boolean
+  }[]
 }
 
 async function getUser(supabase: SupabaseClient<Database>): Promise<string> {
@@ -78,6 +85,18 @@ async function insertFaces(
   }
 }
 
+async function insertAlerts(
+  supabase: SupabaseClient<Database>,
+  alertsData: Database["public"]["Tables"]["alerts"]["Insert"][]
+): Promise<void> {
+  const { error } = await supabase.from("alerts").insert(alertsData)
+  if (error) {
+    throw new Error(
+      `アラートデータの挿入時にエラーが発生しました: ${error.message}`
+    )
+  }
+}
+
 type Result =
   | {
       success: true
@@ -98,6 +117,7 @@ export async function createPatient({
   disabilityClassification,
   groupId,
   gender,
+  alerts,
 }: Props): Promise<Result> {
   try {
     const faceImages = formData.getAll("faceImages") as File[]
@@ -125,6 +145,16 @@ export async function createPatient({
 
     await insertFaces(supabase, faces, patientId)
 
+    const alertsData = alerts.map((alert) => ({
+      patient_id: patientId,
+      hour: Number(alert.hour),
+      minute: Number(alert.minute),
+      repeat_setting: alert.repeatStetting,
+      date: alert.date?.toISOString() ?? null,
+      is_alert_enabled: alert.isAlertEnabled,
+    }))
+
+    await insertAlerts(supabase, alertsData)
     revalidatePath("/patients", "page")
     return { success: true, message: "患者が作成されました", patientId }
   } catch (error) {

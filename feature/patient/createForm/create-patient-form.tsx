@@ -42,10 +42,12 @@ export function CreatePatientForm({
       groupId: "",
       gender: undefined,
       drugImages: [],
-      alert: [],
+      alerts: [],
     },
     resolver: zodResolver(createPatientFormSchema),
   })
+
+  console.log(form.watch("alerts"))
 
   const onSubmit = async ({
     faceImages,
@@ -60,6 +62,7 @@ export function CreatePatientForm({
     groupId,
     drugImages,
     gender,
+    alerts,
   }: z.infer<typeof createPatientFormSchema>) => {
     setIsLoading(true)
     try {
@@ -79,6 +82,7 @@ export function CreatePatientForm({
         disabilityClassification,
         groupId,
         gender,
+        alerts,
       })
 
       if (patientResponse.success && drugImages.length > 0) {

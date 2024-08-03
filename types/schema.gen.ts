@@ -37,35 +37,35 @@ export type Database = {
       alerts: {
         Row: {
           created_at: string
-          date: string
+          date: string | null
           hour: number
           id: string
           is_alert_enabled: boolean
           minute: number
           patient_id: string
-          repeat: string
+          repeat_setting: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
-          date: string
+          date?: string | null
           hour: number
           id?: string
           is_alert_enabled?: boolean
           minute: number
           patient_id: string
-          repeat: string
+          repeat_setting?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
-          date?: string
+          date?: string | null
           hour?: number
           id?: string
           is_alert_enabled?: boolean
           minute?: number
           patient_id?: string
-          repeat?: string
+          repeat_setting?: string | null
           updated_at?: string
         }
         Relationships: [
