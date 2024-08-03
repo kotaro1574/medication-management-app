@@ -1,5 +1,13 @@
 import { z } from "zod"
 
+const alertObj = z.object({
+  hour: z.string(),
+  minute: z.string(),
+  repeatStetting: z.string().nullable(),
+  date: z.date().nullable(),
+  isAlertEnabled: z.boolean(),
+})
+
 export const createPatientFormSchema = z.object({
   faceImages: z
     .array(z.custom<File>())
@@ -38,4 +46,5 @@ export const createPatientFormSchema = z.object({
   groupId: z.string().min(1, { message: "グループを選択してください。" }),
   gender: z.enum(["male", "female"], { message: "性別を選択してください。" }),
   drugImages: z.array(z.custom<File>()),
+  alerts: z.array(alertObj),
 })

@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { useToast } from "@/components/ui/use-toast"
 
+import { PatientAlertFormField } from "./field/alertField/patient-alert-form-field"
+
 export function CreatePatientForm({
   currentUserName,
 }: {
@@ -40,9 +42,12 @@ export function CreatePatientForm({
       groupId: "",
       gender: undefined,
       drugImages: [],
+      alerts: [],
     },
     resolver: zodResolver(createPatientFormSchema),
   })
+
+  console.log(form.watch("alerts"))
 
   const onSubmit = async ({
     faceImages,
@@ -57,6 +62,7 @@ export function CreatePatientForm({
     groupId,
     drugImages,
     gender,
+    alerts,
   }: z.infer<typeof createPatientFormSchema>) => {
     setIsLoading(true)
     try {
@@ -76,6 +82,7 @@ export function CreatePatientForm({
         disabilityClassification,
         groupId,
         gender,
+        alerts,
       })
 
       if (patientResponse.success && drugImages.length > 0) {
@@ -120,13 +127,14 @@ export function CreatePatientForm({
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
         <PatientInfoFormField form={form} />
         <PatientFaceImagesFormField form={form} />
+        <PatientAlertFormField form={form} />
         <PatientDrugFormField
           loading={isLoading}
           form={form}
           currentUserName={currentUserName}
         />
         <div>
-          <Button disabled={isLoading} className="block w-full">
+          <Button type="submit" disabled={isLoading} className="block w-full">
             {isLoading ? "登録中..." : "登録"}
           </Button>
         </div>
