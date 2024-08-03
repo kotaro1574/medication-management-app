@@ -165,6 +165,7 @@ export function PatientAlertFormField({
               variant="outline"
               size="sm"
               type="button"
+              onClick={() => remove(index)}
             >
               削除
             </Button>
