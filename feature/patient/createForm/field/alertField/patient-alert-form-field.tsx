@@ -159,14 +159,16 @@ export function PatientAlertFormField({
             />
           </div>
 
-          <Button
-            className="mt-4 w-full max-w-[100px]"
-            variant="secondary"
-            size="secondary"
-            type="button"
-          >
-            削除
-          </Button>
+          <div className="mt-4 text-right">
+            <Button
+              className="w-full max-w-[100px]"
+              variant="outline"
+              size="sm"
+              type="button"
+            >
+              削除
+            </Button>
+          </div>
         </div>
       ))}
       <Button
