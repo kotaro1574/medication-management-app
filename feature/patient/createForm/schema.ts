@@ -3,7 +3,7 @@ import { z } from "zod"
 const alertObj = z.object({
   hour: z.number(),
   minute: z.number(),
-  repeatStetting: z.string(),
+  repeatStetting: z.string().nullable(),
   date: z.date().nullable(),
   isAlertEnabled: z.boolean(),
 })

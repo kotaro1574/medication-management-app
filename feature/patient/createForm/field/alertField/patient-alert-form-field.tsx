@@ -109,6 +109,7 @@ export function PatientAlertFormField({
                     <RepeatStettingSelect
                       onValueChange={field.onChange}
                       defaultValue={String(field.value)}
+                      disabled={form.watch("alert")[index].date !== null}
                       isError={
                         !!form.formState.errors?.alert?.[index]?.repeatStetting
                       }
@@ -125,35 +126,48 @@ export function PatientAlertFormField({
               name={`alert.${index}.date`}
               render={({ field }) => (
                 <FormItem className="flex max-w-[200px] items-center space-y-0">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        {!field.value ? (
-                          <button>
+                  {!field.value ? (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <button
+                            disabled={
+                              form.watch("alert")[index].repeatStetting !== null
+                            }
+                            className={
+                              "disabled:cursor-not-allowed disabled:opacity-30"
+                            }
+                          >
                             <Icons.circlePlus />
                           </button>
-                        ) : (
-                          <button className="inline-flex items-center gap-4">
-                            <p className="text-[10px] font-bold text-[#A4A4A4]">
-                              {format(field.value, "yyyy月M月d日")}
-                            </p>
-                            <Icons.circleMinus />
-                          </button>
-                        )}
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value ?? undefined}
-                        onSelect={field.onChange}
-                        disabled={(date) =>
-                          date < new Date(new Date().setHours(0, 0, 0, 0))
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value ?? undefined}
+                          onSelect={field.onChange}
+                          disabled={(date) =>
+                            date < new Date(new Date().setHours(0, 0, 0, 0))
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  ) : (
+                    <div className="flex items-center gap-4">
+                      <p className="text-[10px] font-bold text-[#A4A4A4]">
+                        {format(field.value, "yyyy月M月d日")}
+                      </p>
+                      <button
+                        onClick={() => {
+                          field.onChange(null)
+                        }}
+                      >
+                        <Icons.circleMinus />
+                      </button>
+                    </div>
+                  )}
                 </FormItem>
               )}
             />
@@ -181,7 +195,7 @@ export function PatientAlertFormField({
           append({
             hour: 0,
             minute: 0,
-            repeatStetting: "",
+            repeatStetting: null,
             date: null,
             isAlertEnabled: true,
           })
