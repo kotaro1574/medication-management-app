@@ -374,7 +374,7 @@ export const Icons = {
         height="18"
         rx="9"
         stroke="#A4A4A4"
-        stroke-width="2"
+        strokeWidth="2"
       />
       <path
         d="M9.3679 13.4482V6.40838H11.1477V13.4482H9.3679ZM6.73793 10.8182V9.03835H13.7777V10.8182H6.73793Z"
@@ -399,7 +399,7 @@ export const Icons = {
         height="18"
         rx="9"
         stroke="#A4A4A4"
-        stroke-width="2"
+        strokeWidth="2"
       />
       <path
         d="M12.353 8.97869V10.6591H7.70952V8.97869H12.353Z"
