@@ -38,34 +38,34 @@ export type Database = {
         Row: {
           created_at: string
           date: string
+          hour: number
           id: string
-          name: string
+          is_alert_enabled: boolean
+          minute: number
           patient_id: string
           repeat: string
-          switch: boolean
-          time: string
           updated_at: string
         }
         Insert: {
           created_at?: string
           date: string
+          hour: number
           id?: string
-          name: string
+          is_alert_enabled?: boolean
+          minute: number
           patient_id: string
           repeat: string
-          switch?: boolean
-          time: string
           updated_at?: string
         }
         Update: {
           created_at?: string
           date?: string
+          hour?: number
           id?: string
-          name?: string
+          is_alert_enabled?: boolean
+          minute?: number
           patient_id?: string
           repeat?: string
-          switch?: boolean
-          time?: string
           updated_at?: string
         }
         Relationships: [
