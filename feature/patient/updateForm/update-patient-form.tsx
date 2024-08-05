@@ -16,6 +16,7 @@ import { Form } from "@/components/ui/form"
 import { useToast } from "@/components/ui/use-toast"
 
 import { DeletePatientDialog } from "../delete-patient-dialog"
+import { PatientAlertFormField } from "./field/alertField/patient-alert-form-field"
 import { PatientDrugFormField } from "./field/drugField/patient-drug-form-field"
 import { PatientFaceImagesFormField } from "./field/faceImagesField/patient-face-images-form-field"
 import { PatientInfoFormField } from "./field/infoField/patient-info-form-field"
@@ -58,6 +59,7 @@ export function UpdatePatientForm({
       gender: patient.gender,
       drugImages: [],
       deleteDrugIds: [],
+      alerts: [],
     },
     resolver: zodResolver(updatePatientFormSchema),
   })
@@ -76,6 +78,7 @@ export function UpdatePatientForm({
     drugImages,
     gender,
     deleteDrugIds,
+    alerts,
   }: z.infer<typeof updatePatientFormSchema>) => {
     setIsLoading(true)
     try {
@@ -142,6 +145,7 @@ export function UpdatePatientForm({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
           <PatientInfoFormField form={form} />
           <PatientFaceImagesFormField form={form} faceUrl={faceUrl} />
+          <PatientAlertFormField form={form} />
           <PatientDrugFormField
             registeredDrugs={registeredDrugs}
             loading={isLoading}
