@@ -180,7 +180,17 @@ export function PatientAlertFormField({
               variant="outline"
               size="sm"
               type="button"
-              onClick={() => remove(index)}
+              onClick={() => {
+                const id = form.getValues("alerts")[index].id ?? null
+                if (id) {
+                  form.setValue("deleteAlertIds", [
+                    ...form.getValues("deleteAlertIds"),
+                    id,
+                  ])
+                }
+
+                remove(index)
+              }}
             >
               削除
             </Button>

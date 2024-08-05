@@ -69,6 +69,7 @@ export function UpdatePatientForm({
         date: alert.date ? new Date(alert.date) : null,
         isAlertEnabled: alert.is_alert_enabled,
       })),
+      deleteAlertIds: [],
     },
     resolver: zodResolver(updatePatientFormSchema),
   })
@@ -88,6 +89,7 @@ export function UpdatePatientForm({
     gender,
     deleteDrugIds,
     alerts,
+    deleteAlertIds,
   }: z.infer<typeof updatePatientFormSchema>) => {
     setIsLoading(true)
     try {
@@ -110,6 +112,7 @@ export function UpdatePatientForm({
         gender,
         deleteDrugIds,
         alerts,
+        deleteAlertIds,
       })
 
       if (patientResponse.success && drugImages.length > 0) {

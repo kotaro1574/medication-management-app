@@ -33,6 +33,7 @@ type Props = {
     date: Date | null
     isAlertEnabled: boolean
   }[]
+  deleteAlertIds: string[]
 }
 
 async function getUser(supabase: SupabaseClient<Database>): Promise<string> {
@@ -169,6 +170,19 @@ async function updateAlerts(
   }
 }
 
+async function deleteAlerts(
+  supabase: SupabaseClient<Database>,
+  deleteAlertIds: string[]
+): Promise<void> {
+  const { error } = await supabase
+    .from("alerts")
+    .delete()
+    .in("id", deleteAlertIds)
+  if (error) {
+    throw new Error("アラートの削除に失敗しました")
+  }
+}
+
 export async function updatePatient({
   patientId,
   formData,
@@ -181,6 +195,7 @@ export async function updatePatient({
   gender,
   deleteDrugIds,
   alerts,
+  deleteAlertIds,
 }: Props): Promise<ActionResult> {
   try {
     const faceImages = formData.getAll("faceImages") as File[]
@@ -219,6 +234,10 @@ export async function updatePatient({
 
     if (deleteDrugIds.length > 0) {
       await deleteDrugs(supabase, deleteDrugIds)
+    }
+
+    if (deleteAlertIds.length > 0) {
+      await deleteAlerts(supabase, deleteAlertIds)
     }
 
     revalidatePath("/patients", "page")

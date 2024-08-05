@@ -47,4 +47,5 @@ export const updatePatientFormSchema = z.object({
   drugImages: z.array(z.custom<File>()),
   deleteDrugIds: z.array(z.string()),
   alerts: z.array(alertObj),
+  deleteAlertIds: z.array(z.string()),
 })
