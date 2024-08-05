@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { SupabaseClient } from "@supabase/supabase-js"
+import { v4 as uuidv4 } from "uuid"
 
 import { ActionResult } from "@/types/action"
 import { Database } from "@/types/schema.gen"
@@ -24,6 +25,14 @@ type Props = {
   gender: Database["public"]["Enums"]["gender_enum"]
   patientId: string
   deleteDrugIds: string[]
+  alerts: {
+    id: string | null
+    hour: string
+    minute: string
+    repeatStetting: string | null
+    date: Date | null
+    isAlertEnabled: boolean
+  }[]
 }
 
 async function getUser(supabase: SupabaseClient<Database>): Promise<string> {
@@ -148,6 +157,18 @@ async function deleteDrugs(
   }
 }
 
+async function updateAlerts(
+  supabase: SupabaseClient<Database>,
+  alertsData: Database["public"]["Tables"]["alerts"]["Insert"][]
+): Promise<void> {
+  const { error } = await supabase.from("alerts").upsert(alertsData)
+  if (error) {
+    throw new Error(
+      `アラートデータの更新時にエラーが発生しました: ${error.message}`
+    )
+  }
+}
+
 export async function updatePatient({
   patientId,
   formData,
@@ -159,6 +180,7 @@ export async function updatePatient({
   groupId,
   gender,
   deleteDrugIds,
+  alerts,
 }: Props): Promise<ActionResult> {
   try {
     const faceImages = formData.getAll("faceImages") as File[]
@@ -177,6 +199,19 @@ export async function updatePatient({
       facility_id: facilityId,
       gender,
     })
+
+    await updateAlerts(
+      supabase,
+      alerts.map((alert) => ({
+        id: alert.id ?? uuidv4(),
+        patient_id: patientId,
+        hour: Number(alert.hour),
+        minute: Number(alert.minute),
+        repeat_setting: alert.repeatStetting,
+        date: alert.date?.toISOString() ?? null,
+        is_alert_enabled: alert.isAlertEnabled,
+      }))
+    )
 
     if (faceImages.length > 0) {
       await handleFaceImages(supabase, patientId, faceImages)

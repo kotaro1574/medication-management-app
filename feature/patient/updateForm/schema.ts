@@ -1,6 +1,7 @@
 import { z } from "zod"
 
 const alertObj = z.object({
+  id: z.string().nullable(),
   hour: z.string(),
   minute: z.string(),
   repeatStetting: z.string().nullable(),

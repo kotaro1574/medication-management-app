@@ -29,6 +29,7 @@ type Props = {
   faceUrl: string
   registeredDrugs: { id: string; url: string; userName: string }[]
   currentUserName: string
+  alerts: Database["public"]["Tables"]["alerts"]["Row"][]
 }
 
 export function UpdatePatientForm({
@@ -38,6 +39,7 @@ export function UpdatePatientForm({
   registeredDrugs,
   faceImageIds,
   drugImageIds,
+  alerts,
 }: Props) {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
@@ -59,7 +61,14 @@ export function UpdatePatientForm({
       gender: patient.gender,
       drugImages: [],
       deleteDrugIds: [],
-      alerts: [],
+      alerts: alerts.map((alert) => ({
+        id: alert.id,
+        hour: String(alert.hour),
+        minute: String(alert.minute),
+        repeatStetting: alert.repeat_setting,
+        date: alert.date ? new Date(alert.date) : null,
+        isAlertEnabled: alert.is_alert_enabled,
+      })),
     },
     resolver: zodResolver(updatePatientFormSchema),
   })
@@ -100,6 +109,7 @@ export function UpdatePatientForm({
         groupId,
         gender,
         deleteDrugIds,
+        alerts,
       })
 
       if (patientResponse.success && drugImages.length > 0) {
