@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { createDrug } from "@/actions/drug/create-drug"
 import { updatePatient } from "@/actions/patients/update-patient"

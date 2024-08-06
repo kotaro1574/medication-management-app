@@ -373,12 +373,12 @@ export const Icons = {
         width="18"
         height="18"
         rx="9"
-        stroke="#A4A4A4"
+        stroke="currentColor"
         strokeWidth="2"
       />
       <path
         d="M9.3679 13.4482V6.40838H11.1477V13.4482H9.3679ZM6.73793 10.8182V9.03835H13.7777V10.8182H6.73793Z"
-        fill="#A4A4A4"
+        fill="currentColor"
       />
     </svg>
   ),
