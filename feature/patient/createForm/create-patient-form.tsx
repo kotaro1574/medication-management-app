@@ -47,8 +47,6 @@ export function CreatePatientForm({
     resolver: zodResolver(createPatientFormSchema),
   })
 
-  console.log(form.watch("alerts"))
-
   const onSubmit = async ({
     faceImages,
     lastName,

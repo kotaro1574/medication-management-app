@@ -1,12 +1,33 @@
 import { z } from "zod"
 
-const alertObj = z.object({
-  hour: z.string(),
-  minute: z.string(),
-  repeatStetting: z.string().nullable(),
-  date: z.date().nullable(),
-  isAlertEnabled: z.boolean(),
-})
+const alertObj = z
+  .object({
+    hour: z.string(),
+    minute: z.string(),
+    repeatStetting: z.string().nullable(),
+    date: z.date().nullable(),
+    isAlertEnabled: z.boolean(),
+  })
+  .refine(
+    (data) => {
+      return !(data.hour === "0" && data.minute === "0")
+    },
+    {
+      message: "時間を選択してください。",
+      path: ["hour", "minute"],
+    }
+  )
+  .refine(
+    (data) => {
+      const repeatSettingExists = data.repeatStetting !== null
+      const dateExists = data.date !== null
+      return repeatSettingExists !== dateExists
+    },
+    {
+      message: "繰り返し設定と日付のどちらか一方を選択してください。",
+      path: ["repeatStetting", "date"],
+    }
+  )
 
 export const createPatientFormSchema = z.object({
   faceImages: z
