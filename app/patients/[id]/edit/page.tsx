@@ -81,6 +81,16 @@ export default async function EditPatientPage({
     })
   )
 
+  const { data: alerts, error: alertsError } = await supabase
+    .from("alerts")
+    .select("*")
+    .eq("patient_id", patient.id)
+
+  if (alertsError) {
+    console.error(alertsError)
+    return <div>alertsError</div>
+  }
+
   // 削除のために画像IDを取得
   const faceImageIds = faces.map((face) => face.image_id)
   const drugImageIds = _drugs.map((drug) => drug.image_id)
@@ -91,6 +101,7 @@ export default async function EditPatientPage({
         faceImageIds={faceImageIds}
         drugImageIds={drugImageIds}
         patient={patient}
+        alerts={alerts}
         faceUrl={faceUrl}
         registeredDrugs={registeredDrugs}
         currentUserName={profile.name}

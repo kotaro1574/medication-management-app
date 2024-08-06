@@ -4,7 +4,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
@@ -23,9 +22,8 @@ export function HourSelect({ onValueChange, defaultValue, isError }: Props) {
           <SelectValue />
         </SelectTrigger>
       </FormControl>
-      <SelectContent>
+      <SelectContent className="min-w-[80px]">
         <SelectGroup>
-          <SelectLabel>時間を選択</SelectLabel>
           <SelectItem value="0">0</SelectItem>
           <SelectItem value="1">1</SelectItem>
           <SelectItem value="2">2</SelectItem>
