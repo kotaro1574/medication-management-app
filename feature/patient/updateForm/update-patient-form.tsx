@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { createDrug } from "@/actions/drug/create-drug"
 import { updatePatient } from "@/actions/patients/update-patient"
@@ -16,6 +16,7 @@ import { Form } from "@/components/ui/form"
 import { useToast } from "@/components/ui/use-toast"
 
 import { DeletePatientDialog } from "../delete-patient-dialog"
+import { PatientAlertFormField } from "./field/alertField/patient-alert-form-field"
 import { PatientDrugFormField } from "./field/drugField/patient-drug-form-field"
 import { PatientFaceImagesFormField } from "./field/faceImagesField/patient-face-images-form-field"
 import { PatientInfoFormField } from "./field/infoField/patient-info-form-field"
@@ -28,6 +29,7 @@ type Props = {
   faceUrl: string
   registeredDrugs: { id: string; url: string; userName: string }[]
   currentUserName: string
+  alerts: Database["public"]["Tables"]["alerts"]["Row"][]
 }
 
 export function UpdatePatientForm({
@@ -37,6 +39,7 @@ export function UpdatePatientForm({
   registeredDrugs,
   faceImageIds,
   drugImageIds,
+  alerts,
 }: Props) {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
@@ -58,6 +61,15 @@ export function UpdatePatientForm({
       gender: patient.gender,
       drugImages: [],
       deleteDrugIds: [],
+      alerts: alerts.map((alert) => ({
+        id: alert.id,
+        hour: String(alert.hour),
+        minute: String(alert.minute),
+        repeatStetting: alert.repeat_setting,
+        date: alert.date ? new Date(alert.date) : null,
+        isAlertEnabled: alert.is_alert_enabled,
+      })),
+      deleteAlertIds: [],
     },
     resolver: zodResolver(updatePatientFormSchema),
   })
@@ -76,6 +88,8 @@ export function UpdatePatientForm({
     drugImages,
     gender,
     deleteDrugIds,
+    alerts,
+    deleteAlertIds,
   }: z.infer<typeof updatePatientFormSchema>) => {
     setIsLoading(true)
     try {
@@ -97,6 +111,8 @@ export function UpdatePatientForm({
         groupId,
         gender,
         deleteDrugIds,
+        alerts,
+        deleteAlertIds,
       })
 
       if (patientResponse.success && drugImages.length > 0) {
@@ -142,6 +158,7 @@ export function UpdatePatientForm({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
           <PatientInfoFormField form={form} />
           <PatientFaceImagesFormField form={form} faceUrl={faceUrl} />
+          <PatientAlertFormField form={form} />
           <PatientDrugFormField
             registeredDrugs={registeredDrugs}
             loading={isLoading}

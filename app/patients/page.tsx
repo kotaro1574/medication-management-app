@@ -61,7 +61,7 @@ export default async function PatientsPage() {
         .lte("created_at", todayEnd.toISOString())
 
       if (drugHistoryError) {
-        return { ...patient, url, drugHistory: [] }
+        return { ...patient, url, isAlert: false, drugHistory: [] }
       }
 
       const userIds = drugHistory.map((dh) => dh.user_id)
@@ -71,12 +71,32 @@ export default async function PatientsPage() {
         .in("id", userIds)
 
       if (profileError) {
-        return { ...patient, url, drugHistory: [] }
+        return { ...patient, url, isAlert: false, drugHistory: [] }
       }
+
+      const { data: alert, error: alertError } = await supabase
+        .from("alerts")
+        .select("id")
+        .eq("patient_id", patient.id)
+
+      if (alertError) {
+        return {
+          ...patient,
+          url,
+          isAlert: false,
+          drugHistory: drugHistory.map((dh) => {
+            const profile = profiles.find((p) => p.id === dh.user_id)
+            return { ...dh, user_name: profile?.name ?? "" }
+          }),
+        }
+      }
+
+      const isAlert = alert.length > 0
 
       return {
         ...patient,
         url,
+        isAlert,
         drugHistory: drugHistory.map((dh) => {
           const profile = profiles.find((p) => p.id === dh.user_id)
           return { ...dh, user_name: profile?.name ?? "" }
@@ -90,9 +110,10 @@ export default async function PatientsPage() {
       value: "全て",
       contents: patientsData.map((patient) => {
         return {
+          id: patient.id,
           name: `${patient.last_name} ${patient.first_name}`,
           url: patient.url,
-          id: patient.id,
+          isAlert: patient.isAlert,
           drugHistoryWithNames: patient.drugHistory,
         }
       }),
@@ -103,9 +124,10 @@ export default async function PatientsPage() {
         .filter((patient) => patient.group_id === group.id)
         .map((patient) => {
           return {
+            id: patient.id,
             name: `${patient.last_name} ${patient.first_name}`,
             url: patient.url,
-            id: patient.id,
+            isAlert: patient.isAlert,
             drugHistoryWithNames: patient.drugHistory,
           }
         }),

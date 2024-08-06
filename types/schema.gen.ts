@@ -34,6 +34,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      alerts: {
+        Row: {
+          created_at: string
+          date: string | null
+          hour: number
+          id: string
+          is_alert_enabled: boolean
+          minute: number
+          patient_id: string
+          repeat_setting: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string | null
+          hour: number
+          id?: string
+          is_alert_enabled?: boolean
+          minute: number
+          patient_id: string
+          repeat_setting?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          date?: string | null
+          hour?: number
+          id?: string
+          is_alert_enabled?: boolean
+          minute?: number
+          patient_id?: string
+          repeat_setting?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alerts_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       drug_histories: {
         Row: {
           created_at: string

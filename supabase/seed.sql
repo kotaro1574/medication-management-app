@@ -11,4 +11,7 @@ INSERT INTO groups (name, facility_id) VALUES
 ('groupB', (SELECT id FROM facilities WHERE name = 'リハビリテーション施設'));
 
 INSERT INTO patients (last_name, first_name, birthday, care_level, disability_classification, facility_id, group_id, gender, image_id, face_ids) VALUES
-('杉田', '浩太朗', 'H5.11.2生(30歳)', 'independence', 'independence', (SELECT id FROM facilities WHERE name = '健康センター'), (SELECT id FROM groups WHERE name = 'グループA'), 'male', '49d53b48-08f5-479a-bc08-6e8a7f764a95', array['f7048c9d-4497-4f49-8123-d82cdf50a0a7', '3bcd163c-3100-4c0a-99d3-369a2b52a17', 'fe0a8aee-3d45-42bf-a7de-aa424916aef4', '3be0a94d-3eb0-409d-9c97-f354ff573358', '21720c1-efdf-4498-832d-f1b84b32c1bf']);
+('杉田', '浩太朗', 'H5.11.2生(30歳)', 'independence', 'independence', (SELECT id FROM facilities WHERE name = '健康センター'), (SELECT id FROM groups WHERE name = 'グループA'), 'male', 'd401a4ed-afe7-41b5-afaa-931276924d37', array['8f77dc4e-627e-40f0-9fee-5ab5aa556629', 'f48f3dab-b283-49f2-bd8f-2d239ea996b0', '33b0a570-20a5-4190-8942-040103762b79', '27bf2462-96d9-41e8-8775-456814794c30', 'bb474e59-170c-4d3c-ab43-006c9575e3cf']);
+
+INSERT INTO alerts (hour, minute, repeat_setting, date, patient_id, is_alert_enabled) VALUES
+(8, 0, '毎日', null, (SELECT id FROM patients WHERE last_name = '杉田'), true);
