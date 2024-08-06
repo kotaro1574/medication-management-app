@@ -98,7 +98,7 @@ export function PatientAlertFormField({
               />
             </div>
           </div>
-          <div className="flex items-center justify-between border-b-[0.5px] border-[#A4A4A4]  px-1 py-2">
+          <div className="flex items-center justify-between border-b-[0.5px] border-[#A4A4A4] px-1 py-2">
             <FormLabel className="text-[11px]">繰り返し設定</FormLabel>
             <FormField
               control={form.control}
@@ -143,7 +143,7 @@ export function PatientAlertFormField({
                           </button>
                         </FormControl>
                       </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
+                      <PopoverContent className="w-auto rounded-2xl p-0" align="start">
                         <Calendar
                           mode="single"
                           selected={field.value ?? undefined}
