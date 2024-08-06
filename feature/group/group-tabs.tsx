@@ -82,7 +82,7 @@ export function GroupTabs({ items }: props) {
               >
                 <Link href={`/patients/${content.id}`} className="block">
                   <div className="flex w-[60px] flex-col items-center">
-                    <PatientAvatar size={40} src={content.url} />
+                    <PatientAvatar size="sm" src={content.url} />
                     <p className="mt-[2px] line-clamp-1 max-w-[55px] text-[10px]">
                       {content.name}
                     </p>
