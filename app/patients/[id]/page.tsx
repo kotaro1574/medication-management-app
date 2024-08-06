@@ -109,11 +109,27 @@ export default async function PatientPage({
     return { ...dh, user_name: profile?.name ?? "" }
   })
 
+  const { data: alerts, error: alertError } = await supabase
+    .from("alerts")
+    .select("id")
+    .eq("patient_id", params.id)
+
+  if (alertError) {
+    return (
+      <div>
+        <h1>エラーが発生しました</h1>
+        <pre>{JSON.stringify(alertError, null, 2)}</pre>
+      </div>
+    )
+  }
+
+  const isAlert = alerts.length > 0
+
   return (
     <section className="min-h-screen bg-[#F5F5F5]">
       <div className="rounded-b-[8px] bg-white px-4 pb-4 pt-[60px] shadow-shadow">
         <div className="flex items-center gap-2">
-          <PatientAvatar src={avatarUrl} />
+          <PatientAvatar src={avatarUrl} isAlert={isAlert} />
           <div>
             <h2 className="text-xl">
               {patients.last_name} {patients.first_name}

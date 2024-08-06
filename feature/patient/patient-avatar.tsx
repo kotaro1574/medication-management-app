@@ -4,9 +4,10 @@ import { Icons } from "@/components/ui/icons"
 type Props = {
   size?: "sm" | "md"
   src: string
+  isAlert: boolean
 }
 
-export function PatientAvatar({ size = "md", src }: Props) {
+export function PatientAvatar({ size = "md", src, isAlert }: Props) {
   const avatarSizeMap = {
     sm: 40,
     md: 60,
@@ -26,13 +27,15 @@ export function PatientAvatar({ size = "md", src }: Props) {
         <AvatarImage src={src} alt={"avatar-image"} className="object-cover" />
         <AvatarFallback size={avatarSizeMap[size]} />
       </Avatar>
-      <Icons.alertBell
-        style={{
-          width: iconSizeMap[size],
-          height: iconSizeMap[size],
-        }}
-        className="absolute -right-px -top-px"
-      />
+      {isAlert && (
+        <Icons.alertBell
+          style={{
+            width: iconSizeMap[size],
+            height: iconSizeMap[size],
+          }}
+          className="absolute -right-px -top-px"
+        />
+      )}
     </div>
   )
 }
