@@ -11,7 +11,7 @@ import {
 type Props = {
   onValueChange: (value: string) => void
   defaultValue: string
-  isError: boolean
+  isError?: boolean
 }
 
 export function MinuteSelect({ onValueChange, defaultValue, isError }: Props) {
