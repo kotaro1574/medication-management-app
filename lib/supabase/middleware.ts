@@ -61,7 +61,7 @@ export async function updateSession(request: NextRequest) {
 
   const authExemptUrls = [
     "/login",
-    "/sign-up",
+    "/signup",
     "/api/auth/confirm",
     "/reset-password",
     "/reset-password/input-password",
