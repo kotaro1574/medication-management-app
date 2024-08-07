@@ -22,6 +22,7 @@ type Props = {
   isDrugRecognition: boolean
   loading: boolean
   error: string | null
+  errorCount: number
 }
 
 export function PatientFaceAndDrugRecognitionCamera({
@@ -30,6 +31,7 @@ export function PatientFaceAndDrugRecognitionCamera({
   firstName,
   isFaceRecognition,
   isDrugRecognition,
+  errorCount,
   error,
   loading,
 }: Props) {
@@ -66,7 +68,7 @@ export function PatientFaceAndDrugRecognitionCamera({
       </p>
       {error && (
         <p className="text-md absolute top-[56px] w-full text-center font-semibold text-[#FF0000]">
-          {error}
+          {error} {isFaceRecognition && `: ${errorCount}/5`}
         </p>
       )}
       <div className="absolute inset-x-2 bottom-2 space-y-2">
