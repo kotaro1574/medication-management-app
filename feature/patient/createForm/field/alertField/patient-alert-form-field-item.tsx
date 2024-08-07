@@ -1,4 +1,3 @@
-import { useEffect } from "react"
 import { HourSelect } from "@/feature/patient/hour-select"
 import { MinuteSelect } from "@/feature/patient/minute-select"
 import { RepeatStettingSelect } from "@/feature/patient/repeat-stetting-select"
@@ -10,7 +9,6 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -25,22 +23,6 @@ import { Switch } from "@/components/ui/switch"
 
 import { createPatientFormSchema } from "../../schema"
 
-const hourErrorSchema = z.object({
-  hour: z.object({
-    minute: z.object({
-      message: z.string(),
-    }),
-  }),
-})
-
-const repeatStettingErrorSchema = z.object({
-  repeatStetting: z.object({
-    date: z.object({
-      message: z.string(),
-    }),
-  }),
-})
-
 type Props = {
   index: number
   form: UseFormReturn<z.infer<typeof createPatientFormSchema>>
@@ -48,22 +30,6 @@ type Props = {
 }
 
 export function PatientAlertFormFieldItem({ index, form, remove }: Props) {
-  useEffect(() => {
-    const hour = form.watch(`alerts.${index}.hour`)
-    const minute = form.watch(`alerts.${index}.minute`)
-    const repeatStetting = form.watch(`alerts.${index}.repeatStetting`)
-    const date = form.watch(`alerts.${index}.date`)
-
-    if (hour !== "0" || minute !== "0") {
-      form.clearErrors(`alerts.${index}.hour`)
-    }
-
-    if (repeatStetting !== null || date !== null) {
-      form.clearErrors(`alerts.${index}.repeatStetting`)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form.watch(`alerts.${index}.minute`), form.watch(`alerts.${index}.date`)])
-
   return (
     <div className="mt-4 rounded-2xl bg-white p-4 shadow-shadow">
       <div className="flex items-center justify-between">
@@ -98,7 +64,6 @@ export function PatientAlertFormFieldItem({ index, form, remove }: Props) {
                     <HourSelect
                       onValueChange={field.onChange}
                       defaultValue={String(field.value)}
-                      isError={!!form.formState.errors?.alerts?.[index]?.hour}
                     />
                   </FormControl>
                 </FormItem>
@@ -114,7 +79,6 @@ export function PatientAlertFormFieldItem({ index, form, remove }: Props) {
                     <MinuteSelect
                       onValueChange={field.onChange}
                       defaultValue={String(field.value)}
-                      isError={!!form.formState.errors?.alerts?.[index]?.hour}
                     />
                   </FormControl>
                 </FormItem>
@@ -122,14 +86,6 @@ export function PatientAlertFormFieldItem({ index, form, remove }: Props) {
             />
           </div>
         </div>
-        {form.formState.errors?.alerts?.[index]?.hour && (
-          <FormDescription className="mt-1 text-right">
-            {
-              hourErrorSchema.parse(form.formState.errors?.alerts?.[index]).hour
-                .minute.message
-            }
-          </FormDescription>
-        )}
       </div>
       <div className="flex items-center justify-between border-b-[0.5px] border-[#A4A4A4]  px-1 py-2">
         <FormLabel className="text-[11px]">繰り返し設定</FormLabel>
@@ -143,9 +99,6 @@ export function PatientAlertFormFieldItem({ index, form, remove }: Props) {
                   onValueChange={field.onChange}
                   defaultValue={String(field.value)}
                   disabled={form.watch("alerts")[index].date !== null}
-                  isError={
-                    !!form.formState.errors?.alerts?.[index]?.repeatStetting
-                  }
                 />
               </FormControl>
             </FormItem>
@@ -163,29 +116,15 @@ export function PatientAlertFormFieldItem({ index, form, remove }: Props) {
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
-                      <div className="flex items-center gap-4">
-                        {form.formState.errors?.alerts?.[index]
-                          ?.repeatStetting && (
-                          <FormDescription>
-                            {
-                              repeatStettingErrorSchema.parse(
-                                form.formState.errors?.alerts?.[index]
-                              ).repeatStetting.date.message
-                            }
-                          </FormDescription>
-                        )}
-                        <button
-                          disabled={
-                            form.watch("alerts")[index].repeatStetting !== null
-                          }
-                          className={`text-[#A4A4A4] disabled:cursor-not-allowed disabled:opacity-30 ${
-                            form.formState.errors?.alerts?.[index]
-                              ?.repeatStetting && "text-destructive"
-                          }`}
-                        >
-                          <Icons.circlePlus />
-                        </button>
-                      </div>
+                      <button
+                        disabled={
+                          form.watch("alerts")[index].repeatStetting !== null
+                        }
+                        type="button"
+                        className="text-[#A4A4A4] disabled:cursor-not-allowed disabled:opacity-30"
+                      >
+                        <Icons.circlePlus />
+                      </button>
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
