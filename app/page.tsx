@@ -68,6 +68,7 @@ export default function TopPage() {
             setTimeout(() => {
               setPatent(null)
               setIsDrugRecognition(false)
+              setErrorCount(0)
             }, 5000)
           } else {
             setError(response.error)
