@@ -178,6 +178,7 @@ export function PatientAlertFormFieldItem({ index, form, remove }: Props) {
                           disabled={
                             form.watch("alerts")[index].repeatStetting !== null
                           }
+                          type="button"
                           className={`text-[#A4A4A4] disabled:cursor-not-allowed disabled:opacity-30 ${
                             form.formState.errors?.alerts?.[index]
                               ?.repeatStetting && "text-destructive"
