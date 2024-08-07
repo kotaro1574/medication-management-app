@@ -120,6 +120,7 @@ export default function TopPage() {
           isDrugRecognition={isDrugRecognition}
           loading={loading}
           error={error}
+          errorCount={errorCount}
         />
 
         <div className="relative mt-4 flex w-full items-center justify-center">
