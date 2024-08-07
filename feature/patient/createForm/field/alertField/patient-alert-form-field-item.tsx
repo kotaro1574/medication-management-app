@@ -1,4 +1,3 @@
-import { useEffect } from "react"
 import { HourSelect } from "@/feature/patient/hour-select"
 import { MinuteSelect } from "@/feature/patient/minute-select"
 import { RepeatStettingSelect } from "@/feature/patient/repeat-stetting-select"
@@ -10,7 +9,6 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,22 +22,6 @@ import {
 import { Switch } from "@/components/ui/switch"
 
 import { createPatientFormSchema } from "../../schema"
-
-const hourErrorSchema = z.object({
-  hour: z.object({
-    minute: z.object({
-      message: z.string(),
-    }),
-  }),
-})
-
-const repeatStettingErrorSchema = z.object({
-  repeatStetting: z.object({
-    date: z.object({
-      message: z.string(),
-    }),
-  }),
-})
 
 type Props = {
   index: number
