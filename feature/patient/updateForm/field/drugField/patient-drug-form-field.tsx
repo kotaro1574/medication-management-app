@@ -82,7 +82,7 @@ export function PatientDrugFormField({
 
               <input
                 style={{
-                  visibility: "hidden",
+                  display: "none",
                   position: "absolute",
                   width: 0,
                 }}

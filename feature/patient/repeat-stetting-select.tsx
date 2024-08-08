@@ -12,7 +12,7 @@ import {
 type Props = {
   onValueChange: (value: string) => void
   defaultValue: string
-  isError: boolean
+  isError?: boolean
   disabled: boolean
 }
 

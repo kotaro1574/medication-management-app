@@ -1,20 +1,41 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Icons } from "@/components/ui/icons"
 
 type Props = {
-  size?: number
+  size?: "sm" | "md"
   src: string
+  isAlert: boolean
 }
 
-export function PatientAvatar({ size = 40, src }: Props) {
+export function PatientAvatar({ size = "md", src, isAlert }: Props) {
+  const avatarSizeMap = {
+    sm: 40,
+    md: 60,
+  }
+  const iconSizeMap = {
+    sm: 15,
+    md: 20,
+  }
   return (
-    <Avatar
-      style={{
-        width: size,
-        height: size,
-      }}
-    >
-      <AvatarImage src={src} alt={"avatar-image"} className="object-cover" />
-      <AvatarFallback size={size} />
-    </Avatar>
+    <div className={"relative"}>
+      <Avatar
+        style={{
+          width: avatarSizeMap[size],
+          height: avatarSizeMap[size],
+        }}
+      >
+        <AvatarImage src={src} alt={"avatar-image"} className="object-cover" />
+        <AvatarFallback size={avatarSizeMap[size]} />
+      </Avatar>
+      {isAlert && (
+        <Icons.alertBell
+          style={{
+            width: iconSizeMap[size],
+            height: iconSizeMap[size],
+          }}
+          className="absolute -right-px -top-px"
+        />
+      )}
+    </div>
   )
 }

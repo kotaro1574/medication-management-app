@@ -13,7 +13,7 @@ type Props = {
 export function SiteHeader({ profileName }: Props) {
   const pathname = usePathname()
 
-  if (pathname === "/sign-up") {
+  if (pathname === "/signup") {
     return null
   }
 

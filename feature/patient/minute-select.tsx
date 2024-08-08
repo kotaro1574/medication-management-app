@@ -4,7 +4,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
@@ -12,7 +11,7 @@ import {
 type Props = {
   onValueChange: (value: string) => void
   defaultValue: string
-  isError: boolean
+  isError?: boolean
 }
 
 export function MinuteSelect({ onValueChange, defaultValue, isError }: Props) {
@@ -26,9 +25,8 @@ export function MinuteSelect({ onValueChange, defaultValue, isError }: Props) {
           <SelectValue />
         </SelectTrigger>
       </FormControl>
-      <SelectContent>
+      <SelectContent className="min-w-[80px]">
         <SelectGroup>
-          <SelectLabel>分を選択</SelectLabel>
           {minutes.map((minute) => (
             <SelectItem key={minute} value={minute}>
               {minute}

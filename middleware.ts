@@ -25,7 +25,7 @@ function basicAuth(request: NextRequest) {
 }
 
 export async function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith("/sign-up")) {
+  if (request.nextUrl.pathname.startsWith("/signup")) {
     return basicAuth(request)
   }
   // update user's auth session

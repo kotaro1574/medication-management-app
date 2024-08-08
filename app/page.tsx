@@ -68,6 +68,7 @@ export default function TopPage() {
             setTimeout(() => {
               setPatent(null)
               setIsDrugRecognition(false)
+              setErrorCount(0)
             }, 5000)
           } else {
             setError(response.error)
@@ -119,6 +120,7 @@ export default function TopPage() {
           isDrugRecognition={isDrugRecognition}
           loading={loading}
           error={error}
+          errorCount={errorCount}
         />
 
         <div className="relative mt-4 flex w-full items-center justify-center">

@@ -3,13 +3,13 @@ import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
 
-import { createPatientFormSchema } from "../../schema"
+import { updatePatientFormSchema } from "../../schema"
 import { PatientAlertFormFieldItem } from "./patient-alert-form-field-item"
 
 export function PatientAlertFormField({
   form,
 }: {
-  form: UseFormReturn<z.infer<typeof createPatientFormSchema>>
+  form: UseFormReturn<z.infer<typeof updatePatientFormSchema>>
 }) {
   const { fields, append, remove } = useFieldArray({
     name: "alerts",
@@ -34,6 +34,7 @@ export function PatientAlertFormField({
         className="block w-full"
         onClick={() =>
           append({
+            id: null,
             hour: "0",
             minute: "0",
             repeatStetting: null,
