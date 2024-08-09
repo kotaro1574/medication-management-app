@@ -45,9 +45,28 @@ export async function patentsFaceRecognition({
 
     const supabase = createClient()
 
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) {
+      throw new Error("ユーザーが見つかりません")
+    }
+
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("facility_id")
+      .eq("id", user.id)
+      .single()
+
+    if (profileError) {
+      throw profileError
+    }
+
     const { data, error } = await supabase
       .from("patients")
       .select("id, last_name, first_name")
+      .eq("facility_id", profile.facility_id)
       .filter("face_ids", "cs", `{${faceId}}`)
       .single()
 
