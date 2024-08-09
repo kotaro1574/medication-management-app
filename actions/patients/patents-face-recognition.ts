@@ -25,6 +25,8 @@ export async function patentsFaceRecognition({
 }: {
   imageSrc: string
 }): Promise<Result> {
+  let result: Result = { success: false, error: "エラーが発生しました" }
+
   try {
     const response = await rekognitionClient.send(
       new SearchFacesByImageCommand({
@@ -78,7 +80,7 @@ export async function patentsFaceRecognition({
       throw new Error("一致する患者が見つかりません")
     }
 
-    return {
+    result = {
       success: true,
       message: "服薬者の顔認証完了",
       data,
@@ -86,11 +88,12 @@ export async function patentsFaceRecognition({
   } catch (error) {
     if (error instanceof Error) {
       if (error.message.includes("There are no faces in the image")) {
-        return { success: false, error: "画像内に顔が見つかりません" }
+        result = { success: false, error: "画像内に顔が見つかりません" }
       } else {
-        return { success: false, error: error.message }
+        result = { success: false, error: error.message }
       }
     }
   }
-  return { success: false, error: "エラーが発生しました" }
+
+  return result
 }
