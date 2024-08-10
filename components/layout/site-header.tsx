@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 import { Icons } from "../ui/icons"
+import { HamburgerMenu } from "./hamburger-menu"
 import { SiteDrawer } from "./site-drawer"
 
 type Props = {
@@ -26,7 +27,10 @@ export function SiteHeader({ profileName }: Props) {
             <div>{profileName}</div>
           </div>
         </Link>
-        <SiteDrawer trigger={<Icons.hamburger />} profileName={profileName} />
+        <HamburgerMenu
+          trigger={<Icons.hamburger />}
+          profileName={profileName}
+        />
       </div>
     </header>
   )
