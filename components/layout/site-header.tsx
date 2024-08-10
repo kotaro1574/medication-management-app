@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation"
 
 import { Icons } from "../ui/icons"
 import { HamburgerMenu } from "./hamburger-menu"
-import { SiteDrawer } from "./site-drawer"
 
 type Props = {
   profileName: string
