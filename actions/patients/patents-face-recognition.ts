@@ -25,6 +25,8 @@ export async function patentsFaceRecognition({
 }: {
   imageSrc: string
 }): Promise<Result> {
+  let result: Result = { success: false, error: "エラーが発生しました" }
+
   try {
     const response = await rekognitionClient.send(
       new SearchFacesByImageCommand({
@@ -45,10 +47,39 @@ export async function patentsFaceRecognition({
 
     const supabase = createClient()
 
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) {
+      throw new Error("ユーザーが見つかりません")
+    }
+
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("facility_id")
+      .eq("id", user.id)
+      .single()
+
+    if (profileError) {
+      throw profileError
+    }
+
+    const { data: face, error: faceError } = await supabase
+      .from("faces")
+      .select("patient_id")
+      .eq("face_id", faceId)
+      .single()
+
+    if (faceError) {
+      throw faceError
+    }
+
     const { data, error } = await supabase
       .from("patients")
       .select("id, last_name, first_name")
-      .filter("face_ids", "cs", `{${faceId}}`)
+      .eq("facility_id", profile.facility_id)
+      .eq("id", face.patient_id)
       .single()
 
     if (error) {
@@ -59,7 +90,7 @@ export async function patentsFaceRecognition({
       throw new Error("一致する患者が見つかりません")
     }
 
-    return {
+    result = {
       success: true,
       message: "服薬者の顔認証完了",
       data,
@@ -67,11 +98,12 @@ export async function patentsFaceRecognition({
   } catch (error) {
     if (error instanceof Error) {
       if (error.message.includes("There are no faces in the image")) {
-        return { success: false, error: "画像内に顔が見つかりません" }
+        result = { success: false, error: "画像内に顔が見つかりません" }
       } else {
-        return { success: false, error: error.message }
+        result = { success: false, error: error.message }
       }
     }
   }
-  return { success: false, error: "エラーが発生しました" }
+
+  return result
 }
