@@ -1,5 +1,11 @@
 import { ReactNode, useEffect, useState } from "react"
-import { is } from "date-fns/locale"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { logout } from "@/actions/auth/logout"
+
+import { Icons } from "../ui/icons"
+import { Separator } from "../ui/separator"
+import { useToast } from "../ui/use-toast"
 
 type Props = {
   profileName: string
@@ -9,6 +15,8 @@ type Props = {
 export function HamburgerMenu({ profileName, trigger }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const [isAnimating, setIsAnimating] = useState(false)
+  const { toast } = useToast()
+  const router = useRouter()
 
   const toggleMenu = () => {
     if (isOpen) {
@@ -33,6 +41,30 @@ export function HamburgerMenu({ profileName, trigger }: Props) {
       document.body.style.overflow = ""
     }
   }, [isOpen])
+
+  const handleLinkClick = () => {
+    setIsAnimating(true)
+    setTimeout(() => {
+      setIsOpen(false)
+      setIsAnimating(false)
+    }, 500)
+  }
+
+  const handleLogout = () => {
+    setIsAnimating(true)
+    setTimeout(async () => {
+      setIsOpen(false)
+      setIsAnimating(false)
+      await logout()
+      const response = await logout()
+      if (response.success) {
+        toast({ title: response.message })
+        router.push("/login")
+      } else {
+        toast({ title: response.error, variant: "destructive" })
+      }
+    }, 500)
+  }
 
   return (
     <div>
@@ -59,20 +91,63 @@ export function HamburgerMenu({ profileName, trigger }: Props) {
               : "animate-slide-out-fwd-right md:animate-slide-out-bck-center"
           }`}
         >
-          <ul className="py-2">
-            <li className="px-4 py-2 hover:bg-gray-200">
-              <a href="#">Home</a>
-            </li>
-            <li className="px-4 py-2 hover:bg-gray-200">
-              <a href="#">About</a>
-            </li>
-            <li className="px-4 py-2 hover:bg-gray-200">
-              <a href="#">Services</a>
-            </li>
-            <li className="px-4 py-2 hover:bg-gray-200">
-              <a href="#">Contact</a>
-            </li>
-          </ul>
+          <div className="mx-auto w-full space-y-6">
+            <div className="bg-[url('/bg-hamburger.png')] bg-cover bg-no-repeat px-4 pb-[14px] pt-[183px]">
+              <div className="mb-2 text-[20px] font-semibold">
+                <Link href="/" passHref onClick={handleLinkClick}>
+                  {profileName}
+                </Link>
+              </div>
+              <button onClick={handleLogout} className="flex items-center">
+                <Icons.logout className="size-6" />
+                <p className="text-[14px]">ログアウト</p>
+              </button>
+            </div>
+
+            <div className="grid gap-4 px-2 text-[20px] font-medium">
+              <Link
+                href="/patients"
+                passHref
+                onClick={handleLinkClick}
+                className="flex items-center rounded-sm px-2 py-[6px] hover:bg-[#FFCA0E]/15 hover:text-[#FFCA0E]"
+              >
+                <Icons.users className="mr-8" />
+                <p>利用者一覧</p>
+              </Link>
+              <Link
+                href="/patients/create"
+                passHref
+                onClick={handleLinkClick}
+                className="flex items-center rounded-sm px-2 py-[6px] hover:bg-[#FFCA0E]/15 hover:text-[#FFCA0E]"
+              >
+                <Icons.userHeader className="mr-8" />
+                <p>利用者登録</p>
+              </Link>
+              <Link
+                href="/groups"
+                passHref
+                onClick={handleLinkClick}
+                className="flex items-center rounded-sm px-2 py-[6px] hover:bg-[#FFCA0E]/15 hover:text-[#FFCA0E]"
+              >
+                <Icons.groups className="mr-8" />
+                <p>グループ一覧</p>
+              </Link>
+            </div>
+            <div className="px-4">
+              <Separator />
+            </div>
+            <div className="px-2">
+              <Link
+                href="/user"
+                passHref
+                onClick={handleLinkClick}
+                className="flex items-center rounded-sm px-2 py-[6px] hover:bg-[#FFCA0E]/15 hover:text-[#FFCA0E]"
+              >
+                <Icons.settings className="mr-8 size-4" />
+                <p className="text-sm">アカウント情報</p>
+              </Link>
+            </div>
+          </div>
         </div>
       )}
     </div>
