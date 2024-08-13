@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form"
 import { Icons } from "@/components/ui/icons"
 import { Input } from "@/components/ui/input"
+import { useToast } from "@/components/ui/use-toast"
 
 const formSchema = z.object({
   email: z
@@ -29,6 +30,7 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false)
   const [isSend, setIsSend] = useState(false)
   const [error, setError] = useState<AuthError | null>(null)
+  const { toast } = useToast()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,6 +51,7 @@ export default function ResetPasswordPage() {
         throw error
       }
       setIsSend(true)
+      toast({ title: "メールが送信されました。" })
     } catch (error) {
       console.log(error)
     }
