@@ -1,4 +1,5 @@
 import { EditUserForm } from "@/feature/user/edit-user-form"
+import { EmailChangeConfirmToast } from "@/feature/user/email-change-confirm-toast"
 
 import { createClient } from "@/lib/supabase/server"
 
@@ -27,6 +28,7 @@ export default async function UserPage() {
   return (
     <section className="min-h-screen bg-[#F5F5F5] px-4 pb-8 pt-11">
       <EditUserForm profile={profile} email={user.email ?? ""} />
+      <EmailChangeConfirmToast user={user} name={profile.name} />
     </section>
   )
 }
