@@ -13,29 +13,40 @@ export async function setLoginInfo({
   email: string
   password?: string
 }) {
-  if (!password) {
-    const currentPassword = JSON.parse(
-      cookies().get(`login-info-${id}`)?.value ?? ""
-    ).password as string
+  const cookieKey = `login-info-${id}`
 
-    cookies().set(
-      `login-info-${id}`,
-      JSON.stringify({ name, email, password: currentPassword }),
-      {
-        httpOnly: true,
-        secure: true,
-        maxAge: 20 * 60 * 60, // 20 hours in seconds
-      }
-    )
-  } else {
-    cookies().set(
-      `login-info-${id}`,
-      JSON.stringify({ name, email, password }),
-      {
-        httpOnly: true,
-        secure: true,
-        maxAge: 20 * 60 * 60, // 20 hours in seconds
-      }
-    )
+  let currentCookie = cookies().get(cookieKey)?.value ?? "{}"
+  let currentData: { name: string; email: string; password: string } = {
+    name: "",
+    email: "",
+    password: "",
   }
+
+  try {
+    currentData = JSON.parse(currentCookie)
+  } catch (error) {
+    console.error("クッキーデータのパースに失敗しました:", error)
+  }
+
+  const newPassword = password || currentData.password
+
+  if (!newPassword) {
+    console.error("パスワードが不足しているため、クッキーを更新できません。")
+    return
+  }
+
+  const newCookieValue = JSON.stringify({
+    name,
+    email,
+    password: newPassword,
+  })
+
+  console.log("クッキーを更新します:", newCookieValue)
+
+  cookies().set(cookieKey, newCookieValue, {
+    path: "/",
+    httpOnly: true,
+    secure: true,
+    maxAge: 20 * 60 * 60, // 20時間（秒単位）
+  })
 }

@@ -48,6 +48,7 @@ export async function login({
       `login-info-${userData.user.id}`,
       JSON.stringify({ name: profileData.name, email, password }),
       {
+        path: "/",
         httpOnly: true,
         secure: true,
         maxAge: 20 * 60 * 60, // 20 hours in seconds
