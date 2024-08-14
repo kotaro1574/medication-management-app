@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { setLoginInfo } from "@/actions/cookie/set-login-info"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { AuthError, User } from "@supabase/supabase-js"
+import { AuthError, PostgrestError } from "@supabase/supabase-js"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -35,7 +35,7 @@ const formSchema = z
 
 export function InputPasswordForm() {
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<AuthError | null>(null)
+  const [error, setError] = useState<AuthError | PostgrestError | null>(null)
   const router = useRouter()
   const { toast } = useToast()
 
@@ -51,13 +51,35 @@ export function InputPasswordForm() {
     try {
       setLoading(true)
       const supabase = createClient()
-      const { error } = await supabase.auth.updateUser({ password: password })
+      const { data, error } = await supabase.auth.updateUser({
+        password: password,
+      })
       if (error) {
         setError(error)
         throw error
       }
 
-      router.push("/?code=password-updated")
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("name")
+        .eq("id", data?.user.id)
+        .single()
+
+      if (profileError) {
+        setError(profileError)
+        throw profileError
+      }
+
+      if (data.user.email) {
+        await setLoginInfo({
+          id: data.user.id,
+          name: profileData.name,
+          email: data.user.email,
+          password: password,
+        })
+      }
+
+      router.push("/")
       router.refresh()
       toast({ title: "パスワードを更新し、ログインしました！" })
     } catch (error) {
