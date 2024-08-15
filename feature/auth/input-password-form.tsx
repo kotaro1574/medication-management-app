@@ -62,7 +62,7 @@ export function InputPasswordForm() {
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
         .select("name")
-        .eq("id", data?.user.id)
+        .eq("id", data.user.id)
         .single()
 
       if (profileError) {
@@ -71,14 +71,13 @@ export function InputPasswordForm() {
       }
 
       if (data.user.email) {
+        console.log("emailある")
         await setLoginInfo({
           id: data.user.id,
-          name: profileData.name,
+          name: "うんこ",
           email: data.user.email,
-          password: password,
         })
       }
-
       router.push("/")
       router.refresh()
       toast({ title: "パスワードを更新し、ログインしました！" })
@@ -91,6 +90,7 @@ export function InputPasswordForm() {
     return (
       <div className="container max-w-[450px] py-[120px]">
         <p className="text-center">エラーが発生しました</p>
+        <p className="text-center text-red-500">{error.message}</p>
       </div>
     )
   }
