@@ -40,7 +40,6 @@ export async function updateUser({
     }
 
     if (email !== user.email) {
-      console.log("email", email)
       const { error: emailError } = await supabase.auth.updateUser(
         { email },
         { emailRedirectTo: process.env.NEXT_PUBLIC_URL + "/user" }

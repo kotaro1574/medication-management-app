@@ -41,8 +41,6 @@ export async function setLoginInfo({
     password: newPassword,
   })
 
-  console.log("クッキーを更新します:", newCookieValue)
-
   cookies().set(cookieKey, newCookieValue, {
     path: "/",
     httpOnly: true,

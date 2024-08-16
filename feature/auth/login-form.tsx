@@ -82,7 +82,6 @@ export function LoginForm({
     form.setValue("password", loginInfo.password)
   }
 
-  console.log(loginInfoWithCookies)
   return (
     <div>
       {error && (
