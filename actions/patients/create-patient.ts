@@ -4,7 +4,12 @@ import { revalidatePath } from "next/cache"
 import { SupabaseClient } from "@supabase/supabase-js"
 
 import { Database } from "@/types/schema.gen"
-import { IndexFaces, uploadFaceImage } from "@/lib/aws/utils"
+import {
+  IndexFaces,
+  checkFaceImageExists,
+  deleteImage,
+  uploadFaceImage,
+} from "@/lib/aws/utils"
 import { createClient } from "@/lib/supabase/server"
 
 type Props = {
@@ -123,6 +128,56 @@ export async function createPatient({
     const faceImages = formData.getAll("faceImages") as File[]
 
     const faceImageIds = await uploadFaceImage(faceImages)
+
+    const promises = faceImageIds.map(async (faceImageId) => {
+      const faceId = await checkFaceImageExists(
+        faceImageId,
+        process.env.FACES_BUCKET ?? ""
+      )
+
+      if (!faceId) return
+
+      const supabase = createClient()
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (!user) {
+        throw new Error("ユーザーが見つかりません")
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("facility_id")
+        .eq("id", user.id)
+        .single()
+
+      const { data: face } = await supabase
+        .from("faces")
+        .select("patient_id")
+        .eq("face_id", faceId)
+        .single()
+
+      if (!profile || !face) return
+
+      const { data } = await supabase
+        .from("patients")
+        .select("id, last_name, first_name")
+        .eq("facility_id", profile.facility_id)
+        .eq("id", face.patient_id)
+        .single()
+
+      if (data) {
+        await deleteImage([faceImageId], process.env.FACES_BUCKET ?? "")
+        throw new Error(
+          `同じ顔データが既に登録されています。: ${data.last_name} ${data.first_name}`
+        )
+      }
+    })
+
+    await Promise.all(promises)
+
     const faces = await IndexFaces(faceImageIds, process.env.FACES_BUCKET ?? "")
     const faceIds = faces.map((face) => face.faceId)
 
