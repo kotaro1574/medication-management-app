@@ -71,11 +71,17 @@ export function InputPasswordForm() {
       }
 
       if (data.user.email) {
-        console.log("emailある")
-        await setLoginInfo({
-          id: data.user.id,
-          name: "うんこ",
-          email: data.user.email,
+        await fetch("/api/set-login-info", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: data.user.id,
+            name: profileData.name,
+            email: data.user.email,
+            password,
+          }),
         })
       }
       router.push("/")
