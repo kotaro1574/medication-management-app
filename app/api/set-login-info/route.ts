@@ -1,18 +1,9 @@
-"use server"
-
+// /app/api/set-login-info/route.ts (API Route)
 import { cookies } from "next/headers"
 
-export async function setLoginInfo({
-  id,
-  name,
-  email,
-  password,
-}: {
-  id: string
-  name: string
-  email: string
-  password?: string
-}) {
+export async function POST(req: Request) {
+  const { id, name, email, password } = await req.json()
+
   const cookieKey = `login-info-${id}`
 
   let currentCookie = cookies().get(cookieKey)?.value ?? "{}"
@@ -32,7 +23,7 @@ export async function setLoginInfo({
 
   if (!newPassword) {
     console.error("パスワードが不足しているため、クッキーを更新できません。")
-    return
+    return new Response("Password is missing", { status: 400 })
   }
 
   const newCookieValue = JSON.stringify({
@@ -47,4 +38,6 @@ export async function setLoginInfo({
     secure: true,
     maxAge: 20 * 60 * 60, // 20時間（秒単位）
   })
+
+  return new Response("Cookie set", { status: 200 })
 }

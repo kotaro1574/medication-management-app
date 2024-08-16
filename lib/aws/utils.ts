@@ -23,13 +23,17 @@ export async function checkFaceImageExists(imageId: string, bucket: string) {
     })
   )
 
-  const faceExists =
-    res.FaceMatches && res.FaceMatches.length > 0 ? true : false
+  const faceId = res.FaceMatches?.[0]?.Face?.FaceId
 
-  if (faceExists) {
-    await deleteImage([imageId], bucket)
-    throw new Error("コレクション内に同じ顔データが既に存在します。")
-  }
+  return faceId ?? null
+
+  // const faceExists =
+  //   res.FaceMatches && res.FaceMatches.length > 0 ? true : false
+
+  // if (faceExists) {
+  //   await deleteImage([imageId], bucket)
+  //   throw new Error("コレクション内に同じ顔データが既に存在します。")
+  // }
 }
 
 export async function IndexFaces(

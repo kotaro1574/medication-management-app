@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form"
 import { Icons } from "@/components/ui/icons"
 import { Input } from "@/components/ui/input"
+import { useToast } from "@/components/ui/use-toast"
 
 const formSchema = z.object({
   email: z
