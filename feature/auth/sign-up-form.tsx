@@ -139,7 +139,6 @@ export function SignUpForm() {
       ;(async () => {
         const response = await logout()
         if (response.success) {
-          console.log(response.message)
           form.reset()
           setIsConfirm(false)
         } else {

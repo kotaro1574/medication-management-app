@@ -40,26 +40,9 @@ export async function updateUser({
     }
 
     if (email !== user.email) {
-      console.log("email", email)
       const { error: emailError } = await supabase.auth.updateUser(
         { email },
         { emailRedirectTo: process.env.NEXT_PUBLIC_URL + "/user" }
-      )
-
-      const currentPassword = JSON.parse(
-        cookies().get(`login-info-${user.id}`)?.value ?? ""
-      ).password
-
-      console.log("currentPassword", currentPassword)
-
-      cookies().set(
-        `login-info-${user.id}`,
-        JSON.stringify({ name, email, password: currentPassword }),
-        {
-          httpOnly: true,
-          secure: true,
-          maxAge: 20 * 60 * 60, // 20 hours in seconds
-        }
       )
 
       if (emailError) {
