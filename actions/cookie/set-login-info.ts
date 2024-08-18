@@ -10,7 +10,7 @@ export async function setLoginInfo({
 }: {
   id: string
   name: string
-  email: string
+  email?: string
   password?: string
 }) {
   const cookieKey = `login-info-${id}`
@@ -28,6 +28,7 @@ export async function setLoginInfo({
     console.error("クッキーデータのパースに失敗しました:", error)
   }
 
+  const newEmail = email || currentData.email
   const newPassword = password || currentData.password
 
   if (!newPassword) {
@@ -37,7 +38,7 @@ export async function setLoginInfo({
 
   const newCookieValue = JSON.stringify({
     name,
-    email,
+    email: newEmail,
     password: newPassword,
   })
 
