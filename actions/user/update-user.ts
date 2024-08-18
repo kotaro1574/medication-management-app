@@ -6,6 +6,8 @@ import { cookies } from "next/headers"
 import { ActionResult } from "@/types/action"
 import { createClient } from "@/lib/supabase/server"
 
+import { setLoginInfo } from "../cookie/set-login-info"
+
 type Props = {
   name: string
   email: string
@@ -38,6 +40,8 @@ export async function updateUser({
         `ユーザー情報の更新時にエラーが発生しました: ${error.message}`
       )
     }
+
+    await setLoginInfo({ id: user.id, name })
 
     if (email !== user.email) {
       const { error: emailError } = await supabase.auth.updateUser(
