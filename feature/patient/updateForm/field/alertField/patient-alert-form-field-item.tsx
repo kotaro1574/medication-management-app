@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useState } from "react"
 import { HourSelect } from "@/feature/patient/hour-select"
 import { MinuteSelect } from "@/feature/patient/minute-select"
 import { RepeatStettingSelect } from "@/feature/patient/repeat-stetting-select"
@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -32,6 +31,8 @@ type Props = {
 }
 
 export function PatientAlertFormFieldItem({ index, form, remove }: Props) {
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
     <div className="mt-4 rounded-2xl bg-white p-4 shadow-shadow">
       <div className="flex items-center justify-between">
@@ -98,9 +99,16 @@ export function PatientAlertFormFieldItem({ index, form, remove }: Props) {
             <FormItem className="w-full max-w-[180px] space-y-0">
               <FormControl>
                 <RepeatStettingSelect
-                  onValueChange={field.onChange}
+                  onValueChange={(value) => {
+                    if (value === "null") {
+                      field.onChange(null)
+                      return
+                    }
+                    field.onChange(value)
+                  }}
                   defaultValue={String(field.value)}
                   disabled={form.watch("alerts")[index].date !== null}
+                  isReset={field.value !== null}
                 />
               </FormControl>
             </FormItem>
@@ -115,7 +123,7 @@ export function PatientAlertFormFieldItem({ index, form, remove }: Props) {
           render={({ field }) => (
             <FormItem className="flex max-w-[210px] items-center space-y-0">
               {!field.value ? (
-                <Popover>
+                <Popover open={isOpen} onOpenChange={setIsOpen}>
                   <PopoverTrigger asChild>
                     <FormControl>
                       <button
@@ -129,11 +137,17 @@ export function PatientAlertFormFieldItem({ index, form, remove }: Props) {
                       </button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
+                  <PopoverContent
+                    className="w-auto rounded-2xl p-0"
+                    align="start"
+                  >
                     <Calendar
                       mode="single"
                       selected={field.value ?? undefined}
-                      onSelect={field.onChange}
+                      onSelect={(value) => {
+                        field.onChange(value)
+                        setIsOpen(false)
+                      }}
                       disabled={(date) =>
                         date < new Date(new Date().setHours(0, 0, 0, 0))
                       }
@@ -143,9 +157,32 @@ export function PatientAlertFormFieldItem({ index, form, remove }: Props) {
                 </Popover>
               ) : (
                 <div className="flex items-center gap-4">
-                  <p className="text-[10px] font-bold text-[#A4A4A4]">
-                    {format(field.value, "yyyy月M月d日")}
-                  </p>
+                  <Popover open={isOpen} onOpenChange={setIsOpen}>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <p className="cursor-pointer text-[10px] font-bold text-[#A4A4A4]">
+                          {format(field.value, "yyyy月M月d日")}
+                        </p>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-auto rounded-2xl p-0"
+                      align="start"
+                    >
+                      <Calendar
+                        mode="single"
+                        selected={field.value ?? undefined}
+                        onSelect={(value) => {
+                          field.onChange(value)
+                          setIsOpen(false)
+                        }}
+                        disabled={(date) =>
+                          date < new Date(new Date().setHours(0, 0, 0, 0))
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                   <button
                     onClick={() => {
                       field.onChange(null)

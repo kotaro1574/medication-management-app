@@ -111,7 +111,7 @@ export default async function PatientPage({
 
   const { data: alerts, error: alertError } = await supabase
     .from("alerts")
-    .select("id")
+    .select("id, is_alert_enabled")
     .eq("patient_id", params.id)
 
   if (alertError) {
@@ -123,7 +123,7 @@ export default async function PatientPage({
     )
   }
 
-  const isAlert = alerts.length > 0
+  const isAlert = alerts.some((alert) => alert.is_alert_enabled)
 
   return (
     <section className="min-h-screen bg-[#F5F5F5]">
