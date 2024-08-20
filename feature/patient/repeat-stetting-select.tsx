@@ -14,6 +14,7 @@ type Props = {
   defaultValue: string
   isError?: boolean
   disabled: boolean
+  isReset?: boolean
 }
 
 export function RepeatStettingSelect({
@@ -21,6 +22,7 @@ export function RepeatStettingSelect({
   defaultValue,
   isError,
   disabled,
+  isReset,
 }: Props) {
   return (
     <Select
@@ -35,7 +37,8 @@ export function RepeatStettingSelect({
       </FormControl>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>繰り返しを選択</SelectLabel>
+          <SelectLabel>繰り返し設定</SelectLabel>
+          {isReset && <SelectItem value="null">リセット</SelectItem>}
           <SelectItem value="1時間おき">1時間おき</SelectItem>
           <SelectItem value="2時間おき">2時間おき</SelectItem>
           <SelectItem value="3時間おき">3時間おき</SelectItem>

@@ -99,9 +99,16 @@ export function PatientAlertFormFieldItem({ index, form, remove }: Props) {
             <FormItem className="w-full max-w-[180px] space-y-0">
               <FormControl>
                 <RepeatStettingSelect
-                  onValueChange={field.onChange}
+                  onValueChange={(value) => {
+                    if (value === "null") {
+                      field.onChange(null)
+                      return
+                    }
+                    field.onChange(value)
+                  }}
                   defaultValue={String(field.value)}
                   disabled={form.watch("alerts")[index].date !== null}
+                  isReset={field.value !== null}
                 />
               </FormControl>
             </FormItem>
