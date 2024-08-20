@@ -82,6 +82,28 @@ module.exports = {
             opacity: "1",
           },
         },
+        "scale-out-hor-right": {
+          "0%": {
+            transform: "scaleX(1)",
+            "transform-origin": "100% 100%",
+            opacity: "1",
+          },
+          to: {
+            transform: "scaleX(0)",
+            "transform-origin": "100% 100%",
+            opacity: "1",
+          },
+        },
+        "slide-in-fwd-right": {
+          "0%": {
+            transform: "translateZ(-1400px) translateX(1000px)",
+            opacity: "0",
+          },
+          to: {
+            transform: "translateZ(0) translateX(0)",
+            opacity: "1",
+          },
+        },
         "slide-out-fwd-right": {
           "0%": {
             transform: "translateZ(0) translateX(0)",
@@ -118,6 +140,10 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
         "scale-in-hor-right":
           "scale-in-hor-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both",
+        "scale-out-hor-right":
+          "scale-out-hor-right 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both",
+        "slide-in-fwd-right":
+          "slide-in-fwd-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both",
         "slide-out-fwd-right":
           "slide-out-fwd-right 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both",
         "slide-in-bck-center":
