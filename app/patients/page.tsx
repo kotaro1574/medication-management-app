@@ -74,9 +74,9 @@ export default async function PatientsPage() {
         return { ...patient, url, isAlert: false, drugHistory: [] }
       }
 
-      const { data: alert, error: alertError } = await supabase
+      const { data: alerts, error: alertError } = await supabase
         .from("alerts")
-        .select("id")
+        .select("id, is_alert_enabled")
         .eq("patient_id", patient.id)
 
       if (alertError) {
@@ -91,7 +91,7 @@ export default async function PatientsPage() {
         }
       }
 
-      const isAlert = alert.length > 0
+      const isAlert = alerts.some((alert) => alert.is_alert_enabled)
 
       return {
         ...patient,
