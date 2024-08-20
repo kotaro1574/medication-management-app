@@ -87,8 +87,8 @@ export function HamburgerMenu({ profileName, trigger }: Props) {
         <div
           className={`absolute right-0 top-0 z-50 h-screen w-2/3 bg-white shadow-md ${
             isOpen && !isAnimating
-              ? "animate-scale-in-hor-right"
-              : "animate-slide-out-fwd-right md:animate-slide-out-bck-center"
+              ? "animate-slide-in-fwd-right md:animate-scale-in-hor-right"
+              : "animate-slide-out-fwd-right md:animate-scale-out-hor-right"
           }`}
         >
           <div className="mx-auto w-full space-y-6">
