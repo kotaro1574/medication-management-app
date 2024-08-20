@@ -14,7 +14,7 @@ type Props = {
   defaultValue: string
   isError?: boolean
   disabled: boolean
-  isReset?: boolean
+  isReset: boolean
 }
 
 export function RepeatStettingSelect({
