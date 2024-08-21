@@ -21,12 +21,14 @@ type Props = {
   onValueChange: (value: string) => void
   defaultValue: string
   isError: boolean
+  disabled?: boolean
 }
 
 export function FacilitiesSelect({
   onValueChange,
   defaultValue,
   isError,
+  disabled = false,
 }: Props) {
   const supabase = createClient()
   const [facilities, setFacilities] = useState<Facility[]>([])
@@ -48,7 +50,11 @@ export function FacilitiesSelect({
   }, [supabase])
 
   return (
-    <Select onValueChange={onValueChange} defaultValue={defaultValue}>
+    <Select
+      onValueChange={onValueChange}
+      disabled={disabled}
+      defaultValue={defaultValue}
+    >
       <FormControl>
         <SelectTrigger isError={isError}>
           <SelectValue />
