@@ -96,7 +96,7 @@ export default async function EditPatientPage({
   const drugImageIds = _drugs.map((drug) => drug.image_id)
 
   return (
-    <section className="min-h-screen bg-[#F5F5F5] px-4 pb-8 pt-11">
+    <section className="min-h-screen bg-[#F5F5F5] px-4 pb-8 pt-[62px]">
       <UpdatePatientForm
         faceImageIds={faceImageIds}
         drugImageIds={drugImageIds}
