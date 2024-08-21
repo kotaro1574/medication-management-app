@@ -132,6 +132,7 @@ export function PatientFaceAndDrugRecognition() {
           <button
             onClick={onReset}
             className="absolute left-2 top-0 text-xs text-[#A4A4A4] hover:text-[#A4A4A4]/60"
+            disabled={loading}
           >
             認証やり直し
           </button>
@@ -139,12 +140,14 @@ export function PatientFaceAndDrugRecognition() {
         <button
           onClick={onRecognition}
           className="text-[#D9D9D9] hover:text-red-600"
+          disabled={loading || isDrugRecognition}
         >
           <Icons.shutter />
         </button>
         <button
           className="absolute right-2 top-0 text-[#A4A4A4] hover:text-[#A4A4A4]/60"
           onClick={onSwitchCamera}
+          disabled={loading}
         >
           <Icons.switch />
         </button>

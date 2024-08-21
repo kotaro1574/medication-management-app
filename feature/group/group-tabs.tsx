@@ -79,7 +79,7 @@ export function GroupTabs({ items }: props) {
             item.contents.map((content) => (
               <div
                 key={`content-item-${content.name}`}
-                className="flex items-center gap-8 rounded-2xl bg-white px-2 py-1.5 shadow-shadow"
+                className="flex items-center gap-2 rounded-2xl bg-white px-2 py-1.5 shadow-shadow"
               >
                 <Link href={`/patients/${content.id}`} className="block">
                   <div className="flex w-[60px] flex-col items-center">
@@ -93,28 +93,33 @@ export function GroupTabs({ items }: props) {
                     </p>
                   </div>
                 </Link>
-                {content.drugHistoryWithNames.map((drugHistory, i) => (
-                  <Popover key={drugHistory.id}>
-                    <PopoverTrigger>
-                      <div className="text-center">
-                        {/* いつか直したい */}
-                        {drugHistory.medication_auth_result === "success" ? (
-                          <Icons.drugHistory className="text-[#4ECB71]" />
-                        ) : (
-                          <Icons.drugHistory className="text-[#F24E1E]" />
-                        )}
-                        <div className="mt-1 text-[11px]">
-                          {formatDate(new Date(drugHistory.created_at), "H:mm")}
+                <div className="flex items-center gap-8 overflow-x-auto pl-6">
+                  {content.drugHistoryWithNames.map((drugHistory, i) => (
+                    <Popover key={drugHistory.id}>
+                      <PopoverTrigger>
+                        <div className="text-center">
+                          {/* いつか直したい */}
+                          {drugHistory.medication_auth_result === "success" ? (
+                            <Icons.drugHistory className="text-[#4ECB71]" />
+                          ) : (
+                            <Icons.drugHistory className="text-[#F24E1E]" />
+                          )}
+                          <div className="mt-1 text-[11px]">
+                            {formatDate(
+                              new Date(drugHistory.created_at),
+                              "H:mm"
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </PopoverTrigger>
-                    <PopoverContent>
-                      <div className="text-sm font-semibold">
-                        担当者：{drugHistory.user_name}
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                ))}
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <div className="text-sm font-semibold">
+                          担当者：{drugHistory.user_name}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  ))}
+                </div>
               </div>
             ))
           )}
