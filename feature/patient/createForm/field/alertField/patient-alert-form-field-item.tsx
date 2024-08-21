@@ -10,11 +10,13 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
 } from "@/components/ui/form"
 import { Icons } from "@/components/ui/icons"
+import { Input } from "@/components/ui/input"
 import {
   Popover,
   PopoverContent,
@@ -36,9 +38,25 @@ export function PatientAlertFormFieldItem({ index, form, remove }: Props) {
   return (
     <div className="mt-4 rounded-2xl bg-white p-4 shadow-shadow">
       <div className="flex items-center justify-between">
-        <p className="text-xl text-[#A4A4A4]">{`アラートタイマー${
-          index + 1
-        }`}</p>
+        <FormField
+          control={form.control}
+          name={`alerts.${index}.name`}
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  {...field}
+                  isError={!!form.formState.errors.alerts?.[index]?.name}
+                />
+              </FormControl>
+              {form.formState.errors.alerts?.[index]?.name && (
+                <FormDescription>
+                  {form.formState.errors.alerts[index]?.name?.message}
+                </FormDescription>
+              )}
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name={`alerts.${index}.isAlertEnabled`}

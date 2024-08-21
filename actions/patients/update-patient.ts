@@ -27,6 +27,7 @@ type Props = {
   deleteDrugIds: string[]
   alerts: {
     id: string | null
+    name: string
     hour: string
     minute: string
     repeatStetting: string | null
@@ -219,6 +220,7 @@ export async function updatePatient({
       supabase,
       alerts.map((alert) => ({
         id: alert.id ?? uuidv4(),
+        name: alert.name,
         patient_id: patientId,
         hour: Number(alert.hour),
         minute: Number(alert.minute),
