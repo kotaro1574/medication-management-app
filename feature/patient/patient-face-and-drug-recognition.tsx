@@ -50,6 +50,11 @@ export function PatientFaceAndDrugRecognition() {
             setPatent(response.data)
             setError(null)
             successSound.play()
+            setTimeout(() => {
+              if (cameraRef.current) {
+                cameraRef.current.switchCamera()
+              }
+            }, 1000)
           } else {
             setError(response.error)
             errorSound.play()
