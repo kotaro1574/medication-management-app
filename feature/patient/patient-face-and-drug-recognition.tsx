@@ -1,7 +1,6 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState, useTransition } from "react"
-import { useSearchParams } from "next/navigation"
 import { createDrugHistory } from "@/actions/drugHistory/create-drug-history"
 import { patentsDrugRecognition } from "@/actions/patients/patents-drug-recognition"
 import { patentsFaceRecognition } from "@/actions/patients/patents-face-recognition"
@@ -23,8 +22,6 @@ export function PatientFaceAndDrugRecognition() {
   const [errorCount, setErrorCount] = useState<number>(0)
   const cameraRef = useRef<CameraType>(null)
   const { toast } = useToast()
-  const searchParams = useSearchParams()
-  const code = searchParams.get("code")
 
   const onReset = useCallback(() => {
     setPatent(null)
