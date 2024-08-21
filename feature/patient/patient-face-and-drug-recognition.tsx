@@ -5,6 +5,7 @@ import { createDrugHistory } from "@/actions/drugHistory/create-drug-history"
 import { patentsDrugRecognition } from "@/actions/patients/patents-drug-recognition"
 import { patentsFaceRecognition } from "@/actions/patients/patents-face-recognition"
 import { PatientFaceAndDrugRecognitionCamera } from "@/feature/patient/patient-face-and-drug-recognition-camera"
+import { set } from "date-fns"
 import { CameraType } from "react-camera-pro"
 
 import { Database } from "@/types/schema.gen"
@@ -50,6 +51,11 @@ export function PatientFaceAndDrugRecognition() {
             setPatent(response.data)
             setError(null)
             successSound.play()
+            setTimeout(() => {
+              if (cameraRef.current) {
+                cameraRef.current.switchCamera()
+              }
+            }, 1000)
           } else {
             setError(response.error)
             errorSound.play()
