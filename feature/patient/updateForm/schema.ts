@@ -2,6 +2,7 @@ import { z } from "zod"
 
 const alertObj = z.object({
   id: z.string().nullable(),
+  name: z.string().min(1, { message: "アラート名を入力してください" }),
   hour: z.string(),
   minute: z.string(),
   repeatStetting: z.string().nullable(),

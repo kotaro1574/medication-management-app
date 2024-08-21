@@ -63,6 +63,7 @@ export function UpdatePatientForm({
       deleteDrugIds: [],
       alerts: alerts.map((alert) => ({
         id: alert.id,
+        name: alert.name,
         hour: String(alert.hour),
         minute: String(alert.minute),
         repeatStetting: alert.repeat_setting,
