@@ -21,7 +21,7 @@ export function DrugInfo({ drugs }: Props) {
 
       {drugs.length > 0 ? (
         drugs.map((drug, i) => (
-          <div key={drug.id} className="mx-auto max-w-md">
+          <div key={drug.id} className="mx-auto">
             <div className="flex items-center justify-between text-[11px]">
               <div>
                 登録日：{formatDate(new Date(drug.created_at), "yyyy/MM/dd")}
@@ -30,12 +30,14 @@ export function DrugInfo({ drugs }: Props) {
                 {i + 1}/{drugs.length}
               </div>
             </div>
-            <AspectRatio className="mt-1" ratio={340 / 400}>
+
+            <AspectRatio className="mt-1" ratio={340 / 390}>
               <Image
                 alt={drug.id}
                 src={drug.url}
                 fill
-                placeholder={placeholder({ w: 340, h: 400 })}
+                className="object-cover"
+                placeholder={placeholder({ w: 340, h: 390 })}
               />
             </AspectRatio>
           </div>
