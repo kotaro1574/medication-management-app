@@ -42,6 +42,7 @@ export type Database = {
           id: string
           is_alert_enabled: boolean
           minute: number
+          name: string
           patient_id: string
           repeat_setting: string | null
           updated_at: string
@@ -53,6 +54,7 @@ export type Database = {
           id?: string
           is_alert_enabled?: boolean
           minute: number
+          name: string
           patient_id: string
           repeat_setting?: string | null
           updated_at?: string
@@ -64,6 +66,7 @@ export type Database = {
           id?: string
           is_alert_enabled?: boolean
           minute?: number
+          name?: string
           patient_id?: string
           repeat_setting?: string | null
           updated_at?: string

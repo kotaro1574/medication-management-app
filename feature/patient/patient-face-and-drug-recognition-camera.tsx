@@ -60,7 +60,7 @@ export function PatientFaceAndDrugRecognitionCamera({
           height: "calc(100vh - 200px)",
         }}
       >
-        <DynamicCamera cameraRef={cameraRef} />
+        <DynamicCamera cameraRef={cameraRef} facingMode="user" />
       </div>
 
       <p className="text-md absolute top-[24px] w-full text-center font-semibold">

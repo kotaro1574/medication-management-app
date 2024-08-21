@@ -137,7 +137,7 @@ export default async function PatientsPage() {
   return (
     <section className="min-h-screen bg-[#F5F5F5]">
       <div className="mx-auto">
-        <h2 className="bg-white pb-[46px] pt-[60px] text-center text-[20px]">
+        <h2 className="bg-white pb-[46px] pt-[70px] text-center text-[20px]">
           {formatDate(today, "M/d(EEE)")}
         </h2>
         <GroupTabs items={tabs} />

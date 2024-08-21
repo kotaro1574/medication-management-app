@@ -1,7 +1,6 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState, useTransition } from "react"
-import { useSearchParams } from "next/navigation"
 import { createDrugHistory } from "@/actions/drugHistory/create-drug-history"
 import { patentsDrugRecognition } from "@/actions/patients/patents-drug-recognition"
 import { patentsFaceRecognition } from "@/actions/patients/patents-face-recognition"
@@ -23,8 +22,6 @@ export function PatientFaceAndDrugRecognition() {
   const [errorCount, setErrorCount] = useState<number>(0)
   const cameraRef = useRef<CameraType>(null)
   const { toast } = useToast()
-  const searchParams = useSearchParams()
-  const code = searchParams.get("code")
 
   const onReset = useCallback(() => {
     setPatent(null)
@@ -53,6 +50,11 @@ export function PatientFaceAndDrugRecognition() {
             setPatent(response.data)
             setError(null)
             successSound.play()
+            setTimeout(() => {
+              if (cameraRef.current) {
+                cameraRef.current.switchCamera()
+              }
+            }, 1000)
           } else {
             setError(response.error)
             errorSound.play()
@@ -130,6 +132,7 @@ export function PatientFaceAndDrugRecognition() {
           <button
             onClick={onReset}
             className="absolute left-2 top-0 text-xs text-[#A4A4A4] hover:text-[#A4A4A4]/60"
+            disabled={loading}
           >
             認証やり直し
           </button>
@@ -137,12 +140,14 @@ export function PatientFaceAndDrugRecognition() {
         <button
           onClick={onRecognition}
           className="text-[#D9D9D9] hover:text-red-600"
+          disabled={loading || isDrugRecognition}
         >
           <Icons.shutter />
         </button>
         <button
           className="absolute right-2 top-0 text-[#A4A4A4] hover:text-[#A4A4A4]/60"
           onClick={onSwitchCamera}
+          disabled={loading}
         >
           <Icons.switch />
         </button>

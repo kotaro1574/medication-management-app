@@ -34,6 +34,7 @@ export function PatientAlertFormField({
         className="block w-full"
         onClick={() =>
           append({
+            name: `アラートタイマー${fields.length + 1}`,
             hour: "0",
             minute: "0",
             repeatStetting: null,

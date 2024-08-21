@@ -22,6 +22,7 @@ type Props = {
   groupId: string
   gender: Database["public"]["Enums"]["gender_enum"]
   alerts: {
+    name: string
     hour: string
     minute: string
     repeatStetting: string | null
@@ -202,6 +203,7 @@ export async function createPatient({
     await insertFaces(supabase, faces, patientId)
 
     const alertsData = alerts.map((alert) => ({
+      name: alert.name,
       patient_id: patientId,
       hour: Number(alert.hour),
       minute: Number(alert.minute),

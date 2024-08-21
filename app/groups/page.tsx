@@ -34,7 +34,7 @@ export default async function GroupsPage() {
   }
 
   return (
-    <section className="px-4 py-[52px]">
+    <section className="px-4 pb-8 pt-[62px]">
       <h2 className=" text-xl text-[#C2B37F]">グループ一覧</h2>
       <div>
         {groups.length === 0 ? (

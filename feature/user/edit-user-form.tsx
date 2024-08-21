@@ -21,13 +21,19 @@ import { Icons } from "@/components/ui/icons"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 
+import { FacilitiesSelect } from "../facility/facilities-select"
+
 const schema = z.object({
   name: z.string().min(1, { message: "名前を入力してください" }),
   email: z.string().email({ message: "メールアドレスを入力してください" }),
+  facilityId: z.string(),
 })
 
 type Props = {
-  profile: Pick<Database["public"]["Tables"]["profiles"]["Row"], "id" | "name">
+  profile: Pick<
+    Database["public"]["Tables"]["profiles"]["Row"],
+    "id" | "name" | "facility_id"
+  >
   email: string
 }
 
@@ -41,6 +47,7 @@ export function EditUserForm({ profile, email }: Props) {
     defaultValues: {
       name: profile.name,
       email,
+      facilityId: profile.facility_id,
     },
     resolver: zodResolver(schema),
   })
@@ -124,6 +131,27 @@ export function EditUserForm({ profile, email }: Props) {
                 {form.formState.errors.email && (
                   <FormDescription>
                     {form.formState.errors.email.message}
+                  </FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="facilityId"
+            render={({ field }) => (
+              <FormItem className="max-w-[300px]">
+                <FormLabel>所属施設</FormLabel>
+                <FacilitiesSelect
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  isError={!!form.formState.errors.facilityId}
+                  disabled
+                />
+
+                {form.formState.errors.facilityId && (
+                  <FormDescription>
+                    {form.formState.errors.facilityId.message}
                   </FormDescription>
                 )}
               </FormItem>
