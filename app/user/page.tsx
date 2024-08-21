@@ -26,7 +26,7 @@ export default async function UserPage() {
   }
 
   return (
-    <section className="min-h-screen bg-[#F5F5F5] px-4 pb-8 pt-11">
+    <section className="min-h-screen bg-[#F5F5F5] px-4 pb-8 pt-[62px]">
       <EditUserForm profile={profile} email={user.email ?? ""} />
       <EmailChangeConfirmToast user={user} name={profile.name} />
     </section>
