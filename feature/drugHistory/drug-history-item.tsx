@@ -1,5 +1,3 @@
-import Link from "next/link"
-
 import { formatDate, getDrugHistoryColor } from "@/lib/utils"
 import { Icons } from "@/components/ui/icons"
 import {
