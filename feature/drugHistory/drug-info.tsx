@@ -31,15 +31,15 @@ export function DrugInfo({ drugs }: Props) {
               </div>
             </div>
 
-            <AspectRatio className="mt-1" ratio={340 / 390}>
-              <Image
-                alt={drug.id}
-                src={drug.url}
-                fill
-                className="object-cover"
-                placeholder={placeholder({ w: 340, h: 390 })}
-              />
-            </AspectRatio>
+            <Image
+              alt={drug.id}
+              src={drug.url}
+              width={340}
+              height={390}
+              style={{ width: "100%", height: "auto" }}
+              className="object-cover"
+              placeholder={placeholder({ w: 340, h: 390 })}
+            />
           </div>
         ))
       ) : (
