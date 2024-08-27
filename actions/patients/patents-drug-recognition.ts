@@ -7,6 +7,8 @@ import { ActionResult } from "@/types/action"
 import { Database } from "@/types/schema.gen"
 import { createClient } from "@/lib/supabase/server"
 
+import { ocrGoogleCloudVision } from "../ocr/google-cloud-vision"
+
 export async function patentsDrugRecognition({
   imageSrc,
   patent,
@@ -18,18 +20,7 @@ export async function patentsDrugRecognition({
   >
 }): Promise<ActionResult> {
   try {
-    const client = new Vision.ImageAnnotatorClient({
-      credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS ?? ""),
-    })
-
-    const [result] = await client.textDetection({
-      image: { content: imageSrc },
-    })
-    const detectedText = result.textAnnotations?.[0]?.description
-
-    if (!detectedText) {
-      throw new Error("テキストが検出されませんでした")
-    }
+    const detectedText = await ocrGoogleCloudVision({ image: imageSrc })
 
     console.log(detectedText)
 
