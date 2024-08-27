@@ -1,13 +1,12 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import Vision from "@google-cloud/vision"
 
 import { ActionResult } from "@/types/action"
 import { Database } from "@/types/schema.gen"
 import { createClient } from "@/lib/supabase/server"
 
-import { ocrGoogleCloudVision } from "../ocr/google-cloud-vision"
+import { ocrAzureComputerVision } from "../ocr/azure-computer-vision"
 
 export async function patentsDrugRecognition({
   imageSrc,
@@ -20,7 +19,7 @@ export async function patentsDrugRecognition({
   >
 }): Promise<ActionResult> {
   try {
-    const detectedText = await ocrGoogleCloudVision({ image: imageSrc })
+    const detectedText = await ocrAzureComputerVision({ image: imageSrc })
 
     console.log(detectedText)
 
