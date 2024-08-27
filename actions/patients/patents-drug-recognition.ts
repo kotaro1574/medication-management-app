@@ -1,11 +1,12 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import Vision from "@google-cloud/vision"
 
 import { ActionResult } from "@/types/action"
 import { Database } from "@/types/schema.gen"
 import { createClient } from "@/lib/supabase/server"
+
+import { ocrAzureComputerVision } from "../ocr/azure-computer-vision"
 
 export async function patentsDrugRecognition({
   imageSrc,
@@ -18,18 +19,7 @@ export async function patentsDrugRecognition({
   >
 }): Promise<ActionResult> {
   try {
-    const client = new Vision.ImageAnnotatorClient({
-      credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS ?? ""),
-    })
-
-    const [result] = await client.textDetection({
-      image: { content: imageSrc },
-    })
-    const detectedText = result.textAnnotations?.[0]?.description
-
-    if (!detectedText) {
-      throw new Error("テキストが検出されませんでした")
-    }
+    const detectedText = await ocrAzureComputerVision({ image: imageSrc })
 
     console.log(detectedText)
 
