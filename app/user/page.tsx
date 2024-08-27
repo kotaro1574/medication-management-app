@@ -25,9 +25,24 @@ export default async function UserPage() {
     return <div>profileError</div>
   }
 
+  const { data: facility, error: facilityError } = await supabase
+    .from("facilities")
+    .select("id, name")
+    .eq("id", profile.facility_id)
+    .single()
+
+  if (facilityError) {
+    console.error(facilityError)
+    return <div>facilityError</div>
+  }
+
   return (
     <section className="min-h-screen bg-[#F5F5F5] px-4 pb-8 pt-[62px]">
-      <EditUserForm profile={profile} email={user.email ?? ""} />
+      <EditUserForm
+        profile={profile}
+        email={user.email ?? ""}
+        facility={facility}
+      />
       <EmailChangeConfirmToast user={user} name={profile.name} />
     </section>
   )
