@@ -38,8 +38,7 @@ export default async function PatientsPage() {
     .from("patients")
     .select("id, first_name, last_name, group_id, image_id")
     .eq("facility_id", profile.facility_id)
-    .order("last_name", { ascending: true })
-    .order("first_name", { ascending: true })
+    .order("created_at", { ascending: false })
 
   if (patientsError) {
     return <div>error</div>
