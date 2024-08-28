@@ -30,6 +30,7 @@ export function PatientFaceAndDrugRecognition() {
     setPatent(null)
     setIsDrugRecognition(false)
     setError(null)
+    setErrorCount(0)
     if (cameraRef.current && facingMode === "environment") {
       setFacingMode("user")
       cameraRef.current.switchCamera()
