@@ -3,6 +3,7 @@
 import { RefObject } from "react"
 import dynamic from "next/dynamic"
 import { CameraType } from "react-camera-pro"
+import { FacingMode } from "react-camera-pro/dist/components/Camera/types"
 
 import { Icons } from "@/components/ui/icons"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -23,6 +24,7 @@ type Props = {
   loading: boolean
   error: string | null
   errorCount: number
+  facingMode: FacingMode
 }
 
 export function PatientFaceAndDrugRecognitionCamera({
@@ -34,6 +36,7 @@ export function PatientFaceAndDrugRecognitionCamera({
   errorCount,
   error,
   loading,
+  facingMode,
 }: Props) {
   const isError = !!error
 
@@ -60,7 +63,7 @@ export function PatientFaceAndDrugRecognitionCamera({
           height: "calc(100vh - 200px)",
         }}
       >
-        <DynamicCamera cameraRef={cameraRef} facingMode="user" />
+        <DynamicCamera cameraRef={cameraRef} facingMode={facingMode} />
       </div>
 
       <p className="text-md absolute top-[24px] w-full text-center font-semibold">

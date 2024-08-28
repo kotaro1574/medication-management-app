@@ -5,7 +5,9 @@ import { createDrugHistory } from "@/actions/drugHistory/create-drug-history"
 import { patentsDrugRecognition } from "@/actions/patients/patents-drug-recognition"
 import { patentsFaceRecognition } from "@/actions/patients/patents-face-recognition"
 import { PatientFaceAndDrugRecognitionCamera } from "@/feature/patient/patient-face-and-drug-recognition-camera"
+import { set } from "date-fns"
 import { CameraType } from "react-camera-pro"
+import { FacingMode } from "react-camera-pro/dist/components/Camera/types"
 
 import { Database } from "@/types/schema.gen"
 import { Icons } from "@/components/ui/icons"
@@ -20,6 +22,7 @@ export function PatientFaceAndDrugRecognition() {
   > | null>(null)
   const [isDrugRecognition, setIsDrugRecognition] = useState<boolean>(false)
   const [errorCount, setErrorCount] = useState<number>(0)
+  const [facingMode, setFacingMode] = useState<FacingMode>("user")
   const cameraRef = useRef<CameraType>(null)
   const { toast } = useToast()
 
@@ -27,7 +30,12 @@ export function PatientFaceAndDrugRecognition() {
     setPatent(null)
     setIsDrugRecognition(false)
     setError(null)
-  }, [])
+    setErrorCount(0)
+    if (cameraRef.current && facingMode === "environment") {
+      setFacingMode("user")
+      cameraRef.current.switchCamera()
+    }
+  }, [facingMode])
 
   const onRecognition = useCallback(() => {
     if (!cameraRef.current) return
@@ -51,7 +59,8 @@ export function PatientFaceAndDrugRecognition() {
             setError(null)
             successSound.play()
             setTimeout(() => {
-              if (cameraRef.current) {
+              if (cameraRef.current && facingMode === "user") {
+                setFacingMode("environment")
                 cameraRef.current.switchCamera()
               }
             }, 1000)
@@ -74,6 +83,10 @@ export function PatientFaceAndDrugRecognition() {
               setPatent(null)
               setIsDrugRecognition(false)
               setErrorCount(0)
+              if (cameraRef.current && facingMode === "environment") {
+                setFacingMode("user")
+                cameraRef.current.switchCamera()
+              }
             }, 5000)
           } else {
             setError(response.error)
@@ -83,10 +96,11 @@ export function PatientFaceAndDrugRecognition() {
         }
       })()
     })
-  }, [patent, toast])
+  }, [facingMode, patent, toast])
 
   const onSwitchCamera = useCallback(() => {
     if (cameraRef.current) {
+      setFacingMode((prev) => (prev === "user" ? "environment" : "user"))
       cameraRef.current.switchCamera()
     }
   }, [])
@@ -109,10 +123,14 @@ export function PatientFaceAndDrugRecognition() {
           setError(null)
           setIsDrugRecognition(false)
           setErrorCount(0)
+          if (cameraRef.current && facingMode === "environment") {
+            setFacingMode("user")
+            cameraRef.current.switchCamera()
+          }
         }, 8000)
       })()
     }
-  }, [errorCount, patent?.id, toast])
+  }, [errorCount, facingMode, patent?.id, toast])
 
   return (
     <div className="mx-auto w-full sm:max-w-[500px] md:max-w-[600px]">
@@ -125,6 +143,7 @@ export function PatientFaceAndDrugRecognition() {
         loading={loading}
         error={error}
         errorCount={errorCount}
+        facingMode={facingMode}
       />
 
       <div className="relative mt-4 flex w-full items-center justify-center">
