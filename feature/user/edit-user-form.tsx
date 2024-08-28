@@ -21,12 +21,9 @@ import { Icons } from "@/components/ui/icons"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 
-import { FacilitiesSelect } from "../facility/facilities-select"
-
 const schema = z.object({
   name: z.string().min(1, { message: "名前を入力してください" }),
   email: z.string().email({ message: "メールアドレスを入力してください" }),
-  facilityId: z.string(),
 })
 
 type Props = {
@@ -35,9 +32,13 @@ type Props = {
     "id" | "name" | "facility_id"
   >
   email: string
+  facility: Pick<
+    Database["public"]["Tables"]["facilities"]["Row"],
+    "id" | "name"
+  >
 }
 
-export function EditUserForm({ profile, email }: Props) {
+export function EditUserForm({ profile, email, facility }: Props) {
   const [loading, startTransition] = useTransition()
   const [isSend, setIsSend] = useState(false)
   const router = useRouter()
@@ -47,7 +48,6 @@ export function EditUserForm({ profile, email }: Props) {
     defaultValues: {
       name: profile.name,
       email,
-      facilityId: profile.facility_id,
     },
     resolver: zodResolver(schema),
   })
@@ -136,27 +136,11 @@ export function EditUserForm({ profile, email }: Props) {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="facilityId"
-            render={({ field }) => (
-              <FormItem className="max-w-[300px]">
-                <FormLabel>所属施設</FormLabel>
-                <FacilitiesSelect
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  isError={!!form.formState.errors.facilityId}
-                  disabled
-                />
 
-                {form.formState.errors.facilityId && (
-                  <FormDescription>
-                    {form.formState.errors.facilityId.message}
-                  </FormDescription>
-                )}
-              </FormItem>
-            )}
-          />
+          <FormItem className="max-w-[300px]">
+            <FormLabel className="text-[11px]">所属施設</FormLabel>
+            <p className="text-base">{facility.name}</p>
+          </FormItem>
         </div>
         <Button type="submit" disabled={loading} className="block w-full">
           {loading ? "更新中..." : "更新"}
