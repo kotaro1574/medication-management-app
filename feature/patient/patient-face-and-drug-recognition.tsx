@@ -171,7 +171,6 @@ export function PatientFaceAndDrugRecognition() {
           <Icons.switch />
         </button>
       </div>
-      <p>{facingMode}</p>
     </div>
   )
 }
