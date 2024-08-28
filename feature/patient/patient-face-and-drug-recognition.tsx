@@ -1,11 +1,10 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState, useTransition } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { createDrugHistory } from "@/actions/drugHistory/create-drug-history"
 import { patentsDrugRecognition } from "@/actions/patients/patents-drug-recognition"
 import { patentsFaceRecognition } from "@/actions/patients/patents-face-recognition"
 import { PatientFaceAndDrugRecognitionCamera } from "@/feature/patient/patient-face-and-drug-recognition-camera"
-import { set } from "date-fns"
 import { CameraType } from "react-camera-pro"
 import { FacingMode } from "react-camera-pro/dist/components/Camera/types"
 
@@ -14,7 +13,7 @@ import { Icons } from "@/components/ui/icons"
 import { useToast } from "@/components/ui/use-toast"
 
 export function PatientFaceAndDrugRecognition() {
-  const [loading, startTransaction] = useTransition()
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [patent, setPatent] = useState<Pick<
     Database["public"]["Tables"]["patients"]["Row"],
@@ -37,7 +36,78 @@ export function PatientFaceAndDrugRecognition() {
     }
   }, [facingMode])
 
-  const onRecognition = useCallback(() => {
+  // 顔認識処理
+  const handleFaceRecognition = async (base64Data: string) => {
+    try {
+      const response = await patentsFaceRecognition({
+        imageSrc: base64Data,
+      })
+      if (response.success) {
+        setPatent(response.data)
+        setError(null)
+        const successSound = new Audio("/success-sound.mp3")
+        successSound.play()
+        setTimeout(() => {
+          if (cameraRef.current && facingMode === "user") {
+            setFacingMode("environment")
+            cameraRef.current.switchCamera()
+          }
+        }, 1000)
+      } else {
+        throw new Error(response.error)
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message)
+      }
+      const errorSound = new Audio("/error-sound.mp3")
+      errorSound.play()
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // 薬認識処理
+  const handleDrugRecognition = async (base64Data: string) => {
+    try {
+      const response = await patentsDrugRecognition({
+        imageSrc: base64Data,
+        patent: patent!,
+      })
+      if (response.success) {
+        setIsDrugRecognition(true)
+        setError(null)
+        const successSound = new Audio("/success-sound.mp3")
+        successSound.play()
+        toast({ title: response.message })
+
+        setTimeout(() => {
+          setPatent(null)
+          setIsDrugRecognition(false)
+          setErrorCount(0)
+          if (cameraRef.current && facingMode === "environment") {
+            setFacingMode("user")
+            cameraRef.current.switchCamera()
+          }
+        }, 5000)
+      } else {
+        setErrorCount((prev) => prev + 1)
+        throw new Error(response.error)
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message)
+      }
+      const errorSound = new Audio("/error-sound.mp3")
+      errorSound.play()
+      // エラーが発生した場合に2秒遅延させる処理を追加
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const onRecognition = async () => {
     if (!cameraRef.current) return
     const imageSrc = cameraRef.current.takePhoto()
 
@@ -45,65 +115,21 @@ export function PatientFaceAndDrugRecognition() {
 
     const base64Data = imageSrc.split(",")[1]
 
-    const successSound = new Audio("/success-sound.mp3")
-    const errorSound = new Audio("/error-sound.mp3")
+    setLoading(true) // 開始時にローディング状態に設定
 
-    startTransaction(() => {
-      ;(async () => {
-        if (!patent) {
-          const response = await patentsFaceRecognition({
-            imageSrc: base64Data,
-          })
-          if (response.success) {
-            setPatent(response.data)
-            setError(null)
-            successSound.play()
-            setTimeout(() => {
-              if (cameraRef.current && facingMode === "user") {
-                setFacingMode("environment")
-                cameraRef.current.switchCamera()
-              }
-            }, 1000)
-          } else {
-            setError(response.error)
-            errorSound.play()
-          }
-        } else {
-          const response = await patentsDrugRecognition({
-            imageSrc: base64Data,
-            patent: patent,
-          })
-          if (response.success) {
-            setIsDrugRecognition(true)
-            setError(null)
-            successSound.play()
-            toast({ title: response.message })
+    if (!patent) {
+      await handleFaceRecognition(base64Data)
+    } else {
+      await handleDrugRecognition(base64Data)
+    }
+  }
 
-            setTimeout(() => {
-              setPatent(null)
-              setIsDrugRecognition(false)
-              setErrorCount(0)
-              if (cameraRef.current && facingMode === "environment") {
-                setFacingMode("user")
-                cameraRef.current.switchCamera()
-              }
-            }, 5000)
-          } else {
-            setError(response.error)
-            setErrorCount((prev) => prev + 1)
-            errorSound.play()
-          }
-        }
-      })()
-    })
-  }, [facingMode, patent, toast])
-
-  const onSwitchCamera = useCallback(() => {
+  const onSwitchCamera = () => {
     if (cameraRef.current) {
       setFacingMode((prev) => (prev === "user" ? "environment" : "user"))
       cameraRef.current.switchCamera()
     }
-  }, [])
+  }
 
   useEffect(() => {
     if (errorCount === 5 && patent?.id) {
@@ -119,18 +145,11 @@ export function PatientFaceAndDrugRecognition() {
         }
 
         setTimeout(() => {
-          setPatent(null)
-          setError(null)
-          setIsDrugRecognition(false)
-          setErrorCount(0)
-          if (cameraRef.current && facingMode === "environment") {
-            setFacingMode("user")
-            cameraRef.current.switchCamera()
-          }
+          onReset()
         }, 8000)
       })()
     }
-  }, [errorCount, facingMode, patent?.id, toast])
+  }, [errorCount, facingMode, patent?.id, toast, onReset])
 
   return (
     <div className="mx-auto w-full sm:max-w-[500px] md:max-w-[600px]">
