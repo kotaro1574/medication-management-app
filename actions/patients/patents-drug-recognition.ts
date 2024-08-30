@@ -7,6 +7,7 @@ import { Database } from "@/types/schema.gen"
 import { createClient } from "@/lib/supabase/server"
 
 import { ocrAzureComputerVision } from "../ocr/azure-computer-vision"
+import { ocrGoogleCloudVision } from "../ocr/google-cloud-vision"
 
 export async function patentsDrugRecognition({
   imageSrc,
@@ -19,13 +20,31 @@ export async function patentsDrugRecognition({
   >
 }): Promise<ActionResult> {
   try {
-    const detectedText = await ocrAzureComputerVision({ image: imageSrc })
+    const googleCloudVisionDetectedText = await ocrGoogleCloudVision({
+      image: imageSrc,
+    })
 
-    console.log(detectedText)
+    console.log(
+      `googleCloudVisionDetectedText: ${googleCloudVisionDetectedText}`
+    )
 
-    const isPatentNameIncluded =
-      detectedText.includes(patent.last_name) &&
-      detectedText.includes(patent.first_name)
+    const azureComputerVisionDetectedText = await ocrAzureComputerVision({
+      image: imageSrc,
+    })
+
+    console.log(
+      `azureComputerVisionDetectedText: ${azureComputerVisionDetectedText}`
+    )
+
+    const isLastNameIncluded =
+      googleCloudVisionDetectedText.includes(patent.last_name) ||
+      azureComputerVisionDetectedText.includes(patent.last_name)
+
+    const isFirstNameIncluded =
+      googleCloudVisionDetectedText.includes(patent.first_name) ||
+      azureComputerVisionDetectedText.includes(patent.first_name)
+
+    const isPatentNameIncluded = isLastNameIncluded && isFirstNameIncluded
 
     if (!isPatentNameIncluded) {
       throw new Error("服薬者の名前が含まれていません")
