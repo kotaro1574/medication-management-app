@@ -74,6 +74,23 @@ export function PatientFaceAndDrugRecognitionCamera({
           {error} {isFaceRecognition && `: ${errorCount}/5`}
         </p>
       )}
+
+      {isFaceRecognition && (
+        <div
+          className="absolute w-full"
+          style={{
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <div className="mx-2 h-[140px] border-[1.5px] border-[#FFCA0E]" />
+          <p className="mt-1 text-center text-xs font-semibold text-[#FFCA0E]">
+            ここに名前を置いて撮影してください
+          </p>
+        </div>
+      )}
+
       <div className="absolute inset-x-2 bottom-2 space-y-2">
         <div
           style={{
