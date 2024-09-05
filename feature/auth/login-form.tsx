@@ -4,12 +4,15 @@ import { useState, useTransition } from "react"
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { faceLogin } from "@/actions/auth/face-login"
+import { generateCustomToken } from "@/actions/auth/generate-custom-token"
 import { login } from "@/actions/auth/login"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AlertCircle } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { createClient } from "@/lib/supabase/client"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -80,6 +83,43 @@ export function LoginForm({
 
     form.setValue("email", loginInfo.email)
     form.setValue("password", loginInfo.password)
+  }
+
+  const onFaceAuthClick = async () => {
+    try {
+      // とりあえず固定のユーザーIDでトークンを生成
+      const { accessToken, refreshToken } = await generateCustomToken(
+        "686a239a-125a-4d50-920a-b8855fdbbda3"
+      )
+
+      const supabase = createClient()
+
+      if (!accessToken || !refreshToken) {
+        throw new Error("トークンの生成に失敗しました")
+      }
+
+      // Supabaseセッションを設定
+      const { data, error } = await supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      })
+
+      if (error) {
+        throw error
+      }
+
+      console.log(data.session)
+      console.log(data.user)
+
+      // ログイン成功
+      toast({ title: "ログインに成功しました" })
+      router.push("/")
+      router.refresh()
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({ title: error.message, variant: "destructive" })
+      }
+    }
   }
 
   return (
@@ -163,6 +203,14 @@ export function LoginForm({
           </Button>
         </form>
       </Form>
+      <Button
+        className="mt-[24px] block w-full"
+        disabled={loading}
+        type="button"
+        onClick={onFaceAuthClick}
+      >
+        顔認証でログイン
+      </Button>
     </div>
   )
 }
