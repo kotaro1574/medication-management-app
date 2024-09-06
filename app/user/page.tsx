@@ -1,3 +1,4 @@
+import { getS3Data } from "@/actions/s3/get-s3-data"
 import { EditUserForm } from "@/feature/user/edit-user-form"
 import { EmailChangeConfirmToast } from "@/feature/user/email-change-confirm-toast"
 
@@ -16,7 +17,7 @@ export default async function UserPage() {
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("id, name, facility_id")
+    .select("id, name, facility_id, image_id")
     .eq("id", user.id)
     .single()
 
@@ -24,6 +25,11 @@ export default async function UserPage() {
     console.error(profileError)
     return <div>profileError</div>
   }
+
+  const { url: faceUrl } = await getS3Data(
+    profile.image_id,
+    process.env.USER_FACES_BUCKET ?? ""
+  )
 
   const { data: facility, error: facilityError } = await supabase
     .from("facilities")
@@ -40,6 +46,7 @@ export default async function UserPage() {
     <section className="min-h-screen bg-[#F5F5F5] px-4 pb-8 pt-[62px]">
       <EditUserForm
         profile={profile}
+        faceUrl={faceUrl}
         email={user.email ?? ""}
         facility={facility}
       />

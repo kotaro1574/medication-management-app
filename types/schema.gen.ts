@@ -293,6 +293,7 @@ export type Database = {
           created_at: string
           facility_id: string
           id: string
+          image_id: string | null
           name: string
           updated_at: string
         }
@@ -300,6 +301,7 @@ export type Database = {
           created_at?: string
           facility_id: string
           id: string
+          image_id?: string | null
           name: string
           updated_at?: string
         }
@@ -307,6 +309,7 @@ export type Database = {
           created_at?: string
           facility_id?: string
           id?: string
+          image_id?: string | null
           name?: string
           updated_at?: string
         }
@@ -319,6 +322,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_faces: {
+        Row: {
+          created_at: string
+          face_id: string
+          id: string
+          image_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          face_id: string
+          id?: string
+          image_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          face_id?: string
+          id?: string
+          image_id?: string
+          user_id?: string
+        }
+        Relationships: []
       }
     }
     Views: {

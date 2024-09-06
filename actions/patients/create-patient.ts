@@ -129,7 +129,10 @@ export async function createPatient({
     //無意味
     const faceImages = formData.getAll("faceImages") as File[]
 
-    const faceImageIds = await uploadFaceImage(faceImages)
+    const faceImageIds = await uploadFaceImage(
+      faceImages,
+      process.env.FACES_BUCKET ?? ""
+    )
 
     const promises = faceImageIds.map(async (faceImageId) => {
       const faceId = await checkFaceImageExists(

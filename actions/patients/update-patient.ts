@@ -106,7 +106,10 @@ async function handleFaceImages(
     throw new Error("顔情報の削除に失敗しました")
   }
 
-  const faceImageIds = await uploadFaceImage(faceImages)
+  const faceImageIds = await uploadFaceImage(
+    faceImages,
+    process.env.FACES_BUCKET ?? ""
+  )
   const newFaces = await IndexFaces(
     faceImageIds,
     process.env.FACES_BUCKET ?? ""
