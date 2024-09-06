@@ -39,9 +39,10 @@ type Props = {
     Database["public"]["Tables"]["facilities"]["Row"],
     "id" | "name"
   >
+  faceUrl: string
 }
 
-export function EditUserForm({ profile, email, facility }: Props) {
+export function EditUserForm({ profile, email, facility, faceUrl }: Props) {
   const [loading, startTransition] = useTransition()
   const [isSend, setIsSend] = useState(false)
   const router = useRouter()
@@ -56,17 +57,21 @@ export function EditUserForm({ profile, email, facility }: Props) {
     resolver: zodResolver(updateUserFormSchema),
   })
 
-  console.log(form.watch())
-
   const onSubmit = (value: z.infer<typeof updateUserFormSchema>) => {
     startTransition(() => {
       ;(async () => {
+        const formData = new FormData()
+        value.faceImages.forEach((file) => {
+          formData.append("faceImages", file)
+        })
+
         if (email !== value.email) {
           setIsSend(true)
         }
         const response = await updateUser({
           name: value.name,
           email: value.email,
+          formData,
         })
         if (response.success) {
           toast({ title: response.message })
@@ -78,7 +83,7 @@ export function EditUserForm({ profile, email, facility }: Props) {
     })
   }
 
-  const isFullFaceImages = form.watch("faceImages")?.length >= 5
+  const isFullFaceImages = form.watch("faceImages")?.length >= 5 || !!faceUrl
 
   if (isSend) {
     return (
@@ -160,7 +165,13 @@ export function EditUserForm({ profile, email, facility }: Props) {
               <div className="relative w-full max-w-[150px]">
                 <AspectRatio ratio={15 / 21}>
                   <Image
-                    src={URL.createObjectURL(form.watch("faceImages")[0])}
+                    src={
+                      form.watch("faceImages").length
+                        ? URL.createObjectURL(form.watch("faceImages")[0])
+                        : !!faceUrl
+                        ? faceUrl
+                        : ""
+                    }
                     alt="face image"
                     fill
                     placeholder={placeholder({ w: 150, h: 210 })}

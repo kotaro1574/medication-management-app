@@ -4,5 +4,5 @@ CREATE TABLE user_faces (
     image_id varchar(255) NOT NULL,
     face_id varchar(255) NOT NULL,
     user_id uuid NOT NULL,
-    created_at timestamptz NOT NULL
+    created_at timestamptz NOT NULL DEFAULT now()
 );

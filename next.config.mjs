@@ -32,6 +32,18 @@ const nextConfig = {
         protocol: "https",
         hostname: "patient-drugs-dev.s3.ap-northeast-1.amazonaws.com",
       },
+      {
+        protocol: "https",
+        hostname: "user-faces-main.s3.ap-northeast-1.amazonaws.com",
+      },
+      {
+        protocol: "https",
+        hostname: "user-faces-stg.s3.ap-northeast-1.amazonaws.com",
+      },
+      {
+        protocol: "https",
+        hostname: "user-faces-dev.s3.ap-northeast-1.amazonaws.com",
+      },
     ],
   },
 }
