@@ -1,13 +1,18 @@
 "use client"
 
 import { useState, useTransition } from "react"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { updateUser } from "@/actions/user/update-user"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { AlertCircle } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { Database } from "@/types/schema.gen"
+import { placeholder } from "@/lib/utils"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -21,10 +26,8 @@ import { Icons } from "@/components/ui/icons"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 
-const schema = z.object({
-  name: z.string().min(1, { message: "名前を入力してください" }),
-  email: z.string().email({ message: "メールアドレスを入力してください" }),
-})
+import { updateUserFormSchema } from "./schema"
+import { UserFacesCameraDialog } from "./user-faces-camera-dialog"
 
 type Props = {
   profile: Pick<
@@ -44,15 +47,18 @@ export function EditUserForm({ profile, email, facility }: Props) {
   const router = useRouter()
   const { toast } = useToast()
 
-  const form = useForm<z.infer<typeof schema>>({
+  const form = useForm<z.infer<typeof updateUserFormSchema>>({
     defaultValues: {
       name: profile.name,
       email,
+      faceImages: [],
     },
-    resolver: zodResolver(schema),
+    resolver: zodResolver(updateUserFormSchema),
   })
 
-  const onSubmit = (value: z.infer<typeof schema>) => {
+  console.log(form.watch())
+
+  const onSubmit = (value: z.infer<typeof updateUserFormSchema>) => {
     startTransition(() => {
       ;(async () => {
         if (email !== value.email) {
@@ -71,6 +77,8 @@ export function EditUserForm({ profile, email, facility }: Props) {
       })()
     })
   }
+
+  const isFullFaceImages = form.watch("faceImages")?.length >= 5
 
   if (isSend) {
     return (
@@ -141,6 +149,51 @@ export function EditUserForm({ profile, email, facility }: Props) {
             <FormLabel className="text-[11px]">所属施設</FormLabel>
             <p className="text-base">{facility.name}</p>
           </FormItem>
+        </div>
+        <div className="space-y-4">
+          <div className="flex gap-1">
+            <h2 className="text-[20px] text-[#C2B37F]">認証用人物写真</h2>
+            <p className="text-[10px] text-[#FF0000]">＊登録必須</p>
+          </div>
+          {isFullFaceImages && (
+            <div className="relative my-4 flex items-center justify-center">
+              <div className="relative w-full max-w-[150px]">
+                <AspectRatio ratio={15 / 21}>
+                  <Image
+                    src={URL.createObjectURL(form.watch("faceImages")[0])}
+                    alt="face image"
+                    fill
+                    placeholder={placeholder({ w: 150, h: 210 })}
+                    className="rounded-[8px] object-cover"
+                  />
+                </AspectRatio>
+                <div className="absolute right-[-12px] top-[-12px]">
+                  <Icons.successCheck />
+                </div>
+              </div>
+            </div>
+          )}
+          {form.formState.errors.faceImages && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertCircle className="size-4" />
+              <AlertTitle>エラー</AlertTitle>
+              <AlertDescription>
+                {form.formState.errors.faceImages.message}
+              </AlertDescription>
+            </Alert>
+          )}
+          <UserFacesCameraDialog
+            form={form}
+            trigger={
+              <Button
+                variant="secondary"
+                size="secondary"
+                className="block w-full"
+              >
+                {isFullFaceImages ? "顔を登録し直す" : "顔を登録する"}
+              </Button>
+            }
+          />
         </div>
         <Button type="submit" disabled={loading} className="block w-full">
           {loading ? "更新中..." : "更新"}
