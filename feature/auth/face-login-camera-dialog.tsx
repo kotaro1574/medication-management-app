@@ -1,8 +1,12 @@
 import { ReactNode, useCallback, useRef, useState } from "react"
 import dynamic from "next/dynamic"
+import { useRouter } from "next/navigation"
+import { faceLogin } from "@/actions/auth/face-login"
+import { generateCustomToken } from "@/actions/auth/generate-custom-token"
 import { set } from "date-fns"
 import { CameraType } from "react-camera-pro/dist/components/Camera/types"
 
+import { createClient } from "@/lib/supabase/client"
 import {
   Dialog,
   DialogContent,
@@ -12,6 +16,7 @@ import {
 } from "@/components/ui/dialog"
 import { Icons } from "@/components/ui/icons"
 import { Skeleton } from "@/components/ui/skeleton"
+import { toast } from "@/components/ui/use-toast"
 
 const DynamicCamera = dynamic(() => import("@/components/ui/camera"), {
   loading: () => (
@@ -26,21 +31,54 @@ type Props = {
 
 export function FaceLoginCameraDialog({ trigger }: Props) {
   const cameraRef = useRef<CameraType>(null)
-
+  const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
 
-  const onGetFaceImages = useCallback(() => {
-    if (!cameraRef.current) return
-    const imageSrc = cameraRef.current.takePhoto()
+  const onGetFaceImages = async () => {
+    try {
+      if (!cameraRef.current) return
+      const imageSrc = cameraRef.current.takePhoto()
 
-    if (typeof imageSrc !== "string") return
+      if (typeof imageSrc !== "string") return
 
-    const base64Data = imageSrc.split(",")[1]
+      const base64Data = imageSrc.split(",")[1]
 
-    console.log(base64Data)
+      const response = await faceLogin({
+        imageSrc: base64Data,
+      })
 
-    setIsOpen(false)
-  }, [])
+      if (response.success) {
+        const { accessToken, refreshToken } = await generateCustomToken(
+          response.id
+        )
+
+        if (!accessToken || !refreshToken) {
+          throw new Error("トークンの生成に失敗しました")
+        }
+
+        const supabase = createClient()
+        // Supabaseセッションを設定
+        const { data, error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        })
+
+        if (error) {
+          throw error
+        }
+
+        toast({ title: response.message })
+        router.push("/")
+        router.refresh()
+      } else {
+        throw new Error(response.error)
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({ title: error.message, variant: "destructive" })
+      }
+    }
+  }
 
   const onSwitchCamera = useCallback(() => {
     if (!cameraRef.current) return
