@@ -105,7 +105,10 @@ export async function deleteImage(faceImageIds: string[], bucket: string) {
 }
 
 // 顔画像をS3にアップロードする関数
-export async function uploadFaceImage(faceImages: File[]): Promise<string[]> {
+export async function uploadFaceImage(
+  faceImages: File[],
+  bucket: string
+): Promise<string[]> {
   const imageIds: string[] = new Array(faceImages.length).fill("")
 
   const uploadPromises = faceImages.map(async (faceImage, index) => {
@@ -113,7 +116,7 @@ export async function uploadFaceImage(faceImages: File[]): Promise<string[]> {
       url: faceUrl,
       fields: faceFields,
       key: imageId,
-    } = await getPresignedUrl(faceImage.type, process.env.FACES_BUCKET ?? "")
+    } = await getPresignedUrl(faceImage.type, bucket)
 
     const newFormData = new FormData()
     Object.entries(faceFields).forEach(([key, value]) => {
