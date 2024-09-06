@@ -58,7 +58,7 @@ export function FaceLoginCameraDialog({ trigger }: Props) {
 
         const supabase = createClient()
         // Supabaseセッションを設定
-        const { data, error } = await supabase.auth.setSession({
+        const { error } = await supabase.auth.setSession({
           access_token: accessToken,
           refresh_token: refreshToken,
         })
