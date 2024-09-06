@@ -32,6 +32,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 
+import { FaceLoginCameraDialog } from "./face-login-camera-dialog"
+
 const formSchema = z.object({
   email: z
     .string()
@@ -203,14 +205,17 @@ export function LoginForm({
           </Button>
         </form>
       </Form>
-      <Button
-        className="mt-[24px] block w-full"
-        disabled={loading}
-        type="button"
-        onClick={onFaceAuthClick}
-      >
-        顔認証でログイン
-      </Button>
+      <FaceLoginCameraDialog
+        trigger={
+          <Button
+            className="mt-[24px] block w-full"
+            disabled={loading}
+            type="button"
+          >
+            顔認証でログイン
+          </Button>
+        }
+      />
     </div>
   )
 }
