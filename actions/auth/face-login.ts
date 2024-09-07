@@ -50,17 +50,17 @@ export async function faceLogin({
       .single()
 
     if (userFaceError) {
-      throw userFaceError
+      return { success: false, error: userFaceError.message }
     }
 
-    const { data: profile, error: profileError } = await supabase
+    const { error: profileError } = await supabase
       .from("profiles")
       .select("id")
       .eq("id", userFace.user_id)
       .single()
 
     if (profileError) {
-      throw profileError
+      return { success: false, error: profileError.message }
     }
 
     return {
