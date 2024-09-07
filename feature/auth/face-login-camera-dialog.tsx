@@ -46,8 +46,6 @@ export function FaceLoginCameraDialog({ trigger }: Props) {
         imageSrc: base64Data,
       })
 
-      console.log(response)
-
       if (response.success) {
         const { accessToken, refreshToken } = await generateCustomToken(
           response.id
