@@ -87,43 +87,6 @@ export function LoginForm({
     form.setValue("password", loginInfo.password)
   }
 
-  const onFaceAuthClick = async () => {
-    try {
-      // とりあえず固定のユーザーIDでトークンを生成
-      const { accessToken, refreshToken } = await generateCustomToken(
-        "686a239a-125a-4d50-920a-b8855fdbbda3"
-      )
-
-      const supabase = createClient()
-
-      if (!accessToken || !refreshToken) {
-        throw new Error("トークンの生成に失敗しました")
-      }
-
-      // Supabaseセッションを設定
-      const { data, error } = await supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      })
-
-      if (error) {
-        throw error
-      }
-
-      console.log(data.session)
-      console.log(data.user)
-
-      // ログイン成功
-      toast({ title: "ログインに成功しました" })
-      router.push("/")
-      router.refresh()
-    } catch (error) {
-      if (error instanceof Error) {
-        toast({ title: error.message, variant: "destructive" })
-      }
-    }
-  }
-
   return (
     <div>
       {error && (

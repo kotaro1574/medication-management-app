@@ -77,7 +77,21 @@ export function EditUserForm({ profile, email, facility, faceUrl }: Props) {
           toast({ title: response.message })
           router.push("/user")
         } else {
-          toast({ title: response.error, variant: "destructive" })
+          if (
+            response.error.includes(
+              "顔が見つからない画像が含まれています。顔画像を撮り直してください。"
+            )
+          ) {
+            form.setError("faceImages", {
+              message: response.error,
+            })
+            return
+          }
+
+          toast({
+            title: response.error,
+            variant: "destructive",
+          })
         }
       })()
     })

@@ -76,6 +76,7 @@ export function FaceLoginCameraDialog({ trigger }: Props) {
     } catch (error) {
       if (error instanceof Error) {
         toast({ title: error.message, variant: "destructive" })
+        setIsOpen(false)
       }
     }
   }
