@@ -3,7 +3,6 @@ import dynamic from "next/dynamic"
 import { useRouter } from "next/navigation"
 import { faceLogin } from "@/actions/auth/face-login"
 import { generateCustomToken } from "@/actions/auth/generate-custom-token"
-import { set } from "date-fns"
 import { CameraType } from "react-camera-pro/dist/components/Camera/types"
 
 import { createClient } from "@/lib/supabase/client"
