@@ -30,7 +30,7 @@ export async function patentsFaceRecognition({
   try {
     const response = await rekognitionClient.send(
       new SearchFacesByImageCommand({
-        CollectionId: process.env.FACES_BUCKET,
+        CollectionId: process.env.PATIENT_FACES_BUCKET,
         Image: {
           Bytes: Buffer.from(imageSrc, "base64"),
         },

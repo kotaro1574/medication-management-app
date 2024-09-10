@@ -130,13 +130,13 @@ export async function createPatient({
 
     const faceImageIds = await uploadFaceImage(
       faceImages,
-      process.env.FACES_BUCKET ?? ""
+      process.env.PATIENT_FACES_BUCKET ?? ""
     )
 
     const promises = faceImageIds.map(async (faceImageId) => {
       const faceId = await checkFaceImageExists(
         faceImageId,
-        process.env.FACES_BUCKET ?? ""
+        process.env.PATIENT_FACES_BUCKET ?? ""
       )
 
       if (!faceId) return
@@ -173,7 +173,7 @@ export async function createPatient({
         .single()
 
       if (data) {
-        await deleteImage([faceImageId], process.env.FACES_BUCKET ?? "")
+        await deleteImage([faceImageId], process.env.PATIENT_FACES_BUCKET ?? "")
         throw new Error(
           `同じ顔データが既に登録されています。: ${data.last_name} ${data.first_name}`
         )
@@ -182,7 +182,10 @@ export async function createPatient({
 
     await Promise.all(promises)
 
-    const faces = await IndexFaces(faceImageIds, process.env.FACES_BUCKET ?? "")
+    const faces = await IndexFaces(
+      faceImageIds,
+      process.env.PATIENT_FACES_BUCKET ?? ""
+    )
     const faceIds = faces.map((face) => face.faceId)
 
     const supabase = createClient()

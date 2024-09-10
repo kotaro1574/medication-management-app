@@ -60,7 +60,7 @@ export default async function EditPatientPage({
   // 患者の顔画像のURLを取得
   const { url: faceUrl } = await getS3Data(
     patient.image_id,
-    process.env.FACES_BUCKET ?? ""
+    process.env.PATIENT_FACES_BUCKET ?? ""
   )
 
   // 登録済み薬の画像のURLを取得
