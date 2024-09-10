@@ -79,7 +79,7 @@ async function insertFaces(
   faces: { faceId: string; imageId: string }[],
   patientId: string
 ): Promise<void> {
-  const { error } = await supabase.from("faces").insert(
+  const { error } = await supabase.from("patient_faces").insert(
     faces.map((face) => ({
       patient_id: patientId,
       face_id: face.faceId,
@@ -130,13 +130,13 @@ export async function createPatient({
 
     const faceImageIds = await uploadFaceImage(
       faceImages,
-      process.env.FACES_BUCKET ?? ""
+      process.env.PATIENT_FACES_BUCKET ?? ""
     )
 
     const promises = faceImageIds.map(async (faceImageId) => {
       const faceId = await checkFaceImageExists(
         faceImageId,
-        process.env.FACES_BUCKET ?? ""
+        process.env.PATIENT_FACES_BUCKET ?? ""
       )
 
       if (!faceId) return
@@ -157,23 +157,23 @@ export async function createPatient({
         .eq("id", user.id)
         .single()
 
-      const { data: face } = await supabase
-        .from("faces")
+      const { data: patientFaces } = await supabase
+        .from("patient_faces")
         .select("patient_id")
         .eq("face_id", faceId)
         .single()
 
-      if (!profile || !face) return
+      if (!profile || !patientFaces) return
 
       const { data } = await supabase
         .from("patients")
         .select("id, last_name, first_name")
         .eq("facility_id", profile.facility_id)
-        .eq("id", face.patient_id)
+        .eq("id", patientFaces.patient_id)
         .single()
 
       if (data) {
-        await deleteImage([faceImageId], process.env.FACES_BUCKET ?? "")
+        await deleteImage([faceImageId], process.env.PATIENT_FACES_BUCKET ?? "")
         throw new Error(
           `同じ顔データが既に登録されています。: ${data.last_name} ${data.first_name}`
         )
@@ -182,7 +182,10 @@ export async function createPatient({
 
     await Promise.all(promises)
 
-    const faces = await IndexFaces(faceImageIds, process.env.FACES_BUCKET ?? "")
+    const faces = await IndexFaces(
+      faceImageIds,
+      process.env.PATIENT_FACES_BUCKET ?? ""
+    )
     const faceIds = faces.map((face) => face.faceId)
 
     const supabase = createClient()
