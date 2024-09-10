@@ -79,7 +79,7 @@ async function insertFaces(
   faces: { faceId: string; imageId: string }[],
   patientId: string
 ): Promise<void> {
-  const { error } = await supabase.from("faces").insert(
+  const { error } = await supabase.from("patient_faces").insert(
     faces.map((face) => ({
       patient_id: patientId,
       face_id: face.faceId,
@@ -157,19 +157,19 @@ export async function createPatient({
         .eq("id", user.id)
         .single()
 
-      const { data: face } = await supabase
-        .from("faces")
+      const { data: patientFaces } = await supabase
+        .from("patient_faces")
         .select("patient_id")
         .eq("face_id", faceId)
         .single()
 
-      if (!profile || !face) return
+      if (!profile || !patientFaces) return
 
       const { data } = await supabase
         .from("patients")
         .select("id, last_name, first_name")
         .eq("facility_id", profile.facility_id)
-        .eq("id", face.patient_id)
+        .eq("id", patientFaces.patient_id)
         .single()
 
       if (data) {
