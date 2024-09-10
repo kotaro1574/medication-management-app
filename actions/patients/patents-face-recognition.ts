@@ -30,7 +30,7 @@ export async function patentsFaceRecognition({
   try {
     const response = await rekognitionClient.send(
       new SearchFacesByImageCommand({
-        CollectionId: process.env.FACES_BUCKET,
+        CollectionId: process.env.PATIENT_FACES_BUCKET,
         Image: {
           Bytes: Buffer.from(imageSrc, "base64"),
         },
@@ -65,8 +65,8 @@ export async function patentsFaceRecognition({
       throw profileError
     }
 
-    const { data: face, error: faceError } = await supabase
-      .from("faces")
+    const { data: patientFaces, error: faceError } = await supabase
+      .from("patient_faces")
       .select("patient_id")
       .eq("face_id", faceId)
       .single()
@@ -79,7 +79,7 @@ export async function patentsFaceRecognition({
       .from("patients")
       .select("id, last_name, first_name")
       .eq("facility_id", profile.facility_id)
-      .eq("id", face.patient_id)
+      .eq("id", patientFaces.patient_id)
       .single()
 
     if (error) {

@@ -5,11 +5,14 @@ import { SearchFacesByImageCommand } from "@aws-sdk/client-rekognition"
 import { rekognitionClient } from "@/lib/aws/aws-clients"
 import { createClient } from "@/lib/supabase/server"
 
+import { generateCustomToken } from "./generate-custom-token"
+
 type Result =
   | {
       success: true
       message: string
-      id: string
+      accessToken: string
+      refreshToken: string
     }
   | {
       success: false
@@ -50,23 +53,32 @@ export async function faceLogin({
       .single()
 
     if (userFaceError) {
-      throw userFaceError
+      return { success: false, error: userFaceError.message }
     }
 
-    const { data: profile, error: profileError } = await supabase
+    const { error: profileError } = await supabase
       .from("profiles")
       .select("id")
       .eq("id", userFace.user_id)
       .single()
 
     if (profileError) {
-      throw profileError
+      return { success: false, error: profileError.message }
+    }
+
+    const { accessToken, refreshToken } = await generateCustomToken(
+      userFace.user_id
+    )
+
+    if (!accessToken || !refreshToken) {
+      return { success: false, error: "トークンの生成に失敗しました" }
     }
 
     return {
       success: true,
       message: "ログインしました",
-      id: userFace.user_id,
+      accessToken,
+      refreshToken,
     }
   } catch (error) {
     if (error instanceof Error) {

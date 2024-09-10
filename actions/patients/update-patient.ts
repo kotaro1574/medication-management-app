@@ -80,8 +80,8 @@ async function handleFaceImages(
   patientId: string,
   faceImages: File[]
 ): Promise<void> {
-  const { data: faces, error: facesError } = await supabase
-    .from("faces")
+  const { data: patientFaces, error: facesError } = await supabase
+    .from("patient_faces")
     .select("id, face_id, image_id")
     .eq("patient_id", patientId)
 
@@ -89,18 +89,20 @@ async function handleFaceImages(
     throw new Error("顔情報の取得に失敗しました")
   }
 
-  const faceIds = faces.map((face) => face.face_id)
-  const imageIds = faces.map((face) => face.image_id)
+  const patientFaceIds = patientFaces.map((patientFace) => patientFace.face_id)
+  const patientImageIds = patientFaces.map(
+    (patientFace) => patientFace.image_id
+  )
 
-  await deleteFace(process.env.FACES_BUCKET ?? "", faceIds)
-  await deleteImage(imageIds, process.env.FACES_BUCKET ?? "")
+  await deleteFace(process.env.PATIENT_FACES_BUCKET ?? "", patientFaceIds)
+  await deleteImage(patientImageIds, process.env.PATIENT_FACES_BUCKET ?? "")
 
   const { error } = await supabase
-    .from("faces")
+    .from("patient_faces")
     .delete()
     .in(
       "id",
-      faces.map((face) => face.id)
+      patientFaces.map((patientFace) => patientFace.id)
     )
   if (error) {
     throw new Error("顔情報の削除に失敗しました")
@@ -108,11 +110,11 @@ async function handleFaceImages(
 
   const faceImageIds = await uploadFaceImage(
     faceImages,
-    process.env.FACES_BUCKET ?? ""
+    process.env.PATIENT_FACES_BUCKET ?? ""
   )
   const newFaces = await IndexFaces(
     faceImageIds,
-    process.env.FACES_BUCKET ?? ""
+    process.env.PATIENT_FACES_BUCKET ?? ""
   )
   const newFaceIds = newFaces.map((face) => face.faceId)
 
@@ -121,7 +123,7 @@ async function handleFaceImages(
     face_ids: newFaceIds,
   })
 
-  const { error: faceError } = await supabase.from("faces").insert(
+  const { error: faceError } = await supabase.from("patient_faces").insert(
     newFaces.map((face) => ({
       patient_id: patientId,
       face_id: face.faceId,
@@ -130,8 +132,8 @@ async function handleFaceImages(
   )
 
   if (faceError) {
-    await deleteImage(faceImageIds, process.env.FACES_BUCKET ?? "")
-    await deleteFace(process.env.FACES_BUCKET ?? "", newFaceIds)
+    await deleteImage(faceImageIds, process.env.PATIENT_FACES_BUCKET ?? "")
+    await deleteFace(process.env.PATIENT_FACES_BUCKET ?? "", newFaceIds)
     throw new Error("新しい顔情報の挿入に失敗しました")
   }
 }

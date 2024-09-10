@@ -48,7 +48,7 @@ export default async function PatientsPage() {
     patients.map(async (patient) => {
       const { url } = await getS3Data(
         patient.image_id,
-        process.env.FACES_BUCKET ?? ""
+        process.env.PATIENT_FACES_BUCKET ?? ""
       )
 
       const todayStart = new Date(today.setHours(0, 0, 0, 0))

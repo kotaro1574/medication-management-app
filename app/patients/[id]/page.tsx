@@ -49,7 +49,7 @@ export default async function PatientPage({
 
   const { url: avatarUrl } = await getS3Data(
     patients.image_id,
-    process.env.FACES_BUCKET ?? ""
+    process.env.PATIENT_FACES_BUCKET ?? ""
   )
 
   const drugWithUrls = await Promise.all(

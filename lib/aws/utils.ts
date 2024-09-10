@@ -42,34 +42,45 @@ export async function IndexFaces(
 ): Promise<{ faceId: string; imageId: string }[]> {
   const faces: { faceId: string; imageId: string }[] = []
 
-  for (const imageId of imageIds) {
-    const indexFaceRes = await rekognitionClient.send(
-      new IndexFacesCommand({
-        CollectionId: bucket,
-        ExternalImageId: imageId,
-        MaxFaces: 1,
-        Image: {
-          S3Object: {
-            Bucket: bucket,
-            Name: imageId,
+  try {
+    for (const imageId of imageIds) {
+      const indexFaceRes = await rekognitionClient.send(
+        new IndexFacesCommand({
+          CollectionId: bucket,
+          ExternalImageId: imageId,
+          MaxFaces: 1,
+          Image: {
+            S3Object: {
+              Bucket: bucket,
+              Name: imageId,
+            },
           },
-        },
-      })
-    )
+        })
+      )
 
-    if (!indexFaceRes.FaceRecords || indexFaceRes.FaceRecords.length === 0) {
-      await deleteImage([imageId], bucket)
-      throw new Error("顔が見つからない画像が含まれています。")
+      if (!indexFaceRes.FaceRecords || indexFaceRes.FaceRecords.length === 0) {
+        throw new Error(
+          "顔が見つからない画像が含まれています。顔画像を撮り直してください。"
+        )
+      }
+
+      const faceId = indexFaceRes.FaceRecords[0].Face?.FaceId
+
+      if (!faceId) {
+        throw new Error("顔データの登録に失敗しました")
+      }
+
+      faces.push({ faceId, imageId })
     }
-
-    const faceId = indexFaceRes.FaceRecords[0].Face?.FaceId
-
-    if (!faceId) {
-      await deleteImage([imageId], bucket)
-      throw new Error("顔データの登録に失敗しました")
+  } catch (error) {
+    if (error instanceof Error) {
+      deleteImage(imageIds, bucket)
+      deleteFace(
+        bucket,
+        faces.map((face) => face.faceId)
+      )
+      throw new Error(error.message)
     }
-
-    faces.push({ faceId, imageId })
   }
 
   return faces

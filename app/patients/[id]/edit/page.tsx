@@ -37,8 +37,8 @@ export default async function EditPatientPage({
   }
 
   // 患者の服用薬の画像IDを取得
-  const { data: faces, error: facesError } = await supabase
-    .from("faces")
+  const { data: patientFaces, error: facesError } = await supabase
+    .from("patient_faces")
     .select("image_id")
     .eq("patient_id", patient.id)
 
@@ -60,7 +60,7 @@ export default async function EditPatientPage({
   // 患者の顔画像のURLを取得
   const { url: faceUrl } = await getS3Data(
     patient.image_id,
-    process.env.FACES_BUCKET ?? ""
+    process.env.PATIENT_FACES_BUCKET ?? ""
   )
 
   // 登録済み薬の画像のURLを取得
@@ -92,7 +92,7 @@ export default async function EditPatientPage({
   }
 
   // 削除のために画像IDを取得
-  const faceImageIds = faces.map((face) => face.image_id)
+  const faceImageIds = patientFaces.map((patientFace) => patientFace.image_id)
   const drugImageIds = _drugs.map((drug) => drug.image_id)
 
   return (

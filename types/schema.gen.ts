@@ -148,38 +148,6 @@ export type Database = {
           },
         ]
       }
-      faces: {
-        Row: {
-          created_at: string
-          face_id: string
-          id: string
-          image_id: string
-          patient_id: string
-        }
-        Insert: {
-          created_at?: string
-          face_id: string
-          id?: string
-          image_id: string
-          patient_id: string
-        }
-        Update: {
-          created_at?: string
-          face_id?: string
-          id?: string
-          image_id?: string
-          patient_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fk_patient"
-            columns: ["patient_id"]
-            isOneToOne: false
-            referencedRelation: "patients"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       facilities: {
         Row: {
           created_at: string
@@ -224,6 +192,38 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      patient_faces: {
+        Row: {
+          created_at: string
+          face_id: string
+          id: string
+          image_id: string
+          patient_id: string
+        }
+        Insert: {
+          created_at?: string
+          face_id: string
+          id?: string
+          image_id: string
+          patient_id: string
+        }
+        Update: {
+          created_at?: string
+          face_id?: string
+          id?: string
+          image_id?: string
+          patient_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_patient_faces_patient"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       patients: {
         Row: {
@@ -345,7 +345,15 @@ export type Database = {
           image_id?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_profiles"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
