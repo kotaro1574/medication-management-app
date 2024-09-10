@@ -48,14 +48,7 @@ export function FaceLoginCameraDialog({ trigger }: Props) {
       })
 
       if (response.success) {
-        const { accessToken, refreshToken } = await generateCustomToken(
-          response.id
-        )
-
-        if (!accessToken || !refreshToken) {
-          throw new Error("トークンの生成に失敗しました")
-        }
-
+        const { accessToken, refreshToken } = response
         const supabase = createClient()
         // Supabaseセッションを設定
         const { error } = await supabase.auth.setSession({
