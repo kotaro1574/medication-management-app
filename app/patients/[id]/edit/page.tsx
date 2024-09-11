@@ -39,7 +39,7 @@ export default async function EditPatientPage({
   // 患者の服用薬の画像IDを取得
   const { data: patientFaces, error: facesError } = await supabase
     .from("patient_faces")
-    .select("image_id")
+    .select("image_id, face_id")
     .eq("patient_id", patient.id)
 
   if (facesError) {
@@ -91,14 +91,20 @@ export default async function EditPatientPage({
     return <div>alertsError</div>
   }
 
-  // 削除のために画像IDを取得
+  // 削除のためにIDを取得
+  const faceIds = patientFaces.map((patientFace) => patientFace.face_id)
   const faceImageIds = patientFaces.map((patientFace) => patientFace.image_id)
   const drugImageIds = _drugs.map((drug) => drug.image_id)
+
+  const faceData = {
+    faceIds,
+    imageIds: faceImageIds,
+  }
 
   return (
     <section className="min-h-screen bg-[#F5F5F5] px-4 pb-8 pt-[62px]">
       <UpdatePatientForm
-        faceImageIds={faceImageIds}
+        faceData={faceData}
         drugImageIds={drugImageIds}
         patient={patient}
         alerts={alerts}

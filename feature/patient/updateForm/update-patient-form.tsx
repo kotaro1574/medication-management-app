@@ -23,7 +23,10 @@ import { PatientInfoFormField } from "./field/infoField/patient-info-form-field"
 import { updatePatientFormSchema } from "./schema"
 
 type Props = {
-  faceImageIds: string[]
+  faceData: {
+    faceIds: string[]
+    imageIds: string[]
+  }
   drugImageIds: string[]
   patient: Database["public"]["Tables"]["patients"]["Row"]
   faceUrl: string
@@ -35,9 +38,9 @@ type Props = {
 export function UpdatePatientForm({
   currentUserName,
   patient,
+  faceData,
   faceUrl,
   registeredDrugs,
-  faceImageIds,
   drugImageIds,
   alerts,
 }: Props) {
@@ -175,7 +178,7 @@ export function UpdatePatientForm({
       </Form>
       <DeletePatientDialog
         patient={patient}
-        faceImageIds={faceImageIds}
+        faceData={faceData}
         drugImageIds={drugImageIds}
         trigger={
           <Button
