@@ -120,7 +120,6 @@ async function handleFaceImages(
 
   await updatePatientInfo(supabase, patientId, {
     image_id: faceImageIds[0],
-    face_ids: newFaceIds,
   })
 
   const { error: faceError } = await supabase.from("patient_faces").insert(

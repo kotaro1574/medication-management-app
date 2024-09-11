@@ -186,7 +186,6 @@ export async function createPatient({
       faceImageIds,
       process.env.PATIENT_FACES_BUCKET ?? ""
     )
-    const faceIds = faces.map((face) => face.faceId)
 
     const supabase = createClient()
     const userId = await getUser(supabase)
@@ -196,7 +195,6 @@ export async function createPatient({
       last_name: lastName,
       first_name: firstName,
       image_id: faceImageIds[0],
-      face_ids: faceIds,
       birthday,
       care_level: careLevel,
       disability_classification: disabilityClassification,
