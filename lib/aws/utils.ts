@@ -8,6 +8,7 @@ import { DeleteObjectCommand } from "@aws-sdk/client-s3"
 
 import { rekognitionClient, s3Client } from "@/lib/aws/aws-clients"
 
+// Rekognitionコレクションに顔データが存在するか確認する関数
 export async function checkFaceImageExists(imageId: string, bucket: string) {
   const res = await rekognitionClient.send(
     new SearchFacesByImageCommand({
@@ -28,6 +29,7 @@ export async function checkFaceImageExists(imageId: string, bucket: string) {
   return faceId ?? null
 }
 
+// Rekognitionコレクションに顔データを登録する関数
 export async function IndexFaces(
   imageIds: string[],
   bucket: string
@@ -107,74 +109,35 @@ export async function deleteImage(faceImageIds: string[], bucket: string) {
   }
 }
 
-// 顔画像をS3にアップロードする関数
-export async function uploadFaceImage(
-  faceImages: File[],
-  bucket: string
-): Promise<string[]> {
-  const imageIds: string[] = new Array(faceImages.length).fill("")
-
-  const uploadPromises = faceImages.map(async (faceImage, index) => {
+// S3に画像をアップロードする関数
+export async function uploadImages(images: File[], bucket: string) {
+  const uploadPromises = images.map(async (image) => {
     const {
-      url: faceUrl,
-      fields: faceFields,
+      url,
+      fields,
       key: imageId,
-    } = await getPresignedUrl(faceImage.type, bucket)
+    } = await getPresignedUrl(image.type, bucket)
 
-    const newFormData = new FormData()
-    Object.entries(faceFields).forEach(([key, value]) => {
-      newFormData.append(key, value as string)
+    const formData = new FormData()
+    Object.entries(fields).forEach(([key, value]) => {
+      formData.append(key, value as string)
     })
-    newFormData.append("file", faceImage)
+    formData.append("file", image)
 
-    const uploadResponse = await fetch(faceUrl, {
+    const uploadResponse = await fetch(url, {
       method: "POST",
-      body: newFormData,
+      body: formData,
     })
 
     if (!uploadResponse.ok) {
-      throw new Error(`S3への画像アップロードに失敗しました。Index: ${index}`)
+      throw new Error(`S3への画像アップロードに失敗しました。`)
     }
 
-    imageIds[index] = imageId // インデックスを使用して格納する
+    return imageId
   })
 
-  await Promise.all(uploadPromises)
-
-  return imageIds
-}
-
-// 薬画像をS3にアップロードする関数
-export async function drugImagesUpload(drugImages: File[]): Promise<string[]> {
-  const imageIds: string[] = []
-
-  for (const drugImage of drugImages) {
-    const {
-      url: drugUrl,
-      fields: drugFields,
-      key: imageId,
-    } = await getPresignedUrl(
-      drugImage.type,
-      process.env.NEXT_PUBLIC_DRUGS_BUCKET ?? ""
-    )
-
-    const drugFormData = new FormData()
-    Object.entries(drugFields).forEach(([key, value]) => {
-      drugFormData.append(key, value as string)
-    })
-    drugFormData.append("file", drugImage)
-
-    const drugUploadResponse = await fetch(drugUrl, {
-      method: "POST",
-      body: drugFormData,
-    })
-
-    if (!drugUploadResponse.ok) {
-      throw new Error("S3への薬画像アップロードに失敗しました。")
-    }
-
-    imageIds.push(imageId)
-  }
+  // すべての画像のアップロードが完了するのを待つ
+  const imageIds = await Promise.all(uploadPromises)
 
   return imageIds
 }

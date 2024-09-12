@@ -12,7 +12,7 @@ export async function checkPatientFace(
   supabase: SupabaseClient<Database>,
   faceImageIds: string[]
 ): Promise<void> {
-  faceImageIds.forEach(async (faceImageId) => {
+  const checkPatientFacePromises = faceImageIds.map(async (faceImageId) => {
     const faceId = await checkFaceImageExists(
       faceImageId,
       process.env.PATIENT_FACES_BUCKET ?? ""
@@ -46,4 +46,6 @@ export async function checkPatientFace(
       )
     }
   })
+
+  await Promise.all(checkPatientFacePromises)
 }

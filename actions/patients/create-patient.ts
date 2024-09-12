@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache"
 
 import { Database } from "@/types/schema.gen"
-import { IndexFaces, uploadFaceImage } from "@/lib/aws/utils"
+import { IndexFaces, uploadImages } from "@/lib/aws/utils"
 import { createClient } from "@/lib/supabase/server"
 
 import { insertAlert } from "../alert/insert-alert"
@@ -59,7 +59,7 @@ export async function createPatient({
     const faceImages = formData.getAll("faceImages") as File[]
 
     // s3に顔画像をアップロード
-    const faceImageIds = await uploadFaceImage(
+    const faceImageIds = await uploadImages(
       faceImages,
       process.env.PATIENT_FACES_BUCKET ?? ""
     )
@@ -77,31 +77,28 @@ export async function createPatient({
     const { facility_id } = await getProfile(supabase, user.id)
 
     // 患者情報を登録
-    const patient = await insertPatient(
-      supabase,
-      {
-        last_name: lastName,
-        first_name: firstName,
-        image_id: faceImageIds[0],
-        birthday,
-        care_level: careLevel,
-        disability_classification: disabilityClassification,
-        group_id: groupId,
-        facility_id: facility_id ?? "",
-        gender,
-      },
-      "id"
-    )
+    const patient = await insertPatient(supabase, {
+      last_name: lastName,
+      first_name: firstName,
+      image_id: faceImageIds[0],
+      birthday,
+      care_level: careLevel,
+      disability_classification: disabilityClassification,
+      group_id: groupId,
+      facility_id: facility_id ?? "",
+      gender,
+    })
 
     const patientId = patient.id ?? ""
 
     // 患者の顔情報を登録
-    faces.forEach(async (face) => {
+    const insertPatientFacesPromise = faces.map(async (face) => {
       await insertPatientFace(supabase, face, patientId)
     })
+    await Promise.all(insertPatientFacesPromise)
 
     // アラートを登録
-    alerts.forEach(async (_alert) => {
+    const insertAlertsPromise = alerts.map(async (_alert) => {
       const alert = {
         name: _alert.name,
         patient_id: patientId,
@@ -113,6 +110,7 @@ export async function createPatient({
       }
       await insertAlert(supabase, alert)
     })
+    await Promise.all(insertAlertsPromise)
 
     revalidatePath("/patients", "page")
     return { success: true, message: "患者が作成されました", patientId }

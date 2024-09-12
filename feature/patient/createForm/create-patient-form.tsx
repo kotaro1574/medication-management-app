@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { drugImagesUpload } from "@/lib/aws/utils"
+import { uploadImages } from "@/lib/aws/utils"
 import { genBirthdayText } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
@@ -85,7 +85,10 @@ export function CreatePatientForm({
 
       if (patientResponse.success && drugImages.length > 0) {
         // クライアントから画像ファイルを直接アップロード(https://vercel.com/guides/how-to-bypass-vercel-body-size-limit-serverless-functions)
-        const drugImageIds = await drugImagesUpload(drugImages)
+        const drugImageIds = await uploadImages(
+          drugImages,
+          process.env.NEXT_PUBLIC_DRUGS_BUCKET ?? ""
+        )
 
         const drugResponse = await createDrug({
           drugImageIds,

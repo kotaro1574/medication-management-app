@@ -10,7 +10,7 @@ import {
   IndexFaces,
   deleteFace,
   deleteImage,
-  uploadFaceImage,
+  uploadImages,
 } from "@/lib/aws/utils"
 import { createClient } from "@/lib/supabase/server"
 
@@ -108,7 +108,7 @@ async function handleFaceImages(
     throw new Error("顔情報の削除に失敗しました")
   }
 
-  const faceImageIds = await uploadFaceImage(
+  const faceImageIds = await uploadImages(
     faceImages,
     process.env.PATIENT_FACES_BUCKET ?? ""
   )
