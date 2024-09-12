@@ -1,7 +1,6 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { FacebookIcon } from "lucide-react"
 
 import { ActionResult } from "@/types/action"
 import {
