@@ -119,6 +119,13 @@ export function CreatePatientForm({
           })
           return
         }
+        if (error.message.includes("There are no faces in the image.")) {
+          form.setError("faceImages", {
+            message:
+              "顔が見つからない画像が含まれています。顔画像を撮り直してください。",
+          })
+          return
+        }
 
         toast({
           title: error.message,

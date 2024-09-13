@@ -64,7 +64,7 @@ export async function createPatient({
       process.env.PATIENT_FACES_BUCKET ?? ""
     )
 
-    // 顔画像が既に登録されている患者がいないかチェック
+    // 顔画像のチェック
     await checkPatientFace(supabase, faceImageIds)
 
     // チェックがOKなら顔情報をRekognitionに登録
