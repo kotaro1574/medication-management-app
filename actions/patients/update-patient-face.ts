@@ -10,15 +10,23 @@ import {
   uploadImages,
 } from "@/lib/aws/utils"
 
+import { deleteExistingPatientFace } from "../patientFace/delete-existing-patient-face"
+import { checkUpdatePatientFace } from "./check-update-patient-face"
+
 export async function updatePatientFace(
   supabase: SupabaseClient<Database>,
   patientId: string,
+  facilityId: string,
   faceImages: File[]
 ): Promise<void> {
   const faceImageIds = await uploadImages(
     faceImages,
     process.env.PATIENT_FACES_BUCKET ?? ""
   )
+
+  await checkUpdatePatientFace(supabase, patientId, facilityId, faceImageIds)
+  await deleteExistingPatientFace(supabase, patientId)
+
   const newFaces = await IndexFaces(
     faceImageIds,
     process.env.PATIENT_FACES_BUCKET ?? ""

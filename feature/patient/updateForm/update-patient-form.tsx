@@ -149,6 +149,13 @@ export function UpdatePatientForm({
       }
     } catch (error) {
       if (error instanceof Error) {
+        if (error.message.includes("同じ顔データが既に登録されています。")) {
+          form.setError("faceImages", {
+            message: error.message,
+          })
+          return
+        }
+
         toast({
           title: error.message,
           variant: "destructive",
