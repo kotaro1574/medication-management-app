@@ -1,6 +1,7 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { de } from "date-fns/locale"
 import { v4 as uuidv4 } from "uuid"
 
 import { ActionResult } from "@/types/action"
@@ -10,6 +11,7 @@ import { createClient } from "@/lib/supabase/server"
 import { deleteAlerts } from "../alert/delete-alerts"
 import { updateAlert } from "../alert/update-alert"
 import { deleteDrugs } from "../drug/delete-drug"
+import { deleteExistingPatientFace } from "../patientFace/delete-existing-patient-face"
 import { getProfile } from "../profile/get-profile"
 import { getUser } from "../user/get-user"
 import { updatePatientFace } from "./update-patient-face"
@@ -92,8 +94,9 @@ export async function updatePatient({
     })
     await Promise.all(updateAlertsPromises)
 
-    // 顔画像の更新があれば更新
+    // 顔画像の更新があれば削除して新しい画像を登録
     if (faceImages.length > 0) {
+      await deleteExistingPatientFace(supabase, patientId)
       await updatePatientFace(supabase, patientId, faceImages)
     }
 
