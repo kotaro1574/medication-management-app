@@ -25,13 +25,13 @@ export async function updatePatientFace(
   )
 
   await checkUpdatePatientFace(supabase, patientId, facilityId, faceImageIds)
-  await deleteExistingPatientFace(supabase, patientId)
 
   const newFaces = await IndexFaces(
     faceImageIds,
     process.env.PATIENT_FACES_BUCKET ?? ""
   )
-  const newFaceIds = newFaces.map((face) => face.faceId)
+
+  await deleteExistingPatientFace(supabase, patientId)
 
   const { error: patientsError } = await supabase
     .from("patients")
@@ -53,6 +53,7 @@ export async function updatePatientFace(
   )
 
   if (faceError) {
+    const newFaceIds = newFaces.map((face) => face.faceId)
     await deleteImage(faceImageIds, process.env.PATIENT_FACES_BUCKET ?? "")
     await deleteFace(process.env.PATIENT_FACES_BUCKET ?? "", newFaceIds)
     throw new Error("新しい顔情報の挿入に失敗しました")

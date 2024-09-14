@@ -155,6 +155,20 @@ export function UpdatePatientForm({
           })
           return
         }
+        if (error.message.includes("There are no faces in the image.")) {
+          form.setError("faceImages", {
+            message:
+              "顔が見つからない画像が含まれています。顔画像を撮り直してください。",
+          })
+          return
+        }
+        if (error.message.includes("The image contains more than one face.")) {
+          form.setError("faceImages", {
+            message:
+              "複数の顔が検出されました。1つの顔のみを含む画像を使用してください。",
+          })
+          return
+        }
 
         toast({
           title: error.message,

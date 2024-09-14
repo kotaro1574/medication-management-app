@@ -126,6 +126,13 @@ export function CreatePatientForm({
           })
           return
         }
+        if (error.message.includes("The image contains more than one face.")) {
+          form.setError("faceImages", {
+            message:
+              "複数の顔が検出されました。1つの顔のみを含む画像を使用してください。",
+          })
+          return
+        }
 
         toast({
           title: error.message,

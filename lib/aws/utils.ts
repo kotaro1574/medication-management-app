@@ -1,6 +1,7 @@
 import { getPresignedUrl } from "@/actions/s3/get-presigned-url"
 import {
   DeleteFacesCommand,
+  DetectFacesCommand,
   IndexFacesCommand,
   SearchFacesByImageCommand,
 } from "@aws-sdk/client-rekognition"
@@ -10,7 +11,26 @@ import { rekognitionClient, s3Client } from "@/lib/aws/aws-clients"
 
 // Rekognitionコレクションに顔データが存在するか確認する関数
 export async function checkFaceImageExists(imageId: string, bucket: string) {
-  const res = await rekognitionClient.send(
+  const detectFacesRes = await rekognitionClient.send(
+    new DetectFacesCommand({
+      Image: {
+        S3Object: {
+          Bucket: bucket,
+          Name: imageId,
+        },
+      },
+    })
+  )
+
+  if (!detectFacesRes.FaceDetails || detectFacesRes.FaceDetails.length === 0) {
+    throw new Error("There are no faces in the image.")
+  }
+
+  if (detectFacesRes.FaceDetails.length > 1) {
+    throw new Error("The image contains more than one face.")
+  }
+
+  const searchFacesByImageRes = await rekognitionClient.send(
     new SearchFacesByImageCommand({
       CollectionId: bucket,
       Image: {
@@ -24,7 +44,7 @@ export async function checkFaceImageExists(imageId: string, bucket: string) {
     })
   )
 
-  const faceId = res.FaceMatches?.[0]?.Face?.FaceId
+  const faceId = searchFacesByImageRes.FaceMatches?.[0]?.Face?.FaceId
 
   return faceId ?? null
 }
@@ -52,10 +72,8 @@ export async function IndexFaces(
         })
       )
 
-      if (!indexFaceRes.FaceRecords || indexFaceRes.FaceRecords.length === 0) {
-        throw new Error(
-          "顔が見つからない画像が含まれています。顔画像を撮り直してください。"
-        )
+      if (!indexFaceRes.FaceRecords) {
+        throw new Error("顔データの登録に失敗しました")
       }
 
       const faceId = indexFaceRes.FaceRecords[0].Face?.FaceId
