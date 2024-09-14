@@ -143,8 +143,8 @@ export function HamburgerMenu({ profileName, trigger }: Props) {
                 onClick={handleLinkClick}
                 className="flex items-center rounded-sm px-2 py-[6px] hover:bg-[#FFCA0E]/15 hover:text-[#FFCA0E]"
               >
-                <Icons.settings className="mr-8 size-4" />
-                <p className="text-sm">アカウント情報</p>
+                <Icons.settings className="mr-8 size-5" />
+                <p className="text-[16px]">アカウント情報</p>
               </Link>
             </div>
           </div>

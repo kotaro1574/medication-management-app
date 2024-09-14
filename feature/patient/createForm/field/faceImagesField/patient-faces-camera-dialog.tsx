@@ -131,7 +131,7 @@ export function PatientFacesCameraDialog({ trigger, form }: Props) {
               <Icons.shutter />
             </button>
             <button
-              className="absolute right-2 top-0 text-[#D9D9D9] hover:text-[#D9D9D9]/90"
+              className="absolute right-2 top-0 text-[#000000] hover:text-[#000000]/60"
               onClick={onSwitchCamera}
             >
               <Icons.switch />
