@@ -91,7 +91,7 @@ export default function OCRPage() {
         <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
           OCR
         </h1>
-        <button onClick={onClick} className="text-[#D9D9D9] hover:text-red-600">
+        <button onClick={onClick} className="text-[#D9D9D9] active:text-red-600 md:hover:text-red-600">
           <Icons.shutter />
         </button>
       </div>
