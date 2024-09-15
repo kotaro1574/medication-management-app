@@ -1,7 +1,7 @@
 -- facilitiesテーブルにデータを挿入
-INSERT INTO facilities (name) VALUES
-('健康センター'),
-('リハビリテーション施設');
+INSERT INTO facilities (name, email) VALUES
+('健康センター', 'facility1@example.com'),
+('リハビリテーション施設', 'facility2@example.com');
 
 -- groupsテーブルにデータを挿入
 INSERT INTO groups (name, facility_id) VALUES
