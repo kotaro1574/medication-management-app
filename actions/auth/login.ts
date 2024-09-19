@@ -15,14 +15,18 @@ type Result =
     }
 
 export async function login({
-  email,
+  id,
   password,
 }: {
-  email: string
+  id: string
   password: string
 }): Promise<Result> {
   try {
     const supabase = createClient()
+
+    // 直す
+    const email = id
+    console.log(email)
 
     const { data: userData, error: userError } =
       await supabase.auth.signInWithPassword({

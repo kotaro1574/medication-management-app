@@ -4,15 +4,12 @@ import { useState, useTransition } from "react"
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { faceLogin } from "@/actions/auth/face-login"
-import { generateCustomToken } from "@/actions/auth/generate-custom-token"
 import { login } from "@/actions/auth/login"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AlertCircle } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { createClient } from "@/lib/supabase/client"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -35,9 +32,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { FaceLoginCameraDialog } from "./face-login-camera-dialog"
 
 const formSchema = z.object({
-  email: z
-    .string()
-    .email({ message: "有効なメールアドレスを入力してください" }),
+  id: z.string().min(1, "idを入力してください"),
   password: z.string(),
 })
 
@@ -53,15 +48,15 @@ export function LoginForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      id: "",
       password: "",
     },
   })
 
-  const onSubmit = async ({ email, password }: z.infer<typeof formSchema>) => {
+  const onSubmit = async ({ id, password }: z.infer<typeof formSchema>) => {
     startTransaction(() => {
       ;(async () => {
-        const response = await login({ email, password })
+        const response = await login({ id, password })
 
         if (response.success) {
           toast({ title: response.message })
@@ -79,11 +74,11 @@ export function LoginForm({
 
   const onDropdownMenuItemClick = (value: string) => {
     const loginInfo: {
-      email: string
+      id: string
       password: string
     } = JSON.parse(value)
 
-    form.setValue("email", loginInfo.email)
+    form.setValue("id", loginInfo.id)
     form.setValue("password", loginInfo.password)
   }
 
@@ -100,16 +95,16 @@ export function LoginForm({
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
           <FormField
             control={form.control}
-            name="email"
+            name="id"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>メールアドレス</FormLabel>
+                <FormLabel>id</FormLabel>
                 <FormControl>
-                  <Input isError={!!form.formState.errors.email} {...field} />
+                  <Input isError={!!form.formState.errors.id} {...field} />
                 </FormControl>
-                {form.formState.errors.email && (
+                {form.formState.errors.id && (
                   <FormDescription>
-                    {form.formState.errors.email.message}
+                    {form.formState.errors.id.message}
                   </FormDescription>
                 )}
               </FormItem>
