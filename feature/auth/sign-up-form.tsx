@@ -6,6 +6,7 @@ import { logout } from "@/actions/auth/logout"
 import { setLoginInfo } from "@/actions/cookie/set-login-info"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import { v4 as uuidv4 } from "uuid"
 import { z } from "zod"
 
 import { createClient } from "@/lib/supabase/client"
@@ -25,9 +26,6 @@ import { useToast } from "@/components/ui/use-toast"
 import { FacilitiesSelect } from "../facility/facilities-select"
 
 const formSchema = z.object({
-  email: z
-    .string()
-    .email({ message: "有効なメールアドレスを入力してください" }),
   password: z.string().min(8, {
     message: "パスワードは8文字以上である必要があります。",
   }),
@@ -49,7 +47,6 @@ export function SignUpForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
       password: "",
       userName: "",
       facilityId: "",
@@ -57,7 +54,6 @@ export function SignUpForm() {
   })
 
   const onSubmit = async ({
-    email,
     password,
     userName,
     facilityId,
@@ -66,7 +62,7 @@ export function SignUpForm() {
       setLoading(true)
 
       const { data, error } = await supabase.auth.signUp({
-        email,
+        email: `${uuidv4()}@example.com`,
         password,
         options: {
           data: {
@@ -80,20 +76,10 @@ export function SignUpForm() {
         throw error
       }
 
-      // 登録されているメールアドレスの場合、空の配列が返ってくる。
-      const identities = data.user?.identities
-      if (identities?.length === 0) {
-        form.setError("email", {
-          message: "このメールアドレスは既に登録されています",
-        })
-        return
-      }
-
       if (data.user) {
         await setLoginInfo({
           id: data.user.id,
           name: userName,
-          email,
           password,
         })
       }
@@ -101,14 +87,6 @@ export function SignUpForm() {
       setIsConfirm(true)
     } catch (error) {
       const parseError = errorSchema.parse(error)
-
-      if (parseError.message === "User already registered") {
-        form.setError("email", {
-          message: "このメールアドレスは既に登録されています",
-        })
-        return
-      }
-
       if (parseError.message === "Email rate limit exceeded") {
         toast({
           variant: "destructive",
@@ -151,23 +129,6 @@ export function SignUpForm() {
   return !isConfirm ? (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem className="mt-4">
-              <FormLabel>メールアドレス</FormLabel>
-              <FormControl>
-                <Input isError={!!form.formState.errors.email} {...field} />
-              </FormControl>
-              {form.formState.errors.email && (
-                <FormDescription>
-                  {form.formState.errors.email.message}
-                </FormDescription>
-              )}
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="password"
