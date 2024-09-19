@@ -231,7 +231,6 @@ export type Database = {
           care_level: Database["public"]["Enums"]["care_level_enum"]
           created_at: string
           disability_classification: Database["public"]["Enums"]["disability_classification_enum"]
-          face_ids: string[]
           facility_id: string
           first_name: string
           gender: Database["public"]["Enums"]["gender_enum"]
@@ -246,7 +245,6 @@ export type Database = {
           care_level: Database["public"]["Enums"]["care_level_enum"]
           created_at?: string
           disability_classification: Database["public"]["Enums"]["disability_classification_enum"]
-          face_ids: string[]
           facility_id: string
           first_name: string
           gender: Database["public"]["Enums"]["gender_enum"]
@@ -261,7 +259,6 @@ export type Database = {
           care_level?: Database["public"]["Enums"]["care_level_enum"]
           created_at?: string
           disability_classification?: Database["public"]["Enums"]["disability_classification_enum"]
-          face_ids?: string[]
           facility_id?: string
           first_name?: string
           gender?: Database["public"]["Enums"]["gender_enum"]

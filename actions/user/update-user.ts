@@ -1,14 +1,13 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { FacebookIcon } from "lucide-react"
 
 import { ActionResult } from "@/types/action"
 import {
   IndexFaces,
   deleteFace,
   deleteImage,
-  uploadFaceImage,
+  uploadImages,
 } from "@/lib/aws/utils"
 import { createClient } from "@/lib/supabase/server"
 
@@ -69,7 +68,7 @@ export async function updateUser({
       )
     }
 
-    const userFaceImageIds = await uploadFaceImage(
+    const userFaceImageIds = await uploadImages(
       faceImages,
       process.env.USER_FACES_BUCKET ?? ""
     )

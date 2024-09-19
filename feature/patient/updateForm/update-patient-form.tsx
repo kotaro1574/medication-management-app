@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { Database } from "@/types/schema.gen"
-import { drugImagesUpload } from "@/lib/aws/utils"
+import { uploadImages } from "@/lib/aws/utils"
 import { extractBirthdayInfo, genBirthdayText } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
@@ -23,7 +23,10 @@ import { PatientInfoFormField } from "./field/infoField/patient-info-form-field"
 import { updatePatientFormSchema } from "./schema"
 
 type Props = {
-  faceImageIds: string[]
+  faceData: {
+    faceIds: string[]
+    imageIds: string[]
+  }
   drugImageIds: string[]
   patient: Database["public"]["Tables"]["patients"]["Row"]
   faceUrl: string
@@ -35,9 +38,9 @@ type Props = {
 export function UpdatePatientForm({
   currentUserName,
   patient,
+  faceData,
   faceUrl,
   registeredDrugs,
-  faceImageIds,
   drugImageIds,
   alerts,
 }: Props) {
@@ -118,7 +121,10 @@ export function UpdatePatientForm({
 
       if (patientResponse.success && drugImages.length > 0) {
         // クライアントから画像ファイルを直接アップロード(https://vercel.com/guides/how-to-bypass-vercel-body-size-limit-serverless-functions)
-        const drugImageIds = await drugImagesUpload(drugImages)
+        const drugImageIds = await uploadImages(
+          drugImages,
+          process.env.NEXT_PUBLIC_DRUGS_BUCKET ?? ""
+        )
 
         const drugResponse = await createDrug({
           drugImageIds,
@@ -143,6 +149,27 @@ export function UpdatePatientForm({
       }
     } catch (error) {
       if (error instanceof Error) {
+        if (error.message.includes("同じ顔データが既に登録されています。")) {
+          form.setError("faceImages", {
+            message: error.message,
+          })
+          return
+        }
+        if (error.message.includes("There are no faces in the image.")) {
+          form.setError("faceImages", {
+            message:
+              "顔が見つからない画像が含まれています。顔画像を撮り直してください。",
+          })
+          return
+        }
+        if (error.message.includes("The image contains more than one face.")) {
+          form.setError("faceImages", {
+            message:
+              "複数の顔が検出されました。1つの顔のみを含む画像を使用してください。",
+          })
+          return
+        }
+
         toast({
           title: error.message,
           variant: "destructive",
@@ -175,7 +202,7 @@ export function UpdatePatientForm({
       </Form>
       <DeletePatientDialog
         patient={patient}
-        faceImageIds={faceImageIds}
+        faceData={faceData}
         drugImageIds={drugImageIds}
         trigger={
           <Button

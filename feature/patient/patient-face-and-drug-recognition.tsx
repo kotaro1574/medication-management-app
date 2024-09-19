@@ -177,13 +177,13 @@ export function PatientFaceAndDrugRecognition() {
         )}
         <button
           onClick={onRecognition}
-          className="text-[#D9D9D9] hover:text-red-600"
+          className="text-[#D9D9D9] active:text-red-600 md:hover:text-red-600"
           disabled={loading || isDrugRecognition}
         >
           <Icons.shutter />
         </button>
         <button
-          className="absolute right-2 top-0 text-[#A4A4A4] hover:text-[#A4A4A4]/60"
+          className="absolute right-2 top-0 text-[#000000] hover:text-[#000000]/60"
           onClick={onSwitchCamera}
           disabled={loading}
         >

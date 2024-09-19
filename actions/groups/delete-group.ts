@@ -1,8 +1,6 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { PostgrestError } from "@supabase/supabase-js"
-import { th } from "date-fns/locale"
 
 import { ActionResult } from "@/types/action"
 import { createClient } from "@/lib/supabase/server"
