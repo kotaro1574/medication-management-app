@@ -5,12 +5,10 @@ import { cookies } from "next/headers"
 export async function setLoginInfo({
   id,
   name,
-  email,
   password,
 }: {
   id: string
   name: string
-  email?: string
   password?: string
 }) {
   const cookieKey = `login-info-${id}`
@@ -19,12 +17,10 @@ export async function setLoginInfo({
   let currentData: {
     id: string
     name: string
-    email: string
     password: string
   } = {
     id: "",
     name: "",
-    email: "",
     password: "",
   }
 
@@ -34,7 +30,6 @@ export async function setLoginInfo({
     console.error("クッキーデータのパースに失敗しました:", error)
   }
 
-  const newEmail = email || currentData.email
   const newPassword = password || currentData.password
 
   if (!newPassword) {
@@ -45,7 +40,6 @@ export async function setLoginInfo({
   const newCookieValue = JSON.stringify({
     id,
     name,
-    email: newEmail,
     password: newPassword,
   })
 

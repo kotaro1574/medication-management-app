@@ -28,7 +28,6 @@ export function EmailChangeConfirmToast({ user, name }: Props) {
       setLoginInfo({
         id: user.id,
         name,
-        email: user.email,
       })
     }
   }, [code, mounted, name, toast, user.email, user.id])

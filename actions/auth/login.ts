@@ -4,6 +4,8 @@ import { cookies } from "next/headers"
 
 import { createClient } from "@/lib/supabase/server"
 
+import { setLoginInfo } from "../cookie/set-login-info"
+
 type Result =
   | {
       success: true
@@ -36,24 +38,19 @@ export async function login({
 
     const { data: profileData, error: profileError } = await supabase
       .from("profiles")
-      .select("*")
-      .eq("id", userData.user?.id ?? "")
+      .select("name")
+      .eq("id", userData.user.id)
       .single()
 
     if (profileError) {
       return { success: false, error: profileError.message }
     }
 
-    cookies().set(
-      `login-info-${userData.user.id}`,
-      JSON.stringify({ id, name: profileData.name, email: "", password }),
-      {
-        path: "/",
-        httpOnly: true,
-        secure: true,
-        maxAge: 20 * 60 * 60, // 20 hours in seconds
-      }
-    )
+    await setLoginInfo({
+      id,
+      name: profileData.name,
+      password,
+    })
   } catch (error) {
     if (error instanceof Error) {
       return { success: false, error: error.message }

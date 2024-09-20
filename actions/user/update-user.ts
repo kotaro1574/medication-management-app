@@ -11,8 +11,6 @@ import {
 } from "@/lib/aws/utils"
 import { createClient } from "@/lib/supabase/server"
 
-import { setLoginInfo } from "../cookie/set-login-info"
-
 type Props = {
   formData: FormData
 }

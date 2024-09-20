@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { setLoginInfo } from "@/actions/cookie/set-login-info"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AuthError, PostgrestError } from "@supabase/supabase-js"
 import { useForm } from "react-hook-form"
