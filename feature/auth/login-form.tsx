@@ -63,7 +63,7 @@ export function LoginForm({
           router.push("/")
         } else {
           if (response.error === "Invalid login credentials") {
-            setError("メールアドレスまたはパスワードが間違っています")
+            setError("idまたはパスワードが間違っています")
             return
           }
           toast({ title: response.error, variant: "destructive" })
@@ -150,9 +150,10 @@ export function LoginForm({
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
-            <div>
+            {/* パスワードリセットの機能を非公開　*/}
+            {/* <div>
               <Link href="reset-password">パスワードをお忘れですか？</Link>
-            </div>
+            </div> */}
           </div>
           <Button
             className="mt-[24px] block w-full"
