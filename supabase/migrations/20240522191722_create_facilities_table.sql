@@ -4,3 +4,9 @@ CREATE TABLE facilities (
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now()
 );
+
+-- profilesテーブルのfacility_idカラムに外部キー制約を追加
+ALTER TABLE profiles
+  ADD CONSTRAINT fk_profiles_facility
+  FOREIGN KEY (facility_id)
+  REFERENCES facilities(id);
