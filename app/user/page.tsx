@@ -1,6 +1,5 @@
 import { getS3Data } from "@/actions/s3/get-s3-data"
 import { EditUserForm } from "@/feature/user/edit-user-form"
-import { EmailChangeConfirmToast } from "@/feature/user/email-change-confirm-toast"
 
 import { createClient } from "@/lib/supabase/server"
 
@@ -50,7 +49,8 @@ export default async function UserPage() {
         email={user.email ?? ""}
         facility={facility}
       />
-      <EmailChangeConfirmToast user={user} name={profile.name} />
+      {/* メールアドレス変更が非公開になったため、コメントアウト */}
+      {/* <EmailChangeConfirmToast user={user} name={profile.name} /> */}
     </section>
   )
 }

@@ -14,16 +14,10 @@ import { createClient } from "@/lib/supabase/server"
 import { setLoginInfo } from "../cookie/set-login-info"
 
 type Props = {
-  name: string
-  email: string
   formData: FormData
 }
 
-export async function updateUser({
-  name,
-  email,
-  formData,
-}: Props): Promise<ActionResult> {
+export async function updateUser({ formData }: Props): Promise<ActionResult> {
   try {
     const supabase = createClient()
 
@@ -81,7 +75,6 @@ export async function updateUser({
     const { error } = await supabase
       .from("profiles")
       .update({
-        name,
         image_id: userFaceImageIds[0],
       })
       .eq("id", user.id)
@@ -91,8 +84,6 @@ export async function updateUser({
         `ユーザー情報の更新時にエラーが発生しました: ${error.message}`
       )
     }
-
-    await setLoginInfo({ id: user.id, name })
 
     const { error: userFaceError } = await supabase.from("user_faces").insert(
       newFaces.map((face) => ({
@@ -111,21 +102,6 @@ export async function updateUser({
       throw new Error(
         `ユーザーの顔情報の挿入時にエラーが発生しました: ${userFaceError.message}`
       )
-    }
-
-    if (email !== user.email) {
-      const { error: emailError } = await supabase.auth.updateUser(
-        { email },
-        { emailRedirectTo: process.env.NEXT_PUBLIC_URL + "/user" }
-      )
-
-      if (emailError) {
-        throw new Error(
-          `メールアドレスの更新時にエラーが発生しました: ${emailError.message}`
-        )
-      }
-
-      return { success: true, message: "メールが送信されました。" }
     }
 
     revalidatePath("/", "layout")
