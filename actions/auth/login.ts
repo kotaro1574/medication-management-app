@@ -24,10 +24,6 @@ export async function login({
   try {
     const supabase = createClient()
 
-    // 直す
-    // const email = id
-    // console.log(email)
-
     const { data: userData, error: userError } =
       await supabase.auth.signInWithPassword({
         email: `${id}@example.com`,

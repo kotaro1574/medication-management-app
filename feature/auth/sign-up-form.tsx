@@ -68,7 +68,7 @@ export function SignUpForm() {
         password,
         options: {
           data: {
-            id: id,
+            id,
             userName,
             facilityId,
           },
