@@ -291,6 +291,7 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          email: string
           facility_id: string
           id: string
           image_id: string | null
@@ -299,6 +300,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          email: string
           facility_id: string
           id: string
           image_id?: string | null
@@ -307,6 +309,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          email?: string
           facility_id?: string
           id?: string
           image_id?: string | null
@@ -314,6 +317,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_profiles_facility"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "profiles_id_fkey"
             columns: ["id"]
