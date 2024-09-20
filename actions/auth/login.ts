@@ -25,12 +25,12 @@ export async function login({
     const supabase = createClient()
 
     // 直す
-    const email = id
-    console.log(email)
+    // const email = id
+    // console.log(email)
 
     const { data: userData, error: userError } =
       await supabase.auth.signInWithPassword({
-        email,
+        email: `${id}@example.com`,
         password,
       })
 
@@ -50,7 +50,7 @@ export async function login({
 
     cookies().set(
       `login-info-${userData.user.id}`,
-      JSON.stringify({ name: profileData.name, email, password }),
+      JSON.stringify({ id, name: profileData.name, email: "", password }),
       {
         path: "/",
         httpOnly: true,

@@ -2,6 +2,7 @@
 create table profiles (
   id uuid references auth.users on delete cascade not null primary key,
   name text,
+  email varchar(255) unique not null,
   updated_at timestamptz
 );
 -- Set up Row Level Security (RLS)

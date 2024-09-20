@@ -61,11 +61,14 @@ export function SignUpForm() {
     try {
       setLoading(true)
 
+      const id = uuidv4()
+
       const { data, error } = await supabase.auth.signUp({
-        email: `${uuidv4()}@example.com`,
+        email: `${id}@example.com`,
         password,
         options: {
           data: {
+            id: id,
             userName,
             facilityId,
           },
@@ -78,7 +81,7 @@ export function SignUpForm() {
 
       if (data.user) {
         await setLoginInfo({
-          id: data.user.id,
+          id,
           name: userName,
           password,
         })

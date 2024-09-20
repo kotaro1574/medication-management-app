@@ -16,7 +16,13 @@ export async function setLoginInfo({
   const cookieKey = `login-info-${id}`
 
   let currentCookie = cookies().get(cookieKey)?.value ?? "{}"
-  let currentData: { name: string; email: string; password: string } = {
+  let currentData: {
+    id: string
+    name: string
+    email: string
+    password: string
+  } = {
+    id: "",
     name: "",
     email: "",
     password: "",
@@ -37,6 +43,7 @@ export async function setLoginInfo({
   }
 
   const newCookieValue = JSON.stringify({
+    id,
     name,
     email: newEmail,
     password: newPassword,
