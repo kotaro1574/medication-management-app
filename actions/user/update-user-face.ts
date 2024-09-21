@@ -10,11 +10,13 @@ import {
   uploadImages,
 } from "@/lib/aws/utils"
 
+import { checkUpdateUserFace } from "./check-update-user-face"
 import { deleteExistingUserFace } from "./delete-existing-user-face"
 
 export async function updateUserFace(
   supabase: SupabaseClient<Database>,
   userId: string,
+  facilityId: string,
   faceImages: File[]
 ): Promise<void> {
   const faceImageIds = await uploadImages(
@@ -22,7 +24,7 @@ export async function updateUserFace(
     process.env.USER_FACES_BUCKET ?? ""
   )
 
-  // TODO: checkUpdateUserFaceの実装
+  await checkUpdateUserFace(supabase, userId, facilityId, faceImageIds)
 
   const newFaces = await IndexFaces(
     faceImageIds,

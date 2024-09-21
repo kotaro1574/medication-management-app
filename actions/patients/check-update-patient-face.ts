@@ -37,9 +37,7 @@ export async function checkUpdatePatientFace(
         .eq("id", patientFace.patient_id)
         .single()
 
-      if (patientError) {
-        throw new Error("患者の取得に失敗しました")
-      }
+      if (patientError) return
 
       if (patient.id !== patientId) {
         throw new Error(

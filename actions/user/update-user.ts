@@ -6,6 +6,7 @@ import { ActionResult } from "@/types/action"
 import { createClient } from "@/lib/supabase/server"
 
 import { setLoginInfo } from "../cookie/set-login-info"
+import { getProfile } from "../profile/get-profile"
 import { getUser } from "./get-user"
 import { updateUserFace } from "./update-user-face"
 
@@ -21,13 +22,14 @@ export async function updateUser({
   formData,
 }: Props): Promise<ActionResult> {
   try {
-    const supabase = createClient()
-    const user = await getUser(supabase)
-
     const faceImages = formData.getAll("faceImages") as File[]
 
+    const supabase = createClient()
+    const user = await getUser(supabase)
+    const { facility_id } = await getProfile(supabase, user.id, "facility_id")
+
     if (faceImages.length > 0) {
-      await updateUserFace(supabase, user.id, faceImages)
+      await updateUserFace(supabase, user.id, facility_id ?? "", faceImages)
     }
 
     // TODO: nameの編集が必要なくなったら削除
