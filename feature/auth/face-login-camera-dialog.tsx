@@ -110,7 +110,7 @@ export function FaceLoginCameraDialog({ trigger }: Props) {
           <div className="relative mt-4 flex w-full items-center justify-center">
             <button
               onClick={onGetFaceImages}
-              className="text-[#D9D9D9] hover:text-red-600"
+              className="text-[#D9D9D9] active:text-red-600 md:hover:text-red-600"
             >
               <Icons.shutter />
             </button>
