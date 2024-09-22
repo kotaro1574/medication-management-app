@@ -43,6 +43,7 @@ export function PatientFaceImagesFormField({
                 }
                 alt="face image"
                 fill
+                sizes="100%"
                 placeholder={placeholder({ w: 150, h: 210 })}
                 className="rounded-[8px] object-cover"
               />
