@@ -77,13 +77,25 @@ export function EditUserForm({ profile, email, facility, faceUrl }: Props) {
           toast({ title: response.message })
           router.push("/user")
         } else {
-          if (
-            response.error.includes(
-              "顔が見つからない画像が含まれています。顔画像を撮り直してください。"
-            )
-          ) {
+          if (response.error.includes("同じ顔データが既に登録されています。")) {
             form.setError("faceImages", {
               message: response.error,
+            })
+            return
+          }
+          if (response.error.includes("There are no faces in the image.")) {
+            form.setError("faceImages", {
+              message:
+                "顔が見つからない画像が含まれています。顔画像を撮り直してください。",
+            })
+            return
+          }
+          if (
+            response.error.includes("The image contains more than one face.")
+          ) {
+            form.setError("faceImages", {
+              message:
+                "複数の顔が検出されました。1つの顔のみを含む画像を使用してください。",
             })
             return
           }
@@ -188,6 +200,7 @@ export function EditUserForm({ profile, email, facility, faceUrl }: Props) {
                     }
                     alt="face image"
                     fill
+                    sizes="100%"
                     placeholder={placeholder({ w: 150, h: 210 })}
                     className="rounded-[8px] object-cover"
                   />
