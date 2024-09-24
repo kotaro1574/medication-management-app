@@ -103,7 +103,7 @@ export function FaceLoginCameraDialog({ trigger }: Props) {
               height: "calc(100vh - 300px)",
             }}
           >
-            <DynamicCamera cameraRef={cameraRef} />
+            <DynamicCamera cameraRef={cameraRef} facingMode="user" />
           </div>
           <div className="relative mt-4 flex w-full items-center justify-center">
             <button
