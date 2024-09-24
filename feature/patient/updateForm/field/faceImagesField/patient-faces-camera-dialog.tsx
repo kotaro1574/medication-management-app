@@ -34,8 +34,10 @@ export function PatientFacesCameraDialog({ trigger, form }: Props) {
   const cameraRef = useRef<CameraType>(null)
   const [progress, setProgress] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
+  const [isCamBtnPressed, setIsCamBtnPressed] = useState<boolean>(false)
 
   const onGetFaceImages = useCallback(() => {
+    setIsCamBtnPressed(true)
     if (!cameraRef.current) return
     const imageSrc = cameraRef.current.takePhoto()
 
@@ -69,6 +71,9 @@ export function PatientFacesCameraDialog({ trigger, form }: Props) {
       }
       return newProgress
     })
+    setTimeout(() => {
+      setIsCamBtnPressed(false)
+    }, 1500);
   }, [form, progress])
 
   const onSwitchCamera = useCallback(() => {
@@ -125,7 +130,7 @@ export function PatientFacesCameraDialog({ trigger, form }: Props) {
           <div className="relative mt-4 flex w-full items-center justify-center">
             <button
               onClick={onGetFaceImages}
-              className="text-[#D9D9D9] active:text-red-600 md:hover:text-red-600"
+              className={`text-[#D9D9D9]  md:hover:text-red-600 ${isCamBtnPressed ? "text-red-600" : ""}`}
               disabled={progress === 100}
             >
               <Icons.shutter />

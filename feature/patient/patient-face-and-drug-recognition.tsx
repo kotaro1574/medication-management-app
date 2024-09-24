@@ -22,8 +22,10 @@ export function PatientFaceAndDrugRecognition() {
   const [isDrugRecognition, setIsDrugRecognition] = useState<boolean>(false)
   const [errorCount, setErrorCount] = useState<number>(0)
   const [facingMode, setFacingMode] = useState<FacingMode>("user")
+  const [isCamBtnPressed, setIsCamBtnPressed] = useState<boolean>(false)
   const cameraRef = useRef<CameraType>(null)
   const { toast } = useToast()
+
 
   const onReset = useCallback(() => {
     setPatent(null)
@@ -108,6 +110,7 @@ export function PatientFaceAndDrugRecognition() {
   }
 
   const onRecognition = async () => {
+    setIsCamBtnPressed(true)
     if (!cameraRef.current) return
     const imageSrc = cameraRef.current.takePhoto()
 
@@ -122,6 +125,9 @@ export function PatientFaceAndDrugRecognition() {
     } else {
       await handleDrugRecognition(base64Data)
     }
+    setTimeout(() => {
+      setIsCamBtnPressed(false)
+    }, 1500);
   }
 
   const onSwitchCamera = () => {
@@ -177,7 +183,7 @@ export function PatientFaceAndDrugRecognition() {
         )}
         <button
           onClick={onRecognition}
-          className="text-[#D9D9D9] active:text-red-600 md:hover:text-red-600"
+          className={`text-[#D9D9D9]  md:hover:text-red-600 ${isCamBtnPressed ? "text-red-600" : ""}`}
           disabled={loading || isDrugRecognition}
         >
           <Icons.shutter />
