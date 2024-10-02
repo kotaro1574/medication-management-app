@@ -56,15 +56,6 @@ export function PatientFaceAndDrugRecognitionCamera({
     return "rgba(163, 163, 163, 0.4)"
   }
 
-  console.log(
-    "isFaceRecognition",
-    getBackgroundColor(isFaceRecognition, isError)
-  )
-  console.log(
-    "isDrugRecognition",
-    getBackgroundColor(isDrugRecognition, isError)
-  )
-
   return (
     <div className="relative">
       <div
