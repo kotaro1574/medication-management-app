@@ -51,10 +51,19 @@ export function PatientFaceAndDrugRecognitionCamera({
     isRecognition: boolean,
     isError: boolean
   ): string => {
+    if (isRecognition) return "rgba(88, 105, 193, 0.6)"
     if (isError) return "rgba(181, 15, 15, 0.6)"
-    if (isRecognition && !isError) return "rgba(88, 105, 193, 0.6)"
     return "rgba(163, 163, 163, 0.4)"
   }
+
+  console.log(
+    "isFaceRecognition",
+    getBackgroundColor(isFaceRecognition, isError)
+  )
+  console.log(
+    "isDrugRecognition",
+    getBackgroundColor(isDrugRecognition, isError)
+  )
 
   return (
     <div className="relative">
