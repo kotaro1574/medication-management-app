@@ -157,7 +157,16 @@ export function PatientFaceAndDrugRecognition() {
   }, [errorCount, facingMode, patent?.id, toast, onReset])
 
   return (
-    <div className="mx-auto w-full sm:max-w-[500px] md:max-w-[600px]">
+    <div className="relative mx-auto w-full sm:max-w-[500px] md:max-w-[600px]">
+      {patent && (
+        <button
+          type="button"
+          className="absolute right-0 top-[-32px] flex items-center text-xs text-[#000000] hover:text-[#000000]/60"
+        >
+          <Icons.skipForward className="size-4" />
+          <p>スキップ</p>
+        </button>
+      )}
       <PatientFaceAndDrugRecognitionCamera
         cameraRef={cameraRef}
         lastName={patent?.last_name ?? ""}
@@ -174,7 +183,7 @@ export function PatientFaceAndDrugRecognition() {
         {patent && (
           <button
             onClick={onReset}
-            className="absolute left-2 top-0 text-xs text-[#A4A4A4] hover:text-[#A4A4A4]/60"
+            className="absolute left-2 top-0 text-xs text-[#000000] hover:text-[#000000]/60"
             disabled={loading}
           >
             認証やり直し
@@ -182,6 +191,7 @@ export function PatientFaceAndDrugRecognition() {
         )}
         <button
           onClick={onRecognition}
+          type="button"
           className={`text-[#D9D9D9]  md:hover:text-red-600 ${
             isCamBtnPressed ? "text-red-600" : ""
           }`}
@@ -191,6 +201,7 @@ export function PatientFaceAndDrugRecognition() {
         </button>
         <button
           className="absolute right-2 top-0 text-[#000000] hover:text-[#000000]/60"
+          type="button"
           onClick={onSwitchCamera}
           disabled={loading}
         >
