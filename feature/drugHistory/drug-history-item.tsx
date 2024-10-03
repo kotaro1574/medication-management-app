@@ -44,8 +44,14 @@ export function DrugHistoryItem({
               </div>
             </PopoverTrigger>
             <PopoverContent>
-              <div className="text-sm font-semibold">
-                担当者：{drugHistory.user_name}
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <div>担当者：{drugHistory.user_name}</div>
+                {drugHistory.medication_auth_result === "skipped" && (
+                  <div className="flex items-center text-[#F24E1E]">
+                    <Icons.skipForward className="size-4" />
+                    <div className="text-xs">スキップ</div>
+                  </div>
+                )}
               </div>
             </PopoverContent>
           </Popover>
