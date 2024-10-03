@@ -99,11 +99,12 @@ export function GroupTabs({ items }: props) {
                     <Popover key={drugHistory.id}>
                       <PopoverTrigger>
                         <div className="text-center">
-                          <Icons.drugHistory
-                            className={`${getDrugHistoryColor(
-                              drugHistory.medication_auth_result
-                            )}`}
-                          />
+                          {/* いつか直したい */}
+                          {drugHistory.medication_auth_result === "success" ? (
+                            <Icons.drugHistory className="text-[#4ECB71]" />
+                          ) : (
+                            <Icons.drugHistory className="text-[#F24E1E]" />
+                          )}
                           <div className="mt-1 text-[11px]">
                             {formatDate(
                               new Date(drugHistory.created_at),
