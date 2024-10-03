@@ -84,7 +84,7 @@ export function PatientFaceAndDrugRecognitionCamera({
             transform: "translate(-50%, -50%)",
           }}
         >
-          <div className="mx-2 h-[100px] border-[1.5px] border-[#FFCA0E]" />
+          <div className="mx-2 h-[90px] border-[1.5px] border-[#FFCA0E]" />
           <p className="mt-1 text-center text-xs font-semibold text-[#FFCA0E]">
             ここに名前を置いて撮影してください
           </p>
