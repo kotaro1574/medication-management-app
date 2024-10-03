@@ -77,15 +77,12 @@ export function PatientFaceAndDrugRecognition() {
       })
       if (response.success) {
         setIsDrugRecognition(true)
-        setError(null)
         const successSound = new Audio("/success-sound.mp3")
         successSound.play()
         toast({ title: response.message })
 
         setTimeout(() => {
-          setPatent(null)
-          setIsDrugRecognition(false)
-          setErrorCount(0)
+          onReset()
           if (cameraRef.current && facingMode === "environment") {
             setFacingMode("user")
             cameraRef.current.switchCamera()
@@ -129,6 +126,35 @@ export function PatientFaceAndDrugRecognition() {
     }, 1500)
   }
 
+  const onSkipDrugRecognition = async () => {
+    if (patent?.id) {
+      const response = await createDrugHistory({
+        patientId: patent.id,
+        medicationAuthResult: "skipped",
+      })
+      if (response.success) {
+        setIsDrugRecognition(true)
+        const successSound = new Audio("/success-sound.mp3")
+        successSound.play()
+        toast({ title: response.message })
+
+        setTimeout(() => {
+          onReset()
+          if (cameraRef.current && facingMode === "environment") {
+            setFacingMode("user")
+            cameraRef.current.switchCamera()
+          }
+        }, 5000)
+      } else {
+        setError(response.error)
+      }
+
+      setTimeout(() => {
+        onReset()
+      }, 5000)
+    }
+  }
+
   const onSwitchCamera = () => {
     if (cameraRef.current) {
       setFacingMode((prev) => (prev === "user" ? "environment" : "user"))
@@ -162,6 +188,7 @@ export function PatientFaceAndDrugRecognition() {
         <button
           type="button"
           className="absolute right-0 top-[-32px] flex items-center text-xs text-[#000000] hover:text-[#000000]/60"
+          onClick={onSkipDrugRecognition}
         >
           <Icons.skipForward className="size-4" />
           <p>スキップ</p>
