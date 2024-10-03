@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 const DynamicCamera = dynamic(() => import("@/components/ui/camera"), {
   loading: () => (
-    <Skeleton className="h-[calc(100vh_-_250px)] w-full rounded-[24px] sm:max-w-[500px] md:max-w-[600px]" />
+    <Skeleton className="h-[calc(100vh_-_240px)] w-full rounded-[24px] sm:max-w-[500px] md:max-w-[600px]" />
   ),
   ssr: false,
 })
@@ -60,7 +60,7 @@ export function PatientFaceAndDrugRecognitionCamera({
     <div className="relative">
       <div
         style={{
-          height: "calc(100vh - 250px)",
+          height: "calc(100vh - 240px)",
         }}
       >
         <DynamicCamera cameraRef={cameraRef} facingMode={facingMode} />
