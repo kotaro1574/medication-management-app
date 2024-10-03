@@ -5,6 +5,7 @@ import { PatientAvatar } from "@/feature/patient/patient-avatar"
 import { formatDate } from "date-fns"
 
 import { Database } from "@/types/schema.gen"
+import { getDrugHistoryColor } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { Icons } from "@/components/ui/icons"
 import {
@@ -98,12 +99,11 @@ export function GroupTabs({ items }: props) {
                     <Popover key={drugHistory.id}>
                       <PopoverTrigger>
                         <div className="text-center">
-                          {/* いつか直したい */}
-                          {drugHistory.medication_auth_result === "success" ? (
-                            <Icons.drugHistory className="text-[#4ECB71]" />
-                          ) : (
-                            <Icons.drugHistory className="text-[#F24E1E]" />
-                          )}
+                          <Icons.drugHistory
+                            className={`${getDrugHistoryColor(
+                              drugHistory.medication_auth_result
+                            )}`}
+                          />
                           <div className="mt-1 text-[11px]">
                             {formatDate(
                               new Date(drugHistory.created_at),
@@ -113,8 +113,14 @@ export function GroupTabs({ items }: props) {
                         </div>
                       </PopoverTrigger>
                       <PopoverContent>
-                        <div className="text-sm font-semibold">
-                          担当者：{drugHistory.user_name}
+                        <div className="flex items-center gap-2 text-sm font-semibold">
+                          <div>担当者：{drugHistory.user_name}</div>
+                          {drugHistory.medication_auth_result === "skipped" && (
+                            <div className="flex items-center text-[#F24E1E]">
+                              <Icons.skipForward className="size-4" />
+                              <div className="text-xs">スキップ</div>
+                            </div>
+                          )}
                         </div>
                       </PopoverContent>
                     </Popover>

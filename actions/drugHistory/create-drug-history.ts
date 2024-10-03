@@ -49,6 +49,8 @@ export async function createDrugHistory({
 
   if (medicationAuthResult === "success") {
     return { success: true, message: "お薬認証が成功しました。" }
+  } else if (medicationAuthResult === "skipped") {
+    return { success: true, message: "お薬認証をスキップしました。" }
   } else {
     return {
       success: true,
