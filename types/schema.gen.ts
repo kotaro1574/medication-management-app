@@ -378,7 +378,7 @@ export type Database = {
         | "disability_level_5"
         | "disability_level_6"
       gender_enum: "male" | "female"
-      medication_auth_result_enum: "success" | "failure"
+      medication_auth_result_enum: "success" | "failure" | "skipped"
     }
     CompositeTypes: {
       [_ in never]: never
