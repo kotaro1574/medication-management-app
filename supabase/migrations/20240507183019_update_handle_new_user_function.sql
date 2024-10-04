@@ -10,7 +10,6 @@ begin
   values (
     new.id,
     new.raw_user_meta_data ->> 'userName',  -- JSONデータからuserNameを抽出
-    (new.raw_user_meta_data ->> 'id') || '@example.com', -- JSONデータのidを抽出してemailを生成
     (new.raw_user_meta_data ->> 'facilityId')::uuid   -- JSONデータからbelongIdを抽出
   );
   return new;
