@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 const DynamicCamera = dynamic(() => import("@/components/ui/camera"), {
   loading: () => (
-    <Skeleton className="h-[calc(100vh_-_300px)]  w-full rounded-[24px] sm:max-w-[500px] md:max-w-[600px]" />
+    <Skeleton className="h-[calc(100vh_-_240px)] w-full rounded-[24px] sm:max-w-[500px] md:max-w-[600px]" />
   ),
   ssr: false,
 })
@@ -51,8 +51,8 @@ export function PatientFaceAndDrugRecognitionCamera({
     isRecognition: boolean,
     isError: boolean
   ): string => {
+    if (isRecognition) return "rgba(88, 105, 193, 0.6)"
     if (isError) return "rgba(181, 15, 15, 0.6)"
-    if (isRecognition && !isError) return "rgba(88, 105, 193, 0.6)"
     return "rgba(163, 163, 163, 0.4)"
   }
 
@@ -60,7 +60,7 @@ export function PatientFaceAndDrugRecognitionCamera({
     <div className="relative">
       <div
         style={{
-          height: "calc(100vh - 200px)",
+          height: "calc(100vh - 240px)",
         }}
       >
         <DynamicCamera cameraRef={cameraRef} facingMode={facingMode} />
@@ -84,7 +84,7 @@ export function PatientFaceAndDrugRecognitionCamera({
             transform: "translate(-50%, -50%)",
           }}
         >
-          <div className="mx-2 h-[140px] border-[1.5px] border-[#FFCA0E]" />
+          <div className="mx-2 h-[90px] border-[1.5px] border-[#FFCA0E]" />
           <p className="mt-1 text-center text-xs font-semibold text-[#FFCA0E]">
             ここに名前を置いて撮影してください
           </p>

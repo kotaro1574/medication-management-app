@@ -19,6 +19,8 @@ export default function OCRPage() {
   const cameraRef = useRef<CameraType>(null)
   const [imageSrc, setImageSrc] = useState<string | null>(null)
   const [denoiseImageSrc, setDenoiseImageSrc] = useState<string | null>(null)
+  const [isCamBtnPressed, setIsCamBtnPressed] = useState<boolean>(false)
+
   // 画像のノイズを除去する関数
   const denoiseImage = (base64Data: string): Promise<string> => {
     return new Promise((resolve) => {
@@ -75,6 +77,7 @@ export default function OCRPage() {
   }
 
   const onClick = async () => {
+    setIsCamBtnPressed(true)
     if (cameraRef.current) {
       const imageSrc = cameraRef.current.takePhoto()
       if (typeof imageSrc !== "string") return
@@ -83,6 +86,9 @@ export default function OCRPage() {
       const denoiseImageSrc = await denoiseImage(imageSrc.split(",")[1])
       setDenoiseImageSrc(denoiseImageSrc)
     }
+    setTimeout(() => {
+      setIsCamBtnPressed(false)
+    }, 1500);
   }
 
   return (
@@ -91,7 +97,7 @@ export default function OCRPage() {
         <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
           OCR
         </h1>
-        <button onClick={onClick} className="text-[#D9D9D9] active:text-red-600 md:hover:text-red-600">
+        <button onClick={onClick} className={`text-[#D9D9D9]  md:hover:text-red-600 ${isCamBtnPressed ? "text-red-600" : ""}`}>
           <Icons.shutter />
         </button>
       </div>

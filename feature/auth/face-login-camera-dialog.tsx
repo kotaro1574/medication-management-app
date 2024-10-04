@@ -2,8 +2,6 @@ import { ReactNode, useCallback, useRef, useState } from "react"
 import dynamic from "next/dynamic"
 import { useRouter } from "next/navigation"
 import { faceLogin } from "@/actions/auth/face-login"
-import { generateCustomToken } from "@/actions/auth/generate-custom-token"
-import { set } from "date-fns"
 import { CameraType } from "react-camera-pro/dist/components/Camera/types"
 
 import { createClient } from "@/lib/supabase/client"
@@ -33,9 +31,11 @@ export function FaceLoginCameraDialog({ trigger }: Props) {
   const cameraRef = useRef<CameraType>(null)
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
+  const [isCamBtnPressed, setIsCamBtnPressed] = useState<boolean>(false)
 
   const onGetFaceImages = async () => {
     try {
+      setIsCamBtnPressed(true)
       if (!cameraRef.current) return
       const imageSrc = cameraRef.current.takePhoto()
 
@@ -71,6 +71,10 @@ export function FaceLoginCameraDialog({ trigger }: Props) {
         toast({ title: error.message, variant: "destructive" })
         setIsOpen(false)
       }
+    } finally {
+      setTimeout(() => {
+      setIsCamBtnPressed(false)
+      }, 1500);
     }
   }
 
@@ -105,12 +109,12 @@ export function FaceLoginCameraDialog({ trigger }: Props) {
               height: "calc(100vh - 300px)",
             }}
           >
-            <DynamicCamera cameraRef={cameraRef} />
+            <DynamicCamera cameraRef={cameraRef} facingMode="user" />
           </div>
           <div className="relative mt-4 flex w-full items-center justify-center">
             <button
               onClick={onGetFaceImages}
-              className="text-[#D9D9D9] active:text-red-600 md:hover:text-red-600"
+              className={`text-[#D9D9D9]  md:hover:text-red-600 ${isCamBtnPressed ? "text-red-600" : ""}`}
             >
               <Icons.shutter />
             </button>

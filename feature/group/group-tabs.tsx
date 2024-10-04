@@ -5,6 +5,7 @@ import { PatientAvatar } from "@/feature/patient/patient-avatar"
 import { formatDate } from "date-fns"
 
 import { Database } from "@/types/schema.gen"
+import { getDrugHistoryColor } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { Icons } from "@/components/ui/icons"
 import {
@@ -99,7 +100,8 @@ export function GroupTabs({ items }: props) {
                       <PopoverTrigger>
                         <div className="text-center">
                           {/* いつか直したい */}
-                          {drugHistory.medication_auth_result === "success" ? (
+                          {drugHistory.medication_auth_result === "success" ||
+                          drugHistory.medication_auth_result === "skipped" ? (
                             <Icons.drugHistory className="text-[#4ECB71]" />
                           ) : (
                             <Icons.drugHistory className="text-[#F24E1E]" />
@@ -113,8 +115,14 @@ export function GroupTabs({ items }: props) {
                         </div>
                       </PopoverTrigger>
                       <PopoverContent>
-                        <div className="text-sm font-semibold">
-                          担当者：{drugHistory.user_name}
+                        <div className="flex items-center gap-2 text-sm font-semibold">
+                          <div>担当者：{drugHistory.user_name}</div>
+                          {drugHistory.medication_auth_result === "skipped" && (
+                            <div className="flex items-center text-[#4ECB71]">
+                              <Icons.skipForward className="size-4" />
+                              <div className="text-xs">スキップ</div>
+                            </div>
+                          )}
                         </div>
                       </PopoverContent>
                     </Popover>

@@ -28,6 +28,7 @@ export function DrugSelectedItem({
           <Image
             src={fileUrl}
             fill
+            sizes="100%"
             alt="drug_image"
             placeholder={placeholder({ w: 63, h: 73 })}
           />

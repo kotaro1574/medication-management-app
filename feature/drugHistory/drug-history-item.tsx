@@ -33,19 +33,27 @@ export function DrugHistoryItem({
           <Popover key={drugHistory.id}>
             <PopoverTrigger>
               <div className="text-center">
-                <Icons.drugHistory
-                  className={`${getDrugHistoryColor(
-                    drugHistory.medication_auth_result
-                  )}`}
-                />
+                {/* いつか直したい */}
+                {drugHistory.medication_auth_result === "success" ||
+                drugHistory.medication_auth_result === "skipped" ? (
+                  <Icons.drugHistory className="text-[#4ECB71]" />
+                ) : (
+                  <Icons.drugHistory className="text-[#F24E1E]" />
+                )}
                 <div className="mt-1 text-[11px]">
                   {formatDate(new Date(drugHistory.created_at), "H:mm")}
                 </div>
               </div>
             </PopoverTrigger>
             <PopoverContent>
-              <div className="text-sm font-semibold">
-                担当者：{drugHistory.user_name}
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <div>担当者：{drugHistory.user_name}</div>
+                {drugHistory.medication_auth_result === "skipped" && (
+                  <div className="flex items-center text-[#4ECB71]">
+                    <Icons.skipForward className="size-4" />
+                    <div className="text-xs">スキップ</div>
+                  </div>
+                )}
               </div>
             </PopoverContent>
           </Popover>

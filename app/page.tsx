@@ -2,7 +2,7 @@ import { PatientFaceAndDrugRecognition } from "@/feature/patient/patient-face-an
 
 export default async function TopPage() {
   return (
-    <section className="px-4 pb-[60px] pt-[70px]">
+    <section className="px-4 pb-[60px] pt-[90px]">
       <PatientFaceAndDrugRecognition />
     </section>
   )
