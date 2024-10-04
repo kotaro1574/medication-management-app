@@ -150,6 +150,8 @@ export const getDrugHistoryColor = (
   switch (medicationAuthResult) {
     case "success":
       return "text-[#4ECB71]"
+    case "skipped":
+      return "text-[#F24E1E]"
     case "failure":
       return "text-[#F24E1E]"
     default:

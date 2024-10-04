@@ -26,7 +26,6 @@ export function PatientFaceAndDrugRecognition() {
   const cameraRef = useRef<CameraType>(null)
   const { toast } = useToast()
 
-
   const onReset = useCallback(() => {
     setPatent(null)
     setIsDrugRecognition(false)
@@ -78,15 +77,12 @@ export function PatientFaceAndDrugRecognition() {
       })
       if (response.success) {
         setIsDrugRecognition(true)
-        setError(null)
         const successSound = new Audio("/success-sound.mp3")
         successSound.play()
         toast({ title: response.message })
 
         setTimeout(() => {
-          setPatent(null)
-          setIsDrugRecognition(false)
-          setErrorCount(0)
+          onReset()
           if (cameraRef.current && facingMode === "environment") {
             setFacingMode("user")
             cameraRef.current.switchCamera()
@@ -127,7 +123,36 @@ export function PatientFaceAndDrugRecognition() {
     }
     setTimeout(() => {
       setIsCamBtnPressed(false)
-    }, 1500);
+    }, 1500)
+  }
+
+  const onSkipDrugRecognition = async () => {
+    if (patent?.id) {
+      const response = await createDrugHistory({
+        patientId: patent.id,
+        medicationAuthResult: "skipped",
+      })
+      if (response.success) {
+        setIsDrugRecognition(true)
+        const successSound = new Audio("/success-sound.mp3")
+        successSound.play()
+        toast({ title: response.message })
+
+        setTimeout(() => {
+          onReset()
+          if (cameraRef.current && facingMode === "environment") {
+            setFacingMode("user")
+            cameraRef.current.switchCamera()
+          }
+        }, 5000)
+      } else {
+        setError(response.error)
+      }
+
+      setTimeout(() => {
+        onReset()
+      }, 5000)
+    }
   }
 
   const onSwitchCamera = () => {
@@ -158,7 +183,17 @@ export function PatientFaceAndDrugRecognition() {
   }, [errorCount, facingMode, patent?.id, toast, onReset])
 
   return (
-    <div className="mx-auto w-full sm:max-w-[500px] md:max-w-[600px]">
+    <div className="relative mx-auto w-full sm:max-w-[500px] md:max-w-[600px]">
+      {patent && (
+        <button
+          type="button"
+          className="absolute right-0 top-[-32px] flex items-center text-xs text-[#000000] hover:text-[#000000]/60"
+          onClick={onSkipDrugRecognition}
+        >
+          <Icons.skipForward className="size-4" />
+          <p>スキップ</p>
+        </button>
+      )}
       <PatientFaceAndDrugRecognitionCamera
         cameraRef={cameraRef}
         lastName={patent?.last_name ?? ""}
@@ -175,7 +210,7 @@ export function PatientFaceAndDrugRecognition() {
         {patent && (
           <button
             onClick={onReset}
-            className="absolute left-2 top-0 text-xs text-[#A4A4A4] hover:text-[#A4A4A4]/60"
+            className="absolute left-2 top-0 text-xs text-[#000000] hover:text-[#000000]/60"
             disabled={loading}
           >
             認証やり直し
@@ -183,13 +218,17 @@ export function PatientFaceAndDrugRecognition() {
         )}
         <button
           onClick={onRecognition}
-          className={`text-[#D9D9D9]  md:hover:text-red-600 ${isCamBtnPressed ? "text-red-600" : ""}`}
+          type="button"
+          className={`text-[#D9D9D9]  md:hover:text-red-600 ${
+            isCamBtnPressed ? "text-red-600" : ""
+          }`}
           disabled={loading || isDrugRecognition}
         >
           <Icons.shutter />
         </button>
         <button
           className="absolute right-2 top-0 text-[#000000] hover:text-[#000000]/60"
+          type="button"
           onClick={onSwitchCamera}
           disabled={loading}
         >

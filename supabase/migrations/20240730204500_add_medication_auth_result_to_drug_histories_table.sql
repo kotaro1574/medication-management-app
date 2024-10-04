@@ -2,7 +2,7 @@
 DO $$ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'medication_auth_result_enum') THEN
         CREATE TYPE medication_auth_result_enum AS ENUM (
-            'success', 'failure'
+            'success', 'failure', 'skipped'
         );
     END IF;
 END $$;
