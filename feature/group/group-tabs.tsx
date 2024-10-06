@@ -94,15 +94,22 @@ export function GroupTabs({ items }: props) {
                     </p>
                   </div>
                 </Link>
-                <div className="flex items-center gap-8 overflow-x-auto pl-6">
+                <div className="flex w-full items-center gap-8 overflow-x-auto pl-6">
                   {content.drugHistoryWithNames.map((drugHistory, i) => (
                     <Popover key={drugHistory.id}>
                       <PopoverTrigger>
-                        <div className="text-center">
-                          {/* いつか直したい */}
+                        <div className="relative text-center">
                           {drugHistory.medication_auth_result === "success" ||
                           drugHistory.medication_auth_result === "skipped" ? (
-                            <Icons.drugHistory className="text-[#4ECB71]" />
+                            <div>
+                              <Icons.drugHistory className="text-[#4ECB71]" />
+                              {drugHistory.medication_auth_result ===
+                                "skipped" && (
+                                <div className="absolute right-[-8px] top-0 flex size-4 items-center justify-center rounded-full bg-[#FFCA0E]">
+                                  <Icons.skipForward className="size-3" />
+                                </div>
+                              )}
+                            </div>
                           ) : (
                             <Icons.drugHistory className="text-[#F24E1E]" />
                           )}
