@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { updateFacility } from "@/actions/facility/update-facility"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -16,6 +18,7 @@ import {
   FormLabel,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { useToast } from "@/components/ui/use-toast"
 
 import { PlanSelect } from "./plan-select"
 
@@ -34,6 +37,8 @@ const schema = z.object({
 
 export function UpdateFacilityForm({ facility }: Props) {
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
+  const { toast } = useToast()
   const form = useForm<z.infer<typeof schema>>({
     defaultValues: {
       nameJp: facility.name_jp,
@@ -48,22 +53,43 @@ export function UpdateFacilityForm({ facility }: Props) {
     try {
       setLoading(true)
 
-      //   const response = await updateFacility({
-      //     id: facility.id,
-      //     name_jp: value.nameJp,
-      //     name_en: value.nameEn,
-      //     email: value.email,
-      //     plan: value.plan,
-      //   })
+      const response = await updateFacility({
+        id: facility.id,
+        name_jp: value.nameJp,
+        name_en: value.nameEn,
+        email: value.email,
+        plan: value.plan,
+      })
 
-      //   if (response.success) {
-      //     toast({ title: response.message })
-      //     router.push("/facilities")
-      //   } else {
-      //     form.setError("nameJp", { message: response.error })
-      //   }
+      if (response.success) {
+        toast({ title: response.message })
+        router.push("/facilities")
+      } else {
+        throw new Error(response.error)
+      }
     } catch (error) {
-      // えらーの処理
+      if (error instanceof Error) {
+        if (error.message.includes("unique_name_jp")) {
+          form.setError("nameJp", {
+            message: "同じ施設名(jp)が既に登録されています。",
+          })
+          return
+        }
+        if (error.message.includes("unique_name_en")) {
+          form.setError("nameEn", {
+            message: "同じ施設名(en)が既に登録されています。",
+          })
+          return
+        }
+        if (error.message.includes("unique_email")) {
+          form.setError("email", {
+            message: "同じメールアドレスが既に登録されています。",
+          })
+          return
+        }
+
+        toast({ title: error.message, variant: "destructive" })
+      }
     } finally {
       setLoading(false)
     }
