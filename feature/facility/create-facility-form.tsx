@@ -63,6 +63,25 @@ export function CreateFacilityForm() {
       }
     } catch (error) {
       if (error instanceof Error) {
+        if (error.message.includes("unique_name_jp")) {
+          form.setError("nameJp", {
+            message: "同じ施設名(jp)が既に登録されています。",
+          })
+          return
+        }
+        if (error.message.includes("unique_name_en")) {
+          form.setError("nameEn", {
+            message: "同じ施設名(en)が既に登録されています。",
+          })
+          return
+        }
+        if (error.message.includes("unique_email")) {
+          form.setError("email", {
+            message: "同じメールアドレスが既に登録されています。",
+          })
+          return
+        }
+
         toast({ title: error.message, variant: "destructive" })
       }
     } finally {
