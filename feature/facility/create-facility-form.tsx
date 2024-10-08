@@ -2,7 +2,9 @@
 
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
+import { createFacility } from "@/actions/facility/create-facility"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { th } from "date-fns/locale"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -31,6 +33,8 @@ const schema = z.object({
 
 export function CreateFacilityForm() {
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
+  const { toast } = useToast()
   const form = useForm<z.infer<typeof schema>>({
     defaultValues: {
       nameJp: "",
@@ -41,7 +45,31 @@ export function CreateFacilityForm() {
     resolver: zodResolver(schema),
   })
 
-  const onSubmit = (value: z.infer<typeof schema>) => {}
+  const onSubmit = async (value: z.infer<typeof schema>) => {
+    try {
+      setLoading(true)
+
+      const response = await createFacility({
+        name_ja: value.nameJp,
+        name_en: value.nameEn,
+        email: value.email,
+        plan: value.plan,
+      })
+
+      if (response.success) {
+        toast({ title: response.message })
+        router.push("/facilities")
+      } else {
+        throw new Error(response.error)
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({ title: error.message, variant: "destructive" })
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <Form {...form}>
