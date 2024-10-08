@@ -1,4 +1,4 @@
-import { CreateFacilityForm } from "@/feature/facilities/create-facility-form"
+import { CreateFacilityForm } from "@/feature/facility/create-facility-form"
 
 export default async function CreateFacilityPage() {
   return (
