@@ -154,7 +154,7 @@ export type Database = {
           email: string
           id: string
           name_en: string
-          name_ja: string
+          name_jp: string
           plan: Database["public"]["Enums"]["plan_type"]
           updated_at: string
         }
@@ -163,7 +163,7 @@ export type Database = {
           email: string
           id?: string
           name_en: string
-          name_ja: string
+          name_jp: string
           plan: Database["public"]["Enums"]["plan_type"]
           updated_at?: string
         }
@@ -172,7 +172,7 @@ export type Database = {
           email?: string
           id?: string
           name_en?: string
-          name_ja?: string
+          name_jp?: string
           plan?: Database["public"]["Enums"]["plan_type"]
           updated_at?: string
         }

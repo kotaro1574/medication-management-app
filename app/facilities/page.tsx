@@ -34,7 +34,7 @@ export default async function FacilitiesPage() {
                 >
                   <div className="max-w-60 sm:max-w-[500px]">
                     <p className="whitespace-normal break-words">
-                      {facility.name_ja}
+                      {facility.name_jp}
                     </p>
                   </div>
                   <div className="flex items-center gap-4">

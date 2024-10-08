@@ -9,7 +9,7 @@ import { createClient } from "@/lib/supabase/server"
 type Props = Database["public"]["Tables"]["facilities"]["Insert"]
 
 export async function createFacility({
-  name_ja,
+  name_jp,
   name_en,
   email,
   plan,
@@ -17,7 +17,7 @@ export async function createFacility({
   try {
     const supabase = createClient()
     const { error } = await supabase.from("facilities").insert({
-      name_ja,
+      name_jp,
       name_en,
       email,
       plan,

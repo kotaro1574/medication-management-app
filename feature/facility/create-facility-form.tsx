@@ -1,10 +1,9 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { createFacility } from "@/actions/facility/create-facility"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { th } from "date-fns/locale"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -50,7 +49,7 @@ export function CreateFacilityForm() {
       setLoading(true)
 
       const response = await createFacility({
-        name_ja: value.nameJp,
+        name_jp: value.nameJp,
         name_en: value.nameEn,
         email: value.email,
         plan: value.plan,

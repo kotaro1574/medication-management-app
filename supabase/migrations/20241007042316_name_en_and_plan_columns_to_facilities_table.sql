@@ -7,8 +7,10 @@ end $$;
 
 -- facilitiesテーブルにplanカラムを追加
 alter table public.facilities
-    rename column name to name_ja;
+    rename column name to name_jp;
 
 alter table public.facilities
     add column name_en varchar(255) not null,
-    add column plan plan_type not null;
+    add column plan plan_type not null,
+    add constraint unique_name_jp unique (name_jp),
+    add constraint unique_name_en unique (name_en);
