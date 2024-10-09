@@ -26,15 +26,14 @@ type Props = {
     Database["public"]["Tables"]["profiles"]["Row"],
     "id" | "name" | "facility_id"
   >
-  email: string
   facility: Pick<
     Database["public"]["Tables"]["facilities"]["Row"],
-    "id" | "name"
+    "id" | "name_jp"
   >
   faceUrl: string
 }
 
-export function EditUserForm({ profile, email, facility, faceUrl }: Props) {
+export function EditUserForm({ profile, facility, faceUrl }: Props) {
   const [loading, startTransition] = useTransition()
   const router = useRouter()
   const { toast } = useToast()
@@ -105,7 +104,7 @@ export function EditUserForm({ profile, email, facility, faceUrl }: Props) {
 
           <FormItem className="max-w-[300px]">
             <FormLabel className="text-[11px]">所属施設</FormLabel>
-            <p className="text-base">{facility.name}</p>
+            <p className="text-base">{facility.name_jp}</p>
           </FormItem>
         </div>
         <div className="space-y-4">

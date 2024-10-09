@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 
+import { Database } from "@/types/schema.gen"
 import { createClient } from "@/lib/supabase/client"
 import { FormControl } from "@/components/ui/form"
 import {
@@ -12,10 +13,10 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-type Facility = {
-  id: string
-  name: string
-}
+type Facility = Pick<
+  Database["public"]["Tables"]["facilities"]["Row"],
+  "id" | "name_jp"
+>
 
 type Props = {
   onValueChange: (value: string) => void
@@ -37,7 +38,7 @@ export function FacilitiesSelect({
     async function fetchFacilities() {
       const { data, error } = await supabase
         .from("facilities")
-        .select("id, name")
+        .select("id, name_jp")
       if (error) {
         console.error("Error fetching facilities", error)
         return
@@ -65,7 +66,7 @@ export function FacilitiesSelect({
           <SelectLabel>施設を選択</SelectLabel>
           {facilities.map((facility) => (
             <SelectItem key={facility.id} value={facility.id}>
-              {facility.name}
+              {facility.name_jp}
             </SelectItem>
           ))}
         </SelectGroup>

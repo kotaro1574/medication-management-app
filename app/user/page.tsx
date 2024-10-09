@@ -32,7 +32,7 @@ export default async function UserPage() {
 
   const { data: facility, error: facilityError } = await supabase
     .from("facilities")
-    .select("id, name")
+    .select("id, name_jp")
     .eq("id", profile.facility_id)
     .single()
 
@@ -43,12 +43,7 @@ export default async function UserPage() {
 
   return (
     <section className="min-h-screen bg-[#F5F5F5] px-4 pb-8 pt-[62px]">
-      <EditUserForm
-        profile={profile}
-        faceUrl={faceUrl}
-        email={user.email ?? ""}
-        facility={facility}
-      />
+      <EditUserForm profile={profile} faceUrl={faceUrl} facility={facility} />
       {/* メールアドレス変更が非公開になったため、コメントアウト */}
       {/* <EmailChangeConfirmToast user={user} name={profile.name} /> */}
     </section>
