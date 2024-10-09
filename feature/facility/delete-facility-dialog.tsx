@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { deleteFacility } from "@/actions/facility/delete-facility"
+import { th } from "date-fns/locale"
 
 import { Database } from "@/types/schema.gen"
 import { Button } from "@/components/ui/button"
@@ -27,7 +29,25 @@ export function DeleteFacilityDialog({ trigger, facility }: Props) {
   const router = useRouter()
 
   const onDelete = async () => {
-    // 削除ボタンを押した時の処理
+    try {
+      setLoading(true)
+      const response = await deleteFacility({ id: facility.id })
+      if (response.success) {
+        router.push("/facilities")
+        router.refresh()
+        toast({
+          title: response.message,
+        })
+      } else {
+        throw new Error(response.error)
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({ title: error.message })
+      }
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
