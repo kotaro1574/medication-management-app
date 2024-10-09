@@ -1,8 +1,8 @@
 import Link from "next/link"
+import { FacilityItem } from "@/feature/facility/facility-item"
 
 import { createClient } from "@/lib/supabase/server"
 import { buttonVariants } from "@/components/ui/button"
-import { Icons } from "@/components/ui/icons"
 
 export default async function FacilitiesPage() {
   const supabase = createClient()
@@ -28,22 +28,7 @@ export default async function FacilitiesPage() {
             <h3 className="text-base">施設名</h3>
             <div className="pt-[34px]">
               {facilities.map((facility) => (
-                <div
-                  key={facility.id}
-                  className="mb-[26px] flex items-center justify-between border-b-[0.5px] border-[#A4A4A4] pb-[14px]"
-                >
-                  <div className="max-w-60 sm:max-w-[500px]">
-                    <p className="whitespace-normal break-words">
-                      {facility.name_jp}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <Link href={`/facilities/${facility.id}`}>
-                      <Icons.edit />
-                    </Link>
-                    <Icons.trash className="size-6" />
-                  </div>
-                </div>
+                <FacilityItem key={facility.id} facility={facility} />
               ))}
             </div>
           </div>
