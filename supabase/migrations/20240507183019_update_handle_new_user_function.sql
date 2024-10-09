@@ -6,7 +6,7 @@ security definer set search_path = public
 as $$
 begin
   -- 新しいユーザーのID、userName、belongIdをprofilesテーブルに挿入
-  insert into public.profiles (id, name, email, facility_id)
+  insert into public.profiles (id, name, facility_id)
   values (
     new.id,
     new.raw_user_meta_data ->> 'userName',  -- JSONデータからuserNameを抽出
