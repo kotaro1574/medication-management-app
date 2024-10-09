@@ -3,6 +3,8 @@ import Link from "next/link"
 import { Database } from "@/types/schema.gen"
 import { Icons } from "@/components/ui/icons"
 
+import { DeleteFacilityDialog } from "./delete-facility-dialog"
+
 type Props = {
   facility: Database["public"]["Tables"]["facilities"]["Row"]
 }
@@ -17,7 +19,10 @@ export function FacilityItem({ facility }: Props) {
         <Link href={`/facilities/${facility.id}`}>
           <Icons.edit />
         </Link>
-        <Icons.trash className="size-6" />
+        <DeleteFacilityDialog
+          facility={facility}
+          trigger={<Icons.trash className="size-6 cursor-pointer" />}
+        />
       </div>
     </div>
   )
