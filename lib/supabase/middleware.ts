@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server"
 import { createServerClient, type CookieOptions } from "@supabase/ssr"
 
+import { basicAuth } from "../auth/basic-auth"
+
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({
     request: {
@@ -71,6 +73,10 @@ export async function updateSession(request: NextRequest) {
   const isAuthExemptUrl = authExemptUrls.some((url) =>
     request.url.includes(url)
   )
+
+  if (request.url.includes("/signup") || request.url.includes("/facilities")) {
+    return basicAuth(request)
+  }
 
   // ユーザーがログインしていない場合のリダイレクト
   if (!user && !isAuthExemptUrl) {
