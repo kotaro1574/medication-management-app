@@ -15,10 +15,7 @@ export async function deleteGroup({
     const { error } = await supabase.from("groups").delete().eq("id", id)
 
     if (error) {
-      if (
-        error.message ===
-        `update or delete on table "groups" violates foreign key constraint "fk_group" on table "patients"`
-      ) {
+      if (error.message.includes("fk_group")) {
         throw new Error("グループに所属している患者がいるため削除できません")
       }
       throw new Error(error.message)
