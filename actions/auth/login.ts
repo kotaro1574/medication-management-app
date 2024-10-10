@@ -1,7 +1,5 @@
 "use server"
 
-import { cookies } from "next/headers"
-
 import { createClient } from "@/lib/supabase/server"
 
 import { setLoginInfo } from "../cookie/set-login-info"
@@ -28,7 +26,7 @@ export async function login({
 
     const { data: userData, error: userError } =
       await supabase.auth.signInWithPassword({
-        email: `${id}@example.com`,
+        email: `${id}@medineo.cc`,
         password,
       })
 
