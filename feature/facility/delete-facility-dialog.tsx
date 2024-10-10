@@ -43,7 +43,7 @@ export function DeleteFacilityDialog({ trigger, facility }: Props) {
       }
     } catch (error) {
       if (error instanceof Error) {
-        toast({ title: error.message })
+        toast({ title: error.message, variant: "destructive" })
       }
     } finally {
       setLoading(false)

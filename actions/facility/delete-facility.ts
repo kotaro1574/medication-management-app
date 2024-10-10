@@ -15,6 +15,9 @@ export async function deleteFacility({
     const { error } = await supabase.from("facilities").delete().eq("id", id)
 
     if (error) {
+      if (error.message.includes("fk_profiles_facility")) {
+        throw new Error("施設に属している所有者がいるため削除できません。")
+      }
       throw new Error(error.message)
     }
 
