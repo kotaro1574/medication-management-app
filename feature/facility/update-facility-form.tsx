@@ -32,7 +32,9 @@ const schema = z.object({
   email: z
     .string()
     .email({ message: "有効なメールアドレスを入力してください。" }),
-  plan: z.enum(["松", "竹", "梅"], { message: "プランを選択してください。" }),
+  plan: z.enum(["プラン１", "プラン２", "プラン３", "プラン４"], {
+    message: "プランを選択してください。",
+  }),
 })
 
 export function UpdateFacilityForm({ facility }: Props) {

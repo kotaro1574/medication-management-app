@@ -26,9 +26,10 @@ export function PlanSelect({ onValueChange, defaultValue, isError }: Props) {
       <SelectContent>
         <SelectGroup>
           <SelectLabel>プランを選択</SelectLabel>
-          <SelectItem value="松">松</SelectItem>
-          <SelectItem value="竹">竹</SelectItem>
-          <SelectItem value="梅">梅</SelectItem>
+          <SelectItem value="プラン１">プラン１</SelectItem>
+          <SelectItem value="プラン２">プラン２</SelectItem>
+          <SelectItem value="プラン３">プラン３</SelectItem>
+          <SelectItem value="プラン４">プラン４</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>
