@@ -151,20 +151,29 @@ export type Database = {
       facilities: {
         Row: {
           created_at: string
+          email: string
           id: string
-          name: string
+          name_en: string
+          name_jp: string
+          plan: Database["public"]["Enums"]["plan_type"]
           updated_at: string
         }
         Insert: {
           created_at?: string
+          email: string
           id?: string
-          name: string
+          name_en: string
+          name_jp: string
+          plan: Database["public"]["Enums"]["plan_type"]
           updated_at?: string
         }
         Update: {
           created_at?: string
+          email?: string
           id?: string
-          name?: string
+          name_en?: string
+          name_jp?: string
+          plan?: Database["public"]["Enums"]["plan_type"]
           updated_at?: string
         }
         Relationships: []
@@ -312,6 +321,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_profiles_facility"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "profiles_id_fkey"
             columns: ["id"]
             isOneToOne: true
@@ -379,6 +395,7 @@ export type Database = {
         | "disability_level_6"
       gender_enum: "male" | "female"
       medication_auth_result_enum: "success" | "failure" | "skipped"
+      plan_type: "松" | "竹" | "梅"
     }
     CompositeTypes: {
       [_ in never]: never
