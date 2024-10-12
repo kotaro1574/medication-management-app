@@ -153,21 +153,27 @@ export type Database = {
           created_at: string
           email: string
           id: string
-          name: string
+          name_en: string
+          name_jp: string
+          plan: Database["public"]["Enums"]["plan_type"]
           updated_at: string
         }
         Insert: {
           created_at?: string
           email: string
           id?: string
-          name: string
+          name_en: string
+          name_jp: string
+          plan: Database["public"]["Enums"]["plan_type"]
           updated_at?: string
         }
         Update: {
           created_at?: string
           email?: string
           id?: string
-          name?: string
+          name_en?: string
+          name_jp?: string
+          plan?: Database["public"]["Enums"]["plan_type"]
           updated_at?: string
         }
         Relationships: []
@@ -392,6 +398,7 @@ export type Database = {
         | "disability_level_6"
       gender_enum: "male" | "female"
       medication_auth_result_enum: "success" | "failure" | "skipped"
+      plan_type: "プラン１" | "プラン２" | "プラン３" | "プラン４"
     }
     CompositeTypes: {
       [_ in never]: never

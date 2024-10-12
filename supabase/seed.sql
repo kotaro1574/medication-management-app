@@ -1,11 +1,11 @@
 -- facilitiesテーブルにデータを挿入
-INSERT INTO facilities (name, email) VALUES
-('健康センター', 'facility1@example.com'),
-('リハビリテーション施設', 'facility2@example.com');
+INSERT INTO facilities (name_jp, name_en, email, plan) VALUES
+('健康センター', 'health_center', 'facility1@example.com', 'プラン１'),
+('リハビリテーション施設', 'rehabilitation_facilities', 'facility2@example.com', 'プラン２');
 
 -- groupsテーブルにデータを挿入
 INSERT INTO groups (name, facility_id) VALUES
-('グループA', (SELECT id FROM facilities WHERE name = '健康センター')),
-('グループB', (SELECT id FROM facilities WHERE name = '健康センター')),
-('groupA', (SELECT id FROM facilities WHERE name = 'リハビリテーション施設')),
-('groupB', (SELECT id FROM facilities WHERE name = 'リハビリテーション施設'));
+('グループA', (SELECT id FROM facilities WHERE name_jp = '健康センター')),
+('グループB', (SELECT id FROM facilities WHERE name_jp = '健康センター')),
+('groupA', (SELECT id FROM facilities WHERE name_jp = 'リハビリテーション施設')),
+('groupB', (SELECT id FROM facilities WHERE name_jp = 'リハビリテーション施設'));

@@ -32,7 +32,7 @@ export default async function UserPage() {
 
   const { data: facility, error: facilityError } = await supabase
     .from("facilities")
-    .select("id, name")
+    .select("id, name_jp")
     .eq("id", profile.facility_id)
     .single()
 
