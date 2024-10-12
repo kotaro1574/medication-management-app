@@ -61,14 +61,32 @@ export function SignUpForm() {
     try {
       setLoading(true)
 
-      const id = uuidv4()
+      const { data: facility, error: facilityError } = await supabase
+        .from("facilities")
+        .select("name_en")
+        .eq("id", facilityId)
+        .single()
+
+      if (facilityError) {
+        throw facilityError
+      }
+
+      const { data: user, error: userError } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("facility_id", facilityId)
+
+      if (userError) {
+        throw userError
+      }
+
+      const id = `${facility.name_en}-${user.length + 1}`
 
       const { data, error } = await supabase.auth.signUp({
-        email: `${id}@example.com`,
+        email: `${id}@medineo.cc`,
         password,
         options: {
           data: {
-            id,
             userName,
             facilityId,
           },
@@ -110,6 +128,7 @@ export function SignUpForm() {
 
   const onLogin = () => {
     router.push("/")
+    router.refresh()
     toast({
       title: "ログインしました",
     })
