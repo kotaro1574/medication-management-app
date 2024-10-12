@@ -74,7 +74,10 @@ export async function updateSession(request: NextRequest) {
     request.url.includes(url)
   )
 
-  if (request.url.includes("/signup") || request.url.includes("/facilities")) {
+  if (
+    (request.url.includes("/signup") && !isAuthExemptUrl) ||
+    request.url.includes("/facilities")
+  ) {
     return basicAuth(request)
   }
 
