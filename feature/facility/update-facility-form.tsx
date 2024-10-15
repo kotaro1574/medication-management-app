@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { planLimitsValidation } from "@/actions/facility/plan-limits-validation"
 import { updateFacility } from "@/actions/facility/update-facility"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -55,6 +56,15 @@ export function UpdateFacilityForm({ facility }: Props) {
     try {
       setLoading(true)
 
+      const planLimitsValidationResponse = await planLimitsValidation({
+        facilityId: facility.id,
+        plan: value.plan,
+      })
+
+      if (!planLimitsValidationResponse.success) {
+        throw new Error(planLimitsValidationResponse.error)
+      }
+
       const response = await updateFacility({
         id: facility.id,
         name_jp: value.nameJp,
@@ -86,6 +96,12 @@ export function UpdateFacilityForm({ facility }: Props) {
         if (error.message.includes("unique_email")) {
           form.setError("email", {
             message: "同じメールアドレスが既に登録されています。",
+          })
+          return
+        }
+        if (error.message.includes("制限を超えています。")) {
+          form.setError("plan", {
+            message: error.message,
           })
           return
         }

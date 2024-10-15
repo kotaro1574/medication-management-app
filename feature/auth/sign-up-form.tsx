@@ -4,6 +4,7 @@ import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { logout } from "@/actions/auth/logout"
 import { setLoginInfo } from "@/actions/cookie/set-login-info"
+import { userPlanLimitsValidation } from "@/actions/user/user-plan-limits-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -64,6 +65,12 @@ export function SignUpForm() {
   }: z.infer<typeof formSchema>) => {
     try {
       setLoading(true)
+
+      const response = await userPlanLimitsValidation({ facilityId })
+
+      if (!response.success) {
+        throw new Error(response.error)
+      }
 
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -138,6 +145,7 @@ export function SignUpForm() {
     startTransaction(() => {
       ;(async () => {
         const response = await logout()
+        router.refresh()
         if (response.success) {
           form.reset()
           setIsConfirm(false)

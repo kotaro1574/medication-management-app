@@ -8,8 +8,8 @@ import { createClient } from "@/lib/supabase/server"
 
 import { insertAlert } from "../alert/insert-alert"
 import { insertPatientFace } from "../patientFace/insert-patient-face"
-import { getProfile } from "../profile/get-profile"
 import { getUser } from "../user/get-user"
+import { getProfile } from "../user/profile/get-profile"
 import { checkPatientFace } from "./check-patient-face"
 import { insertPatient } from "./insert-patient"
 
