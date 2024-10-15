@@ -6,8 +6,8 @@ import { ActionResult } from "@/types/action"
 import { createClient } from "@/lib/supabase/server"
 
 import { setLoginInfo } from "../cookie/set-login-info"
-import { getProfile } from "../profile/get-profile"
 import { getUser } from "./get-user"
+import { getProfile } from "./profile/get-profile"
 import { updateUserFace } from "./update-user-face"
 
 type Props = {

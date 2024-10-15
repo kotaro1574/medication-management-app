@@ -10,8 +10,8 @@ import { createClient } from "@/lib/supabase/server"
 import { deleteAlerts } from "../alert/delete-alerts"
 import { updateAlert } from "../alert/update-alert"
 import { deleteDrugs } from "../drug/delete-drug"
-import { getProfile } from "../profile/get-profile"
 import { getUser } from "../user/get-user"
+import { getProfile } from "../user/profile/get-profile"
 import { updatePatientFace } from "./update-patient-face"
 
 type Props = {

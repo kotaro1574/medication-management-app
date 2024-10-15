@@ -5,8 +5,8 @@ import { SupabaseClient } from "@supabase/supabase-js"
 import { Database } from "@/types/schema.gen"
 import { checkFaceImageExists, deleteImage } from "@/lib/aws/utils"
 
-import { getProfile } from "../profile/get-profile"
 import { getUser } from "../user/get-user"
+import { getProfile } from "../user/profile/get-profile"
 
 export async function checkPatientFace(
   supabase: SupabaseClient<Database>,
