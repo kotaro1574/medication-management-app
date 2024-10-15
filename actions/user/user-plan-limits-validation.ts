@@ -1,23 +1,10 @@
 "use server"
 
+import { PLAN_LIMITS } from "@/lib/constants/plan-limits"
 import { createClient } from "@/lib/supabase/server"
 
 type Props = {
   facilityId: string
-}
-
-type PlanLimits = {
-  [key: string]: {
-    userLimit: number
-    patientLimit: number
-  }
-}
-
-const PLAN_LIMITS: PlanLimits = {
-  プラン１: { userLimit: 20, patientLimit: 20 },
-  プラン２: { userLimit: 30, patientLimit: 50 },
-  プラン３: { userLimit: 50, patientLimit: 100 },
-  プラン４: { userLimit: 70, patientLimit: 150 },
 }
 
 export async function userPlanLimitsValidation({ facilityId }: Props) {
