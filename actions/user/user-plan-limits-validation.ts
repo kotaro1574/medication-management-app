@@ -42,9 +42,6 @@ export async function userPlanLimitsValidation({ facilityId }: Props) {
 
     const usersNumber = profiles.length
 
-    console.log("usersNumber", usersNumber)
-    console.log("planLimits", planLimits)
-
     if (usersNumber >= planLimits.userLimit) {
       return {
         success: false,

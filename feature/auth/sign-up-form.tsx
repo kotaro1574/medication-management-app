@@ -68,7 +68,7 @@ export function SignUpForm() {
 
       const response = await userPlanLimitsValidation({ facilityId })
 
-      if (response.error) {
+      if (!response.success) {
         throw new Error(response.error)
       }
 
