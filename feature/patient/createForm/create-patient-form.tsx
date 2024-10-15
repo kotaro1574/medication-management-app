@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { createDrug } from "@/actions/drug/create-drug"
 import { createPatient } from "@/actions/patients/create-patient"
+import { patientPlanLimitsValidation } from "@/actions/patients/patient-plan-limits-validation"
 import { PatientDrugFormField } from "@/feature/patient/createForm/field/drugField/patient-drug-form-field"
 import { PatientFaceImagesFormField } from "@/feature/patient/createForm/field/faceImagesField/patient-face-images-form-field"
 import { PatientInfoFormField } from "@/feature/patient/createForm/field/infoField/patient-info-form-field"
@@ -64,6 +65,12 @@ export function CreatePatientForm({
   }: z.infer<typeof createPatientFormSchema>) => {
     setIsLoading(true)
     try {
+      const response = await patientPlanLimitsValidation()
+
+      if (!response.success) {
+        throw new Error(response.error)
+      }
+
       const formData = new FormData()
       faceImages.forEach((file) => {
         formData.append("faceImages", file)
