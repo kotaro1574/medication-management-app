@@ -4,15 +4,12 @@ import { useState, useTransition } from "react"
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { faceLogin } from "@/actions/auth/face-login"
-import { generateCustomToken } from "@/actions/auth/generate-custom-token"
 import { login } from "@/actions/auth/login"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AlertCircle } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { createClient } from "@/lib/supabase/client"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -105,7 +102,11 @@ export function LoginForm({
               <FormItem className="w-full">
                 <FormLabel>メールアドレス</FormLabel>
                 <FormControl>
-                  <Input isError={!!form.formState.errors.email} {...field} />
+                  <Input
+                    autoComplete="username"
+                    isError={!!form.formState.errors.email}
+                    {...field}
+                  />
                 </FormControl>
                 {form.formState.errors.email && (
                   <FormDescription>
@@ -124,6 +125,7 @@ export function LoginForm({
                 <FormControl>
                   <Input
                     type="password"
+                    autoComplete="current-password"
                     isError={!!form.formState.errors.password}
                     {...field}
                   />

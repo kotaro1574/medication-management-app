@@ -136,6 +136,7 @@ export function SignUpForm() {
 
   const onLogin = () => {
     router.push("/")
+    router.refresh()
     toast({
       title: "ログインしました",
     })
@@ -166,7 +167,11 @@ export function SignUpForm() {
             <FormItem className="mt-4">
               <FormLabel>メールアドレス</FormLabel>
               <FormControl>
-                <Input isError={!!form.formState.errors.email} {...field} />
+                <Input
+                  autoComplete="username"
+                  isError={!!form.formState.errors.email}
+                  {...field}
+                />
               </FormControl>
               {form.formState.errors.email && (
                 <FormDescription>
@@ -185,6 +190,7 @@ export function SignUpForm() {
               <FormControl>
                 <Input
                   type="password"
+                  autoComplete="current-password"
                   isError={!!form.formState.errors.password}
                   {...field}
                 />
@@ -204,7 +210,11 @@ export function SignUpForm() {
             <FormItem className="mt-4">
               <FormLabel>所有者名</FormLabel>
               <FormControl>
-                <Input isError={!!form.formState.errors.userName} {...field} />
+                <Input
+                  autoComplete="name"
+                  isError={!!form.formState.errors.userName}
+                  {...field}
+                />
               </FormControl>
               {form.formState.errors.userName && (
                 <FormDescription>
