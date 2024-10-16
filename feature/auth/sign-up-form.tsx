@@ -136,6 +136,7 @@ export function SignUpForm() {
 
   const onLogin = () => {
     router.push("/")
+    router.refresh()
     toast({
       title: "ログインしました",
     })
