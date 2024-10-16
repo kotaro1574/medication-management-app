@@ -137,9 +137,6 @@ export function GroupTabs({ items }: props) {
               </div>
             ))
           )}
-          <div className="h-screen rounded-3xl bg-red-500 p-4">
-            高さを出す為の要素
-          </div>
         </TabsContent>
       ))}
     </Tabs>
