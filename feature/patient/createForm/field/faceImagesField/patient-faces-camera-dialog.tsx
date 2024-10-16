@@ -73,7 +73,7 @@ export function PatientFacesCameraDialog({ trigger, form }: Props) {
     })
     setTimeout(() => {
       setIsCamBtnPressed(false)
-    }, 1500);
+    }, 700)
   }, [form, progress])
 
   const onSwitchCamera = useCallback(() => {
@@ -130,7 +130,9 @@ export function PatientFacesCameraDialog({ trigger, form }: Props) {
           <div className="relative mt-4 flex w-full items-center justify-center">
             <button
               onClick={onGetFaceImages}
-              className={`text-[#D9D9D9]  md:hover:text-red-600 ${isCamBtnPressed ? "text-red-600" : ""}`}
+              className={`text-[#D9D9D9]  md:hover:text-red-600 ${
+                isCamBtnPressed ? "text-red-600" : ""
+              }`}
               disabled={progress === 100}
             >
               <Icons.shutter />

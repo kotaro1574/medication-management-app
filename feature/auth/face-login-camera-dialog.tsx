@@ -73,8 +73,8 @@ export function FaceLoginCameraDialog({ trigger }: Props) {
       }
     } finally {
       setTimeout(() => {
-      setIsCamBtnPressed(false)
-      }, 1500);
+        setIsCamBtnPressed(false)
+      }, 700)
     }
   }
 
@@ -114,7 +114,9 @@ export function FaceLoginCameraDialog({ trigger }: Props) {
           <div className="relative mt-4 flex w-full items-center justify-center">
             <button
               onClick={onGetFaceImages}
-              className={`text-[#D9D9D9]  md:hover:text-red-600 ${isCamBtnPressed ? "text-red-600" : ""}`}
+              className={`text-[#D9D9D9]  md:hover:text-red-600 ${
+                isCamBtnPressed ? "text-red-600" : ""
+              }`}
             >
               <Icons.shutter />
             </button>

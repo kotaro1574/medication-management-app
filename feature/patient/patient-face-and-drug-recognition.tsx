@@ -123,7 +123,7 @@ export function PatientFaceAndDrugRecognition() {
     }
     setTimeout(() => {
       setIsCamBtnPressed(false)
-    }, 1500)
+    }, 700)
   }
 
   const onSkipDrugRecognition = async () => {
