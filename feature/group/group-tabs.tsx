@@ -5,7 +5,6 @@ import { PatientAvatar } from "@/feature/patient/patient-avatar"
 import { formatDate } from "date-fns"
 
 import { Database } from "@/types/schema.gen"
-import { getDrugHistoryColor } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { Icons } from "@/components/ui/icons"
 import {

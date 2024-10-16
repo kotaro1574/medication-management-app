@@ -1,6 +1,7 @@
 import { getS3Data } from "@/actions/s3/get-s3-data"
 import { GroupTabs } from "@/feature/group/group-tabs"
 
+import { PLAN_LIMITS } from "@/lib/constants/plan-limits"
 import { createClient } from "@/lib/supabase/server"
 import { formatDate } from "@/lib/utils"
 
@@ -22,7 +23,17 @@ export default async function PatientsPage() {
     .single()
 
   if (profileError) {
-    return <div>error</div>
+    return <div>error: {profileError.message}</div>
+  }
+
+  const { data: facility, error: facilityError } = await supabase
+    .from("facilities")
+    .select("plan")
+    .eq("id", profile.facility_id)
+    .single()
+
+  if (facilityError) {
+    return <div>error: {facilityError.message}</div>
   }
 
   const { data: groups, error: groupsError } = await supabase
@@ -31,7 +42,7 @@ export default async function PatientsPage() {
     .eq("facility_id", profile.facility_id)
 
   if (groupsError) {
-    return <div>error</div>
+    return <div>error: {groupsError.message}</div>
   }
 
   const { data: patients, error: patientsError } = await supabase
@@ -41,7 +52,7 @@ export default async function PatientsPage() {
     .order("created_at", { ascending: false })
 
   if (patientsError) {
-    return <div>error</div>
+    return <div>error: {patientsError.message}</div>
   }
 
   const patientsData = await Promise.all(
@@ -135,12 +146,19 @@ export default async function PatientsPage() {
     })),
   ]
 
+  const patientsNumber = patients.length
+  const planLimits = PLAN_LIMITS[facility.plan]
+
   return (
     <section className="min-h-screen bg-[#F5F5F5]">
       <div className="mx-auto">
-        <h2 className="bg-white pb-[46px] pt-[70px] text-center text-[20px]">
-          {formatDate(today, "M/d(EEE)")}
-        </h2>
+        <div className="space-y-3 bg-white pb-5 pt-[70px] text-center">
+          <h2 className=" text-[20px]">{formatDate(today, "M/d(EEE)")}</h2>
+          <p className="text-sm text-[#A4A4A4]">
+            {patientsNumber}/{planLimits.patientLimit}名
+          </p>
+        </div>
+
         <GroupTabs items={tabs} />
       </div>
     </section>
